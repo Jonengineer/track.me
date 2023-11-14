@@ -10,20 +10,27 @@
 
 
 {% block content %}
-<h2 id= log>Вход в личный кабинет:</h2>
+<!--  <h2 id= log>Вход в личный кабинет:</h2> -->
+
+<div class="login-container-base">
+<div class="login-container-baseblock"> </div>
 <div class="login-container">
     <form  class="materialize-form" method="post" action="{% url 'User:user_login' %}"> 
         {% csrf_token %}
         <div class="input-field">
             <label for="email">Электронная почта:</label>
+            <div class="input-container">
             <input type="email" name="email" required>
+        </div> 
         </div>
         <div class="input-field">
-            <label for="password">Пароль:</label>
-            <input type="password" name="password" required>
+          <label for="password">Пароль:</label>        
+            <div class="input-container">
+                <input type="password" name="password" required>
+            </div>
         </div>
         <div class="actions">
-            <button type="submit" class="btn">Войти</button>
+            <button type="submit" class="waves-light btn">Войти</button>
         </div>
     </form>
     {% if messages %}
@@ -33,5 +40,7 @@
         {% endfor %}
     </ul>
     {% endif %}
+
+</div>
 </div>
 {% endblock %}

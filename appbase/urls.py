@@ -7,7 +7,8 @@ from .import views
 app_name = 'AppBase'
 
 urlpatterns = [
-    path('', views.base_page, name='base_page'),
+    path('base_page/', views.base_page, name='base_page'),
+    path('', views.main_skrin_page, name='main_skrin_page'),
 ]
 
 # Добавь эту строку для обслуживания медиа-файлов в режиме разработки

@@ -1,0 +1,19 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block styles %}
+    {{ block.super }}
+    <!-- Стили специфичные для профиля пользователя -->
+    <link rel="stylesheet" type="text/css" href="{% static 'appbase/style.css' %}">    
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+{% endblock %}
+
+{% block content %}
+<div class="main_pic"><!-- Создай свое путешествие --></div>
+<div class="main_menue">
+</div>
+{% endblock %}
+    
+
+{% block scripts %}
+{% endblock %}
