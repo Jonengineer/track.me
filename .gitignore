@@ -20,6 +20,7 @@ user/migrations/__pycache__/0002_user_login_history.cpython-311.pyc
 .dockerignore
 Dockerfile
 compose.yaml
+requirements.txt
 
 
 
