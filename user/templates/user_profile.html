@@ -1,0 +1,97 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block styles %}
+    {{ block.super }}
+    <title>Личный кабинет</title>
+    <!-- Стили специфичные для профиля пользователя -->
+    <link rel="stylesheet" type="text/css" href="{% static 'user/style.css' %}">    
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+{% endblock %}
+
+{% block content %}
+        
+    <div class="mdc-drawer mdc-drawer--dismissible">
+        <!-- Боковое меню -->
+        <div class="mdc-drawer__content">
+            <!-- Содержимое бокового меню -->
+            <nav class="mdc-list">
+                <a class="mdc-list-item" href="">
+                    <span class="mdc-list-item__ripple"></span>
+                    <div class="icon-text-container">
+                        <i class="material-icons" data-tooltip="Профиль">person</i> <!-- Иконка для перехода -->
+                    </div>
+                </a>
+            </nav>
+            <nav class="mdc-list">
+                <a class="mdc-list-item" href="{% url 'Travel:create_travel_plan' %}">
+                    <span class="mdc-list-item__ripple"></span>
+                    <div class="icon-text-container">
+                        <i class="material-icons" data-tooltip="Новое путешевствие">place</i> <!-- Иконка для перехода -->
+                    </div>
+                </a>
+            </nav>
+            <nav class="mdc-list">
+                <a class="mdc-list-item" href = "">
+                    <span class="mdc-list-item__ripple"></span>
+                    <i class="material-icons" data-tooltip="Новая тренироввка">sports</i> <!-- Иконка для перехода -->
+                </a>
+            </nav>    
+            <nav class="mdc-list">
+                <a class="mdc-list-item" href = "{% url 'Travel:get_travel_plan' %}">
+                    <span class="mdc-list-item__ripple"></span>
+                    <i class="material-icons" data-tooltip="Мои путешевствия">hiking</i> <!-- Иконка для перехода -->
+                </a>
+            </nav>
+            <nav class="mdc-list">
+                <a class="mdc-list-item" href = "">
+                    <span class="mdc-list-item__ripple"></span>
+                    <i class="material-icons" data-tooltip="Карта путешевствий">map</i> <!-- Иконка для перехода -->
+                </a>
+            </nav>
+            <nav class="mdc-list">
+                <a class="mdc-list-item" href = "">
+                    <span class="mdc-list-item__ripple"></span>
+                    <i class="material-icons" data-tooltip="Мои тренировки">fitness_center</i> <!-- Иконка для перехода -->
+                </a>       
+            </nav>
+            <nav class="mdc-list">
+                <a class="mdc-list-item" href = "">
+                    <span class="mdc-list-item__ripple"></span>
+                    <i class="material-icons" data-tooltip="Статистика">equalizer</i> <!-- Иконка для перехода -->
+                </a>       
+            </nav>
+            <nav class="mdc-list">
+                <a class="mdc-list-item" href = "">
+                    <span class="mdc-list-item__ripple"></span>
+                    <i class="material-icons" data-tooltip="Настройки">settings</i> <!-- Иконка для перехода -->
+                </a>       
+            </nav>
+        </div>
+    </div>        
+    {% block user_content %}
+    {% block user_scripts %}{% endblock %}    
+    {% endblock %}
+{% endblock %}
+    
+
+{% block scripts %}
+{{ block.super }}  
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>   
+    <script src="https://unpkg.com/material-components-web@14.0.0/dist/material-components-web.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/js/jquery.tooltipster.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Инициализация Tooltipster для элементов с классом .material-icons
+            $('.material-icons').each(function() {
+                var tooltipText = $(this).attr('data-tooltip');  // Получение текста подсказки из атрибута data-tooltip
+                $(this).tooltipster({
+                    content: tooltipText
+                    // theme: 'tooltipster-light' // Изменение темы
+                });
+            });
+        });
+    </script>
+{% endblock %}

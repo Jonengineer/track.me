@@ -1,0 +1,51 @@
+/* Стили страницы base.html */
+/* Шапка страницы base.html */
+.mdc-top-app-bar__row {
+  position: fixed;
+  top: 0;
+  left: 0;   
+  background-color: #6A553E; 
+  height: 50px;
+  width: 100%; /* Убедитесь, что шапка растягивается на всю ширину экрана */
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Выравнивает содержимое по вертикали */
+  padding-left: 0px; /* Отступ слева */
+  padding-right: 20px; /* Отступ справа */
+  z-index: 1000;
+}
+/* Текст в шапке страницы base.html */
+.username-text {  
+  color: #ffffff; 
+  font-size: 25px;
+  font-family: 'Times New Roman';
+  margin-right: 10px;  
+}
+/* Кнопки аавторизации */
+.mdс-top-app-bar__action-items {
+  display: flex;
+  justify-content: center; /* Горизонтальное центрирование */
+  align-items: center; /* Вертикальное центрирование */
+  gap: 15px; /* Устанавливаем пространство между элементами внутри флекс-контейнера */
+  margin-right: 40px; /* Отступ справа между кнопками */
+}
+/* Стили для каждой кнопки, кроме последней */
+.mdс-top-app-bar__action-items .mds-button:not(:last-child) {  
+  margin-right: 60px; /* Отступ справа между кнопками */
+}
+/* Кнопки аавторизации */
+.mdс-top-app-bar__action-items .mds-button {  
+  display: flex;
+  align-items: center; /* Выравнивает кнопки по вертикали */
+  color: #3C2C13;  
+}
+/* Кнопки аавторизации */
+.waves-light.btn {
+  background-color: #6F947F; /* Цвет фона кнопки */
+  border-radius: 15px;
+}
+/* Логотип */
+#imglogo {
+  margin-left: 0px;
+}
+

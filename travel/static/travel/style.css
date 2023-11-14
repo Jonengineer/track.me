@@ -1,0 +1,247 @@
+/* Стили страницы travel_detail_full.html */
+/* Стили вкладок */
+.nav-content {
+  position: relative;
+  width: calc(100% - 66px); /* Вычтем ширину левой панели */
+  background-color: #6F947F;
+  margin-left: 66px; /* Отступ для левой панели */
+}
+/* Стили вкладок */
+.tabs a {
+  color: #090404;
+}
+.tabs a.active {
+  color: #b0d10c;
+  background-color: #6F6253 !important;
+}
+.indicator {
+  color: #b11414;
+}
+.tabs a.disabled {
+  color: #c90a0a !important;
+}
+/* Контейнер с общим описанием */
+.container-travel-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Выравнивание содержимого к началу контейнера */
+  width: calc(100% - 66px); /* Вычтем ширину левой панели */
+  height: calc(100% - 66px); /* Вычтем ширину левой панели */
+  background-color: #ECE7D6;
+  margin-left: 66px; /* Отступ для левой панели */
+  margin-top: 50px;
+}
+/* Контейнер заголовка */
+.container-travel-detail-0 {
+  flex: 1; /* Элемент растянется, чтобы занять все доступное пространство */
+  width: 100%; /* Элемент займет всю доступную ширину */
+  /* Задайте высоту, если необходимо */
+}
+/* Линия под контейнером заголовка */
+.container-travel-detail-0::after {
+  content: '';
+  display: block;
+  height: 1px;
+  background-color: #000;  
+}
+/* Контейнер заголовка */
+.container-travel-detail-0 h1 {
+  font-size: 22px;
+  margin: 0; /* Уберем внешний отступ у заголовка */
+  padding: 0; /* Уберем внутренний отступ у заголовка */
+  font-weight: 500;
+}
+/* Контейнер для flex элементов */
+.container-travel-detail-flex {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+/* Блоки с текстом */
+.container-travel-detail-1,
+.container-travel-detail-2,
+.container-travel-detail-3 {
+  flex-grow: 1; /* Или используйте 'flex-basis: 33.3333%;', если не хотите использовать 'flex-grow' */  
+}
+/* Стили параграфов */
+.container-travel-detail-1 p,
+.container-travel-detail-2 p,
+.container-travel-detail-3 p {
+  font-size: 14px;
+  margin: 4px 4px 15px 4px; /* Объединенный отступ */
+}
+/* Стили страницы get_travel_plan.html */
+/* Стили контейнера карточек */
+.row {
+  position: relative; /* используем относительное позиционирование */
+  top: 50px;
+  width: calc(100%- 66px); /* вычитаем left, чтобы контейнер не выходил за пределы экрана */
+  height: calc(100vh - 50px); /* вычитаем top, чтобы контейнер не выходил за пределы экрана */  
+  display: flex;
+  flex-direction: column; /* чтобы заголовок и карточки шли друг за другом */    
+  padding-left: 66px;  
+  box-sizing: border-box; /* padding и border включены в ширину и высоту */
+  background-color: #ECE7D6
+}
+/* Контейнер заголовка с карточками */
+.title-container-card {  
+  width: 100%; /* Элемент займет всю доступную ширину */
+  margin-bottom: 2px; /* или больше, в зависимости от дизайна */
+}
+.title-container-card::after {
+  content: '';
+  display: block;
+  height: 1px;
+  background-color: #000;  
+}
+/* Текст заголова с карточками */
+.title-container-card h1 {
+  font-size: 22px;
+  margin: 0; /* Уберем внешний отступ у заголовка */
+  padding: 0; /* Уберем внутренний отступ у заголовка */
+  font-weight: 500;
+}
+/* Контейнер карточки */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;  
+  overflow-x: hidden; /* запретим горизонтальную прокрутку */
+  overflow-y: auto; /* Добавляем вертикальную прокрутку */
+  height: 100%;
+  margin-top: 10px;  /* отступ после заголовка */
+  gap: 20px; /* Это задаст расстояние между карточками */
+  padding-left: 20px; /* Это добавит отступ слева ко всему контейнеру карточек */    
+}
+/* Контейнер для распределения карточек в общем контейнере */
+.card-wrapper {
+  flex: 0 1 calc(20% - 20px); /* Пример для 3 карточек в ряд, 16px - это gap */
+  max-width: 350px;
+  min-width: 200px;
+  max-height: 350px;
+  min-height: 200px;
+  margin-bottom: 0px;
+} 
+/* Контейнер карточки */
+.card {
+  background-color: #9E9E9E;
+  display: flex; /* Делаем родительский элемент флекс-контейнером */
+  flex-direction: column; /* Вертикальное расположение дочерних элементов */
+  justify-content: flex-start; /* Прижимаем содержимое к верхней части карточки */
+  align-items: stretch; /* Растягиваем дочерние элементы на всю ширину карточки */
+  height: 100%; /* Растягиваем карточку на всю высоту родительского элемента */
+  width: 100%; /* Растягиваем карточку на всю ширину родительского элемента */
+  border-radius: 20px; /* Такое же закругление, как у .card */
+  overflow: hidden; /* Обрезаем всё, что выходит за границы радиуса */  
+}
+/* Картинка */
+.card-image {
+  height: 80%; 
+  border-radius: 20px; /* Такое же закругление, как у .card */
+  flex: 0 1 80%; /* Занимает 80% высоты карточки */
+}
+.card-image img {
+  width: 100%;
+  height: 100%; /* Высота будет пропорциональна ширине */
+  object-fit: cover; /* Изображение будет покрывать всю область */  
+}
+/* Кнопка удаления */
+#delete-button {
+  position: absolute;
+  bottom: -50px; /* Adjust as needed */
+  right: 15px; /* Adjust as needed */
+  border: none; /* Removes the border from the button */
+  background: transparent; /* Ensures the background is transparent */
+  padding: 0; /* Remove padding around the icon */
+  cursor: pointer; /* Changes the mouse cursor when hovering over the button */
+  outline: none; /* Removes the outline to prevent focus styles */
+}
+/* Иконка удаления */
+#delete-button-icons {
+  vertical-align: middle;
+  /* Set the size of the icon if necessary */
+  font-size: 28px;
+  color: #3C2C13;
+}
+/* Содержимое карточки */
+.card-content {    
+  display: flex; /* используйте flexbox для организации содержимого */
+  flex-direction: column; /* элементы будут расположены вертикально */
+  align-items: flex-start; /* выравнивание элементов по началу (слева) */
+  height: auto;
+  background-color: #9CABAE; 
+}
+/* Содержимое карточки ссылка*/
+.card-content a {
+  text-decoration: none; /* убирает подчеркивание ссылок */  
+}
+/* Содержимое карточки параграф*/
+.card-content p {
+  font-size: 16px; /* размер шрифта для текста */
+  color: #333; /* цвет текста, выберите нужный вам цвет */
+}
+/* Модальное окно */
+.modal-content {
+  position: fixed;  /* или absolute, в зависимости от ваших нужд */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;  /* или другой размер, который вы хотите */
+  height: 80%;
+  background-color: rgb(255, 255, 255); /* чтобы убедиться, что окно видно */
+  z-index: 1000;  /* чтобы окно было поверх других элементов */
+}
+/* Фон для пустой странице с планами */
+.cards-container-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh; /* Adjust the height as needed */
+  background-color: #ECE7D6;
+  font-size: 30px;
+}
+
+
+/* Стиль для страницы travel_detail.html */
+/* 3D карта */
+.content-container-3D {
+  display: flex;
+  flex-direction: column; /* Вертикальное расположение */
+  margin-left: 66px;
+  width: 100%;  
+}
+.container-3Dmap {
+  height: 100vh; /* Задаём высоту для контейнера карты */
+  position: relative; /* Position relative, чтобы карта размещалась внутри этого контейнера */
+}
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%; /* Карта будет растягиваться на всю ширину .container-3Dmap */
+  height: 100%; /* и на всю его высоту */
+}
+/* Контейнер для карты маршрута */
+.content-container {
+  display: flex;
+  flex-direction: column; /* Вертикальное расположение */
+  margin-left: 66px;
+  width: 100%;  
+}
+/* Карта маршрута */
+.map-container_2, #map_1 {
+  height: 400px; /* Высота карты */
+  display: flex;
+  flex-direction: column; /* Вертикальное расположение */     
+}
+/* Установка одинаковой ширины для карты и графиков */
+#charts-container, #map_1 {
+  width: 50%; /* или любая другая ширина в процентах для адаптивности */
+}
+.charts-container > div {
+  height: 300px; /* Высота каждого графика */
+  /* Другие стили графиков, если нужно */
+}
+

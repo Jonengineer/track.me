@@ -1,0 +1,145 @@
+{% extends 'travel_detail_full.html' %}
+{% load static %}
+
+{% block travel_detail_content %}
+       {{ block.super }}
+<div class="content-container">
+  <div class="map-container_2">
+    <div id="map_1" style="height: 400px;"></div> <!-- Установите высоту контейнера карты -->
+  </div>
+  <div id="charts-container">
+    <div id="elevation_chart_div"></div>
+    <div id="heart_rate_chart_div"></div>
+  </div>
+</div> 
+{% endblock %}
+
+{% block travel_detail_scripts %}
+    {{ block.super }}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>var gpxData = JSON.parse('{{ gpx_data|safe }}');</script>
+<!-- Графики-->
+<script>
+  // Предположим, что переменная gpxData была инициализирована с данными из вашего GPX файла.
+  var gpxData = JSON.parse('{{ gpx_data|safe }}');
+
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawElevationDistanceChart);
+  google.charts.setOnLoadCallback(drawHeartRateTimeChart);
+
+  var elevationChart, heartRateChart;
+  var elevationData, heartRateData;
+  var elevationOptions, heartRateOptions;
+
+  function drawElevationDistanceChart() {
+    elevationData = new google.visualization.DataTable();
+    elevationData.addColumn('number', 'Расстояние');
+    elevationData.addColumn('number', 'Высота');
+
+    for (var i = 0; i < gpxData.distances.length; i++) {
+      elevationData.addRow([gpxData.distances[i], gpxData.elevation_points[i]]);
+    }
+
+    elevationOptions = {
+      title: 'Высота над уровнем моря в зависимости от расстояния',
+      curveType: 'function',
+      legend: { position: 'none' },            
+      colors: ['#676418'],
+      hAxis: { title: 'Расстояние, км' },
+      vAxis: { title: 'Высота, м' },
+      backgroundColor: '#9CABAE',
+      chartArea: {
+        backgroundColor: {
+          stroke: '#3C2C13',
+          strokeWidth: 1
+        },
+        left: 50,
+        top: 20,
+        width: '90%',
+        height: '60%'
+      }
+    };
+    // Настройки оси Y (vAxis)
+    elevationOptions.vAxis = elevationOptions.vAxis || {}; // Создаем объект vAxis, если он еще не создан
+    elevationOptions.vAxis.viewWindow = elevationOptions.vAxis.viewWindow || {}; // То же самое для viewWindow
+
+    // Устанавливаем максимальное значение
+    var maxElevation = Math.max.apply(null, gpxData.elevation_points);
+    elevationOptions.vAxis.viewWindow.max = maxElevation + (maxElevation * 0.01); // Добавляем 3% отступа
+
+    // Устанавливаем минимальное значение, если нужно
+    var minElevation = Math.min.apply(null, gpxData.elevation_points);
+    elevationOptions.vAxis.viewWindow.min = minElevation - (minElevation * 0.01); // Добавляем 3% отступа, если есть отрицательные значения
+
+
+    elevationChart = new google.visualization.LineChart(document.getElementById('elevation_chart_div'));
+    elevationChart.draw(elevationData, elevationOptions);
+
+  }
+  function drawHeartRateTimeChart() {
+    heartRateData = new google.visualization.DataTable();
+    heartRateData.addColumn('datetime', 'Время');
+    heartRateData.addColumn('number', 'Пульс');
+
+    for (var i = 0; i < gpxData.time_points.length; i++) {
+      heartRateData.addRow([new Date(gpxData.time_points[i]), gpxData.heart_rate_points[i]]);
+    }
+
+    heartRateOptions = {
+      title: 'Пульс от времени',
+      curveType: 'function',
+      legend: { position: 'none' },      
+      colors: ['red'],
+      hAxis: { title: 'Время', format: 'HH:mm' },
+      vAxis: { title: 'Пульс' },
+      backgroundColor: '#9CABAE',
+      chartArea: {
+        backgroundColor: {
+          stroke: '#3C2C13',
+          strokeWidth: 1
+        },
+        left: 50,
+        top: 20,
+        width: '90%',
+        height: '60%'
+      }
+    };
+
+    heartRateChart = new google.visualization.LineChart(document.getElementById('heart_rate_chart_div'));
+    heartRateChart.draw(heartRateData, heartRateOptions);
+  }
+  window.addEventListener('resize', function() {
+    if (elevationChart && heartRateChart) {
+      elevationChart.draw(elevationData, elevationOptions);
+      heartRateChart.draw(heartRateData, heartRateOptions);
+    }
+  }, { passive: true });
+
+</script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+  mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ'; // Замените на свой токен доступа к Mapbox.
+  const map_1 = new mapboxgl.Map({
+    container: 'map_1', // container ID
+    center: [92.893248, 56.015283], // starting position [lng, lat]
+    zoom: 13, // starting zoom
+    projection: 'mercator',
+    style: 'mapbox://styles/jonengineer/cloot93m100gj01nzh9fa14pg', // style URL or style object
+    hash: true, // sync `center`, `zoom`, `pitch`, and `bearing` with URL
+    // Use `transformRequest` to modify requests that begin with `http://myHost`.
+    transformRequest: (url, resourceType) => {
+    if (resourceType === 'Source' && url.startsWith('http://myHost')) {
+    return {
+    url: url.replace('http', 'https'),
+    headers: {'my-custom-header': true},
+    credentials: 'include'  // Include cookies for cross-origin requests    
+    };
+    }
+    }
+    })
+  });
+</script>
+
+{% endblock %}

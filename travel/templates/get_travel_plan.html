@@ -1,0 +1,90 @@
+{% extends 'user_profile.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'travel/style.css' %}">
+{% endblock %}
+
+{% block user_content %}
+{{ travel|length }} планов путешествий найдено.
+{% if travel %}
+  <div class="row">
+    <div class="title-container-card">
+      <h1>Мои путешествия</h1>
+    </div>
+    <div class="cards-container">
+    {% for travel_plan in travel %}
+      <div class="card-wrapper">
+        <div class="card">
+          <div class="card-image">
+            <a href="{% url 'travel:travel_detail_full' travel_plan.travelplan_id %}">
+            <img src="{{ travel_plan.image }}" alt="{{ travel_plan.territory }}">
+            <form action="{% url 'travel:delete_travel_plan' travel_plan.travelplan_id %}" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить этот план путешествия?');">
+              {% csrf_token %}
+              <button id="delete-button" type="submit" class="delete-button">
+                <i id="delete-button-icons" class="material-icons">delete</i>
+              </button>
+            </form>
+          </div>
+          <div class="card-content">
+            <a href="{% url 'travel:travel_detail_full' travel_plan.travelplan_id %}">
+              <p>{{ travel_plan.territory }}</p>
+              <p>{{ travel_plan.datestart|custom_date_format }}</p>              
+              <p>{{ travel_plan.traveltype.traveltypedescription }}</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="cards-container-empty">
+    <p>Нет планов путешествий!</p>
+    <a href="{% url 'travel:create_travel_plan'  %}" class="waves-light btn">
+      <span class="mdc-button__label">Создать путешевствие!</span>
+  </div>
+{% endif %}
+
+<!-- Модальное окно путешевствие успешно -->
+
+{% if messages %}
+<ul>
+{% for message in messages %}
+    <li>{{ message }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if messages %}
+<div id="messageModal" class="modal">
+    <div class="modal-content">
+        <h4>Системное уведомление</h4>
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block user_scripts %}
+    {{ block.super }}
+<script src="path_to_materialize_js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.modal');
+      var instances = M.Modal.init(elems, {});
+      var instance = M.Modal.getInstance(document.getElementById('messageModal'));
+      console.log('Opening modal');
+      instance.open();
+  });
+</script>
+
+
+  {% endblock %}

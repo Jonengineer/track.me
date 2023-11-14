@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+{% block styles %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/css/tooltipster.min.css">
+    <link rel="icon" href="{% static 'appbase/favicon.ico' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/css/themes/tooltipster-light.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" type="text/css" href="{% static 'appbase/style.css' %}">
+</head>
+{% endblock %}   
+<body>
+{% block header %}
+    <div class="mdc-drawer-app-content">
+        <!-- Основное содержимое приложения -->
+        <header class= "mdc-top-app-bar">
+            <!-- Шапка приложения -->
+            <div class="mdc-top-app-bar__row">
+                
+            <!-- Кнопки регистрации\авторизации -->
+            <a href="{% url 'AppBase:base_page' %}">
+                <img id= imglogo src="{% static 'appbase/download.svg' %}" alt="Download Icon">
+            </a>
+            <div class="mdс-top-app-bar__action-items">
+                {% if user.is_authenticated %}
+                   <span class="username-text">{{ user.userprofile.username }}</span>
+                   <a href="{% url 'User:user_log_out'  %}" class="waves-light btn">
+                        <span class="mdc-button__label">Выход</span>
+                   </a>
+                   <a href="{% url 'User:user_profile'  %}" class="waves-light btn">
+                         <span class="mdc-button__label">Личный кабинет</span>
+                    </a>
+                {% else %}   
+                    <a href="{% url 'user:user_login'  %}" class="waves-light btn">
+                        <span class="mdc-button__label">Авторизация</span>
+                    </a>    
+                    <a href="{% url 'user:create_user'  %}" class="waves-light btn">
+                        <span class="mdc-button__label">Регистрация</span>
+                    </a>
+                {% endif %}                  
+            </div>
+        </header>
+    </div>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+</body>
+

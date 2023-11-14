@@ -1,0 +1,83 @@
+{% extends 'user_profile.html' %}
+
+{% block styles %}
+    {{ block.super }}
+    <title>Создание плана путешевствия</title>
+    <style>
+        #traveltype, #traveltype option {
+            display: block !important;
+            visibility: visible !important;
+        }
+    </style>
+{% endblock %}  
+
+{% block user_content %}
+
+<div class="container">
+<h2>Создание плана путешевствия</h2>
+
+<form  id="travelForm" class="materialize-form" method="post" action="{% url 'travel:create_travel_plan' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <label for="country">Страна:</label>
+    <input type="text" id="country" name="country" class="materialize-input" required><br>
+
+    <label for="territory">Место расположение:</label>
+    <input type="text" id="territory" name="territory" class="materialize-input" required><br>
+
+    <label for="datestart">Дата начала путешевствия:</label>
+    <input type="datetime-local" id="datestart" name="datestart" class="materialize-input" required><br>
+
+    <label for="datefinish">Дата конца путешевствия:</label>
+    <input type="datetime-local" id="datefinish" name="datefinish" class="materialize-input" required><br>
+
+    <label for="description">Описание путешевствия:</label>
+    <textarea id="description" name="description" rows="4" class="materialize-input" required></textarea><br>
+
+    <label for="traveltype">Вид путешевствия:</label>
+    <select id="traveltype" name="traveltype"  required>
+        {% for traveltype in traveltypes %}
+            <option value="{{ traveltype.traveltype_id }}"> {{traveltype.traveltypedescription }} </option>
+        {% endfor %} 
+        {{ traveltypes }}   
+    </select>  
+    
+    <div class="file-field input-field">
+        <button class="waves-light btn">
+            <span>Трек путешевствия</span>
+            <input type="file" id="gpxtrek" name="gpxtrek" accept=".gpx">
+        </button>
+        <div class="file-path-wrapper">
+            <input class="file-path validate" type="text" placeholder="Выберите файл в формате GPX">
+        </div>
+    </div>
+
+    <div class="file-field input-field">
+        <button class="waves-light btn">
+            <span>Фото для карточки путешевствия:</span>
+            <input type="file"  id="image" name="image" accept=".jpg">
+        </button>
+        <div class="file-path-wrapper">
+            <input class="file-path validate" type="text" placeholder="Выберите файл в формате JPG">
+        </div>
+    </div>
+
+    <button class="waves-light btn">
+        <span class="waves-light btn__label">Создать путешевствие</span>
+    </button>
+</form>
+</div>
+{% endblock %}
+
+
+{% block user_scripts %}
+{{ block.super }}      
+
+<script>
+    $(document).ready(function(){
+        $('select').formSelect();
+    });
+</script>
+
+{% endblock %}   
+

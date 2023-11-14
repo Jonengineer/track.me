@@ -1,0 +1,37 @@
+{% extends "base_page.html" %}
+{% load static %}
+
+{% block styles %}
+    {{ block.super }}
+    <!-- Стили специфичные для профиля пользователя -->
+    <link rel="stylesheet" type="text/css" href="{% static 'user/style.css' %}">    
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+{% endblock %}
+
+
+{% block content %}
+<h2 id= log>Вход в личный кабинет:</h2>
+<div class="login-container">
+    <form  class="materialize-form" method="post" action="{% url 'User:user_login' %}"> 
+        {% csrf_token %}
+        <div class="input-field">
+            <label for="email">Электронная почта:</label>
+            <input type="email" name="email" required>
+        </div>
+        <div class="input-field">
+            <label for="password">Пароль:</label>
+            <input type="password" name="password" required>
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn">Войти</button>
+        </div>
+    </form>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

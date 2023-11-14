@@ -1,0 +1,118 @@
+{% extends 'base_page.html' %}
+{% load static %}
+
+{% block styles %}
+    {{ block.super }}
+    <!-- Стили специфичные для профиля пользователя -->
+    <link rel="stylesheet" type="text/css" href="{% static 'user/style.css' %}">    
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Создание нового аккаунта</h2>
+    
+    <form  id="UserProfile" class="materialize-form" method="post" action="{% url 'User:create_user' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <label for="email">Электронная почта:</label>
+        <input type="email" id="email" name="email" required><br>
+    
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required><br>
+
+        <label for="username">Имя:</label>
+        <input type="text" id="username" name="username" class="materialize-input" required><br>
+
+        <label for="usersurname">Фамилия:</label>
+        <input type="text" id="usersurname" name="usersurname" class="materialize-input" required><br>
+
+        <label for="userage">Возраст:</label>
+        <select id="userage" name="userage" class="materialize-select" required>
+            <option value="" disabled selected>Выберите возраст</option>
+            {% for year in age_people %}
+                <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+        </select>
+        
+        <label for="usertype">Тип пользователя:</label>
+        <select id="usertype" name="usertype" class="materialize-select" required>
+            {% for usertype in usertypes %}
+                <option value="{{ usertype.id }}"> {{ usertype.usertypedescription }} </option>
+            {% endfor %}    
+        </select>  
+        <input type="submit" value="Регистрация" class="btn btn-primary">
+    </form>         
+</div>
+<!-- Modal Structure -->
+<div id="modalSuccess" class="modal">
+    <div class="modal-content">
+        <h4 id="modalTitle"></h4>
+        <p id="modalDescription"></p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">ОК</a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+});
+</script>
+<script>
+    function updateAndShowModal(title, description) {
+        var instance = M.Modal.getInstance(document.getElementById('modalSuccess'));
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalDescription').textContent = description;
+        instance.open();
+    }
+
+    function showAlertForError(errorData) {
+        if (errorData.errors.email) {
+            updateAndShowModal("Ошибка регистрации", errorData.errors.email);
+        } else if (errorData.errors.password) {
+            updateAndShowModal("Ошибка регистрации", errorData.errors.password[0]);
+        }
+    }
+
+    $("#UserProfile").submit(function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            beforeSend: function(xhr, settings) {
+                if (!this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                }
+            },
+            success: function(data) {
+                if (data.success) {
+                    updateAndShowModal("Успешная регистрация", "Вы зарегистрировались! Для входа в аккаунт перейдите к авторизации");
+                    resetForm();
+                } else {
+                    showAlertForError(data);
+                    resetForm();
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 400) {
+                    var errorData = JSON.parse(jqXHR.responseText);
+                    showAlertForError(errorData);
+                } else {
+                    // Обработка других ошибок (например, проблем с сетью или сервером)
+                    alert("Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз.");
+
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

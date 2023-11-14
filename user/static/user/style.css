@@ -1,0 +1,68 @@
+/* Боковая панель контейнер */
+.mdc-drawer__content  { 
+  position: fixed;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  width: 66px;
+  background-color: #6F947F;
+  overflow: auto; 
+  z-index: 1000;
+}
+
+/* Боковая панель раздел */
+.mdc-list {
+  display: flex;
+    justify-content: center;
+    align-items: center;
+  margin: 8px;  /* отступы со всех сторон */
+  padding: 8px; /* внутренние отступы, если нужны */
+  background-color: #3C2C13;
+  border-radius: 15px;
+  width: 50px;
+  height: 50px;  
+}
+
+/* Боковая панель иконки */
+.material-icons{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+  color: white;  
+}
+
+/* Боковая панель иконки. Всплывающий текст (Стиль не удалось настроить, нужно подбирать другие) */
+.tooltipster-base {
+  background-color: #fbeaea;
+  color: #060606;
+  font-family: 'Times New Roman';
+  font-size: 10px;
+}
+
+.login-container {
+  position: fixed; /* Фиксируем контейнер карты на странице */
+  top: 50%; /* Устанавливаем верхнюю позицию на 0, чтобы карта была прикреплена к верху страницы */
+  left: 50%; /* Устанавливаем левую позицию на 0, чтобы карта была прикреплена к левой стороне страницы */
+  right: 20px;
+  width: 500px;  /* Это будет занимать 100% ширины экрана */
+  height: 20px; /* Это будет занимать 100% высоты экрана */
+  transform: translate(-50%, -50%);
+}
+
+#log {
+  font-size: 25px;
+  position: fixed; /* Фиксируем контейнер карты на странице */
+  top: 40%; /* Устанавливаем верхнюю позицию на 0, чтобы карта была прикреплена к верху страницы */
+  left: 36.5%; /* Устанавливаем левую позицию на 0, чтобы карта была прикреплена к левой стороне страницы */
+  width: 300px;  /* Это будет занимать 100% ширины экрана */
+  height: 200px; /* Это будет занимать 100% высоты экрана */
+}
+
+.select-wrapper + label {
+  position: relative;  /* Измените на 'relative' или другое значение, если 'absolute' приводит к проблемам */
+  top: 0;              /* Установите значение 'top' на 0, чтобы переместить метку обратно в ее исходное положение */
+  font-size: 1rem;     /* Измените размер шрифта по вашему усмотрению */
+  overflow: visible;   /* Убедитесь, что текст не обрезается */
+  white-space: normal; /* Если вы хотите, чтобы текст переносился на новую строку при необходимости */  
+}

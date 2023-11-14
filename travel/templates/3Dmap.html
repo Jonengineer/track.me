@@ -1,0 +1,138 @@
+{% extends 'travel_detail_full.html' %}
+{% load static %}
+
+{% block styles %}
+    {{ block.super }}
+<meta charset="utf-8">
+<title>Query terrain elevation</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+{% endblock %}
+
+{% block travel_detail_content %}
+  {{ block.super }}
+  <div class="content-container-3D">
+    <div class="container-3Dmap">
+      <div id="map"></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block travel_detail_scripts %}
+    {{ block.super }}
+<script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', (event) => {
+  mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
+  // Предполагается, что travelGeoJSON определен в другом месте кода, как JS объект в формате GeoJSON
+  const travelGeoJSON = {{ gpx_data|safe }};
+
+  if (travelGeoJSON && travelGeoJSON.features && travelGeoJSON.features.length > 0) {
+    // Получаем координаты первой точки LineString
+    const firstPointCoordinates = travelGeoJSON.features[0].geometry.coordinates[1];
+    
+    // Игнорируем высоту (третье значение), берем только широту и долготу
+    const centerCoordinates = firstPointCoordinates.slice(0, 2);
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      zoom: 11,
+      center: centerCoordinates,
+      pitch: 60,
+      bearing: 0,
+      style: 'mapbox://styles/mapbox/satellite-streets-v12',
+      interactive: false,
+      hash: false
+    });
+
+    map.on('load', () => {
+      map.addSource('mapbox-dem', {
+        'type': 'raster-dem',
+        'url': 'mapbox://mapbox.terrain-rgb',
+        'tileSize': 512,
+        'maxzoom': 14
+      });
+      map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 2 });
+
+      const pinRoute = travelGeoJSON.features[0].geometry.coordinates;
+      const popup = new mapboxgl.Popup({ closeButton: false });
+      const marker = new mapboxgl.Marker({
+        color: 'red',   // Цвет иконки
+        scale: 0.5,
+        draggable: false,
+        pitchAlignment: 'auto',
+        rotationAlignment: 'auto'
+      })
+      .setLngLat(pinRoute[0])
+      .setPopup(popup)
+      .addTo(map)
+      .togglePopup();
+
+      map.addSource('line', {
+        type: 'geojson',
+        lineMetrics: true,
+        data: travelGeoJSON
+      });
+
+      map.addLayer({
+        id: 'line',
+        type: 'line',
+        source: 'line',
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round'
+        },
+        paint: {
+          'line-color': 'rgba(0,0,0,0)',  // Цвет трека
+          'line-width': 4
+        }
+      });
+
+      map.once('idle').then(() => {
+        const animationDuration = 50000;  // Время анимации
+        const path = turf.lineString(pinRoute);
+        const pathDistance = turf.lineDistance(path);
+        let start;
+
+        function frame(time) {
+          if (!start) start = time;
+          const animationPhase = (time - start) / animationDuration;
+          if (animationPhase > 1) {
+            window.requestAnimationFrame(frame); // Рестарт анимации для непрерывного вращения
+            start = null; // Сбросить стартовое время для следующей итерации
+            return;
+          }
+          
+          const alongPath = turf.along(path, pathDistance * animationPhase).geometry.coordinates;
+          const lngLat = { lng: alongPath[0], lat: alongPath[1] };
+
+          // Здесь предполагается, что map.queryTerrainElevation - действующая функция
+          const elevation = Math.floor(map.queryTerrainElevation(lngLat, { exaggerated: false }));
+          
+          popup.setHTML('Altitude: ' + elevation + 'm<br/>');
+          marker.setLngLat(lngLat);
+
+          map.setPaintProperty('line', 'line-gradient', [
+            'step',
+            ['line-progress'],
+            'red',
+            animationPhase,
+            'rgba(255, 0, 0, 0)'
+          ]);
+
+          const rotation = 0-animationPhase * 140.0;
+          map.setBearing(rotation);
+
+          window.requestAnimationFrame(frame);
+        }
+
+        window.requestAnimationFrame(frame);
+      });
+    });
+  } else {
+    console.error('GeoJSON data is not valid or does not have any features.');
+  }
+});
+</script>
+{% endblock %}
