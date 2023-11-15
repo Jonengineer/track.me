@@ -219,9 +219,19 @@ def travel_detail_chart(request, travelplan_id):
     else:
         processed_gpx_data = {}
 
+        # Обрабатываем данные GPX, если они имеются
+    if travelplan_geo_instance.geojson:
+        track_coordinates = travelplan_geo_instance.geojson
+        # преобразовываем время, если оно имеется в processed_gpx_data
+        # if 'time_points' in processed_gpx_data:
+        # processed_gpx_data['time_points'] = [convert_to_iso_format(time_str) for time_str in processed_gpx_data['time_points']]
+    else:
+        track_coordinates = {}
+
     context = {
         'travel': travelplan_instance,
         'gpx_data': json.dumps(processed_gpx_data),
+        'gpx_data_track': json.dumps(track_coordinates),
     }
     return render(request, 'travel_detail_chart.html', context)
 

@@ -1,6 +1,8 @@
 {% extends 'travel_detail_full.html' %}
 {% load static %}
 
+
+
 {% block travel_detail_content %}
        {{ block.super }}
 <div class="content-container">
@@ -17,6 +19,7 @@
 {% block travel_detail_scripts %}
     {{ block.super }}
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
 <script>var gpxData = JSON.parse('{{ gpx_data|safe }}');</script>
 <!-- Графики-->
 <script>
@@ -119,27 +122,63 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', (event) => {
-  mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ'; // Замените на свой токен доступа к Mapbox.
-  const map_1 = new mapboxgl.Map({
-    container: 'map_1', // container ID
-    center: [92.893248, 56.015283], // starting position [lng, lat]
-    zoom: 13, // starting zoom
-    projection: 'mercator',
-    style: 'mapbox://styles/jonengineer/cloot93m100gj01nzh9fa14pg', // style URL or style object
-    hash: true, // sync `center`, `zoom`, `pitch`, and `bearing` with URL
-    // Use `transformRequest` to modify requests that begin with `http://myHost`.
-    transformRequest: (url, resourceType) => {
-    if (resourceType === 'Source' && url.startsWith('http://myHost')) {
-    return {
-    url: url.replace('http', 'https'),
-    headers: {'my-custom-header': true},
-    credentials: 'include'  // Include cookies for cross-origin requests    
-    };
-    }
-    }
-    })
-  });
+    document.addEventListener('DOMContentLoaded', (event) => {
+      mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ'; // Замените на свой токен доступа к Mapbox.
+  
+      let map_1; // Объявляем map_1 здесь
+  
+      const travelGeoJSON = {{ gpx_data_track|safe }};
+      if (travelGeoJSON && travelGeoJSON.features && travelGeoJSON.features.length > 0) {
+        // Получаем координаты первой точки LineString
+        const firstPointCoordinates = travelGeoJSON.features[0].geometry.coordinates[0];
+        
+        // Игнорируем высоту (третье значение), берем только широту и долготу
+        const centerCoordinates = firstPointCoordinates.slice(0, 2);  
+    
+        map_1 = new mapboxgl.Map({
+            container: 'map_1', // container ID
+            center: centerCoordinates, // starting position [lng, lat]
+            zoom: 13, // starting zoom
+            projection: 'mercator',
+            style: 'mapbox://styles/jonengineer/cloot93m100gj01nzh9fa14pg', // style URL or style object
+            hash: true, // sync `center`, `zoom`, `pitch`, and `bearing` with URL
+            transformRequest: (url, resourceType) => {
+                if (resourceType === 'Source' && url.startsWith('http://myHost')) {
+                    return {
+                        url: url.replace('http', 'https'),
+                        headers: {'my-custom-header': true},
+                        credentials: 'include'  // Include cookies for cross-origin requests    
+                    };
+                }
+            }
+        });
+      }
+  
+      map_1.on('load', function () {
+        // Убедитесь, что map_1 был инициализирован
+        if (map_1) {
+          // Загружаем данные трека (предполагаем, что они в формате GeoJSON)
+          map_1.addSource('route', {
+              type: 'geojson',
+              data: {{ gpx_data_track|safe }}  // Ваши данные трека в формате GeoJSON
+          }); 
+          // Добавляем слой для отображения трека
+          map_1.addLayer({
+              id: 'route',
+              type: 'line',
+              source: 'route',
+              layout: {
+                  'line-join': 'round',
+                  'line-cap': 'round'
+              },
+              paint: {
+                  'line-color': '#D32F2F', // Цвет линии трека
+                  'line-width': 8      // Толщина линии
+              }
+          });
+        }
+      });
+    });
 </script>
 
 {% endblock %}

@@ -10,5 +10,5 @@ urlpatterns = [
     path('getTravelPlan/', views.get_travel_plan, name='get_travel_plan'),
     path('travel_detail_chart/<int:travelplan_id>/', views.travel_detail_chart, name='travel_detail_chart'),    
     path('delete_travel_plan/<int:travelplan_id>/', views.delete_travel_plan, name='delete_travel_plan'),
-    path('travel_detail_full/<int:travelplan_id>/', views.travel_detail_full, name='travel_detail_full'),
+    path('travel_detail_full/<int:travelplan_id>/', views.travel_detail_full, name='travel_detail_full'),   
 ]

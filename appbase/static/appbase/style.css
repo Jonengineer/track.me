@@ -71,7 +71,7 @@
   background-repeat: no-repeat;
   box-shadow: 500px 500px 500px rgba(0, 0, 0, 0.8);
   transition: box-shadow 0.5s, transform 0.5s;
- 
+  background-size: cover;
   
 }
 .main_menue {
