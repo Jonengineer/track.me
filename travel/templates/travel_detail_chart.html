@@ -1,13 +1,20 @@
 {% extends 'travel_detail_full.html' %}
 {% load static %}
 
-
-
 {% block travel_detail_content %}
        {{ block.super }}
 <div class="content-container">
   <div class="map-container_2">
     <div id="map_1" style="height: 400px;"></div> <!-- Установите высоту контейнера карты -->
+    <div id='style-menu'>
+      <select id='style-selector'>
+        <option value='mapbox://styles/mapbox/streets-v11'>Улицы</option>
+        <option value='mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj'>Природа</option>
+        <option value='mapbox://styles/mapbox/light-v10'>Светлый</option>
+        <option value='mapbox://styles/mapbox/dark-v10'>Тёмный</option>
+        <option value='mapbox://styles/mapbox/satellite-v9'>Спутник</option>        
+      </select>
+    </div>       
   </div>
   <div id="charts-container">
     <div id="elevation_chart_div"></div>
@@ -18,9 +25,10 @@
 
 {% block travel_detail_scripts %}
     {{ block.super }}
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
-<script>var gpxData = JSON.parse('{{ gpx_data|safe }}');</script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+
 <!-- Графики-->
 <script>
   // Предположим, что переменная gpxData была инициализирована с данными из вашего GPX файла.
@@ -119,66 +127,83 @@
   }, { passive: true });
 
 </script>
-<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-      mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ'; // Замените на свой токен доступа к Mapbox.
+  document.addEventListener('DOMContentLoaded', (event) => {
+    mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
   
-      let map_1; // Объявляем map_1 здесь
+    let map_1;
+    let firstPointCoordinates, lastPointCoordinates, centerCoordinates;
+    const travelGeoJSON = {{ gpx_data_track|safe }};
   
-      const travelGeoJSON = {{ gpx_data_track|safe }};
-      if (travelGeoJSON && travelGeoJSON.features && travelGeoJSON.features.length > 0) {
-        // Получаем координаты первой точки LineString
-        const firstPointCoordinates = travelGeoJSON.features[0].geometry.coordinates[0];
-        
-        // Игнорируем высоту (третье значение), берем только широту и долготу
-        const centerCoordinates = firstPointCoordinates.slice(0, 2);  
+    if (travelGeoJSON && travelGeoJSON.features && travelGeoJSON.features.length > 0) {
+      firstPointCoordinates = travelGeoJSON.features[0].geometry.coordinates[0];
+      lastPointCoordinates = travelGeoJSON.features[0].geometry.coordinates[travelGeoJSON.features[0].geometry.coordinates.length - 1];
+      centerCoordinates = firstPointCoordinates.slice(0, 2);
+  
+      map_1 = new mapboxgl.Map({
+        container: 'map_1',
+        center: centerCoordinates,
+        zoom: 13,
+        projection: 'mercator',
+        style: 'mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj',
+        // ... другие параметры карты
+      });
+  
+      var selector = document.getElementById('style-selector');
+      selector.addEventListener('change', function() {
+        map_1.setStyle(this.value);
+      });
     
-        map_1 = new mapboxgl.Map({
-            container: 'map_1', // container ID
-            center: centerCoordinates, // starting position [lng, lat]
-            zoom: 13, // starting zoom
-            projection: 'mercator',
-            style: 'mapbox://styles/jonengineer/cloot93m100gj01nzh9fa14pg', // style URL or style object
-            hash: true, // sync `center`, `zoom`, `pitch`, and `bearing` with URL
-            transformRequest: (url, resourceType) => {
-                if (resourceType === 'Source' && url.startsWith('http://myHost')) {
-                    return {
-                        url: url.replace('http', 'https'),
-                        headers: {'my-custom-header': true},
-                        credentials: 'include'  // Include cookies for cross-origin requests    
-                    };
-                }
-            }
+  
+    map_1.on('style.load', function() {
+      if (!map_1.getSource('route')) {
+        map_1.addSource('route', {
+          type: 'geojson',
+          data: {{ gpx_data_track|safe }}
         });
       }
   
-      map_1.on('load', function () {
-        // Убедитесь, что map_1 был инициализирован
-        if (map_1) {
-          // Загружаем данные трека (предполагаем, что они в формате GeoJSON)
-          map_1.addSource('route', {
-              type: 'geojson',
-              data: {{ gpx_data_track|safe }}  // Ваши данные трека в формате GeoJSON
-          }); 
-          // Добавляем слой для отображения трека
-          map_1.addLayer({
-              id: 'route',
-              type: 'line',
-              source: 'route',
-              layout: {
-                  'line-join': 'round',
-                  'line-cap': 'round'
-              },
-              paint: {
-                  'line-color': '#D32F2F', // Цвет линии трека
-                  'line-width': 8      // Толщина линии
-              }
-          });
-        }
-      });
+      if (!map_1.getLayer('route')) {
+        map_1.addLayer({
+          id: 'route',
+          type: 'line',
+          source: 'route',
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': '#D32F2F',
+            'line-width': 6
+          }
+        });
+      }  
+         
+      new mapboxgl.Marker({
+        element: createCustomMarkerElement('/static/travel/img/start-icon.svg')
+      })
+      .setLngLat(firstPointCoordinates)
+      .addTo(map_1);
+
+      new mapboxgl.Marker({
+        element: createCustomMarkerElement('/static/travel/img/end-icon.svg')
+      })
+      .setLngLat(lastPointCoordinates)
+      .addTo(map_1);
     });
+  }
+});
+  
+function createCustomMarkerElement(iconUrl) {
+  var container = document.createElement('div');  
+  var el = document.createElement('div');
+  el.style.backgroundImage = `url(${iconUrl})`;
+  el.style.width = '30px';
+  el.style.height = '30px';
+  el.style.backgroundSize = '100%';    
+  return el;
+}
+
 </script>
 
 {% endblock %}
