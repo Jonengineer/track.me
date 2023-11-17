@@ -29,7 +29,9 @@
     justify-content: center;
     align-items: center;
     margin: 0;
-  color: white;  
+  color: white;
+  height: 30px;  
+  width: 30px;
 }
 
 /* Боковая панель иконки. Всплывающий текст (Стиль не удалось настроить, нужно подбирать другие) */

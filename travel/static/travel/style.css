@@ -72,14 +72,14 @@
 }
 /* Стили страницы get_travel_plan.html */
 /* Стили контейнера карточек */
-.row {
+.row_travel {
   position: relative; /* используем относительное позиционирование */
   top: 50px;
-  width: calc(100%- 66px); /* вычитаем left, чтобы контейнер не выходил за пределы экрана */
+  left: 66px;  
+  width: calc(100% - 66px); /* вычитаем left, чтобы контейнер не выходил за пределы экрана */
   height: calc(100vh - 50px); /* вычитаем top, чтобы контейнер не выходил за пределы экрана */  
   display: flex;
-  flex-direction: column; /* чтобы заголовок и карточки шли друг за другом */    
-  padding-left: 66px;  
+  flex-direction: column; /* чтобы заголовок и карточки шли друг за другом */  
   box-sizing: border-box; /* padding и border включены в ширину и высоту */
   background-color: #ECE7D6
 }
