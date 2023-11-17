@@ -178,7 +178,7 @@
 }
 /* Содержимое карточки параграф*/
 .card-content p {
-  font-size: 16px; /* размер шрифта для текста */
+  font-size: 20px; /* размер шрифта для текста */
   color: #333; /* цвет текста, выберите нужный вам цвет */
 }
 /* Модальное окно */
@@ -224,39 +224,82 @@
   height: 100%; /* и на всю его высоту */
 }
 /* Контейнер для карты и графиков маршрута */
-.content-container {
+.content-travel-full {
   display: flex;
   flex-direction: column; /* Вертикальное расположение */
   margin-left: 66px;
-  width: 50%;
+  width: 100%;
+  height: 1300px;
+  background-color: #ECE7D6;
+  overflow: auto;  
+}
+.content-container {
+  display: flex;
+  flex-direction: column; /* Вертикальное расположение */
+  width: 70%;
   background-color: #ECE7D6  
 }
 /* Контейнер для карты  */
 .map-container_2, #map_1 {
-  height: 400px; /* Высота карты */
+  position: relative;
+  height: 800px; /* Высота карты */
   display: flex;
   flex-direction: column; /* Вертикальное расположение */
   width: 100%; /* или любая другая ширина в процентах для адаптивности */
-
 }
 /* Установка одинаковой ширины для карты и графиков */
 #charts-container{
   width: 100%; /* или любая другая ширина в процентах для адаптивности */
   height: 300px; /* Высота каждого графика */
 }
-
-/* Установка стилей для выбора стиля карты */
+/* Установка стилей для меню карты */
+#menu-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  background-color: #ECE7D6; /* Полупрозрачный белый фон */
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Расстояние между элементами */ 
+}
+/* Стили для кнопки на карте */
+#start-animation {  
+  background-color: #6F947F;
+  color: #ECE7D6;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
 #style-menu {
-  position: relative; /* Или relative, в зависимости от вашего макета */
-  top: 0;  /* Расстояние от верха контейнера карты */
-  left: 0; /* Расстояние от левого края контейнера карты */
-  z-index: 1; /* Убедитесь, что меню будет поверх карты */
-  height: 10%; /* Высота каждого графика */
+  /* Добавьте здесь стили для контейнера селектора */
+  border-radius: 4px; /* Скругление углов */
+  background-color: #ECE7D6; /* Цвет фона */
+  height: 50px;  
 }
-#style-selector {
-  display: block; /* Или 'inline-block', в зависимости от желаемого отображения */
-  min-height: 20px; /* Минимальная высота */
-  min-width: 100px; /* Минимальная ширина */
+/* Изменение стилей выпадающего списка Materialize */
+.dropdown-content li>a {
+  min-height: 20px;
+  font-size: 16px; /* Увеличение размера шрифта */
 }
-
+.select-wrapper input.select-dropdown {
+  border-bottom: 2px solid #6F947F !important;
+  outline: none; 
+  z-index: 1;
+  width: 90px;
+}
+.dropdown-content li>span {  
+  clear: both;
+  min-height: 20px;
+  width: 100%;
+  text-align: center;
+  background-color: #ECE7D6; /* Цвет фона */
+  color: #000000; /* Изменение цвета текста */
+}
+.dropdown-content li>span:hover {
+  background-color: #6F947F; /* Замените #цвет_фона на нужный цвет */
+}
 

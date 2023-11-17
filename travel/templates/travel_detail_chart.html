@@ -3,24 +3,29 @@
 
 {% block travel_detail_content %}
        {{ block.super }}
-<div class="content-container">
-  <div class="map-container_2">
-    <div id="map_1" style="height: 400px;"></div> <!-- Установите высоту контейнера карты -->
-    <div id='style-menu'>
-      <select id='style-selector'>
-        <option value='mapbox://styles/mapbox/streets-v11'>Улицы</option>
-        <option value='mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj'>Природа</option>
-        <option value='mapbox://styles/mapbox/light-v10'>Светлый</option>
-        <option value='mapbox://styles/mapbox/dark-v10'>Тёмный</option>
-        <option value='mapbox://styles/mapbox/satellite-v9'>Спутник</option>        
-      </select>
-    </div>       
+<div class="content-travel-full">       
+  <div class="content-container">
+    <div class="map-container_2">
+      <div id="map_1"></div> <!-- Установите высоту контейнера карты -->
+      <div id="menu-container">
+        <button id="start-animation">Старт</button>
+        <div id='style-menu'>
+          <select id='style-selector'>        
+            <option value='mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj'>Природа</option>
+            <option value='mapbox://styles/mapbox/streets-v11'>Улицы</option>
+            <option value='mapbox://styles/mapbox/light-v10'>Светлый</option>
+            <option value='mapbox://styles/mapbox/dark-v10'>Тёмный</option>
+            <option value='mapbox://styles/mapbox/satellite-v9'>Спутник</option>        
+          </select>
+        </div>
+      </div>         
+    </div>
+    <div id="charts-container">
+      <div id="elevation_chart_div"></div>
+      <div id="heart_rate_chart_div"></div>
+    </div>
   </div>
-  <div id="charts-container">
-    <div id="elevation_chart_div"></div>
-    <div id="heart_rate_chart_div"></div>
-  </div>
-</div> 
+</div>   
 {% endblock %}
 
 {% block travel_detail_scripts %}
@@ -127,6 +132,7 @@
   }, { passive: true });
 
 </script>
+<!-- Карта-->
 <script>
   document.addEventListener('DOMContentLoaded', (event) => {
     mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
@@ -191,9 +197,31 @@
       .setLngLat(lastPointCoordinates)
       .addTo(map_1);
     });
+
+    // Создание маркера для анимации
+    const animatedMarker = new mapboxgl.Marker({
+      element: createCustomMarkerElement('/static/travel/img/hiking_moving.svg')
+    });
+
+    // Функция для создания анимации
+    let counter = 0;
+    const animationSpeed = 10;
+    function animateMarker() {
+      const coordinates = travelGeoJSON.features[0].geometry.coordinates;
+      if (counter < coordinates.length) {
+        animatedMarker.setLngLat(coordinates[counter]).addTo(map_1);
+        counter++;
+        setTimeout(() => requestAnimationFrame(animateMarker), animationSpeed);
+      }
+    }
+
+    // Подключение функции анимации к кнопке
+    document.getElementById('start-animation').addEventListener('click', () => {
+      counter = 0; // Сброс счётчика для повторного запуска
+      animateMarker();
+    });
   }
-});
-  
+});  
 function createCustomMarkerElement(iconUrl) {
   var container = document.createElement('div');  
   var el = document.createElement('div');
@@ -203,7 +231,12 @@ function createCustomMarkerElement(iconUrl) {
   el.style.backgroundSize = '100%';    
   return el;
 }
-
 </script>
-
+<!-- Выпадающий список-->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems, {});
+  });
+</script>
 {% endblock %}

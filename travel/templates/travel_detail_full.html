@@ -41,10 +41,28 @@
         <ul class="tabs tabs-transparent">
             <li class="tab">
                 <a href="{% url 'travel:travel_detail_chart' travelplan_id=travel.travelplan_id %}" 
-                   class="{% if request.resolver_match.url_name == 'travel_detail_chart' %}active{% endif %}">
+                class="{% if request.resolver_match.url_name == 'travel_detail_chart' or not request.resolver_match.url_name %}active{% endif %}">
                     Маршрут
                 </a>
             </li>         
+            <li class="tab">
+                <a href="{% url 'travel:3Dmap'  travelplan_id=travel.travelplan_id %}" 
+                   class="{% if request.resolver_match.url_name == '3Dmap' %}active{% endif %}">
+                   Описание
+                </a>
+            </li>
+            <li class="tab">
+                <a href="{% url 'travel:3Dmap'  travelplan_id=travel.travelplan_id %}" 
+                   class="{% if request.resolver_match.url_name == '3Dmap' %}active{% endif %}">
+                    Расходы
+                </a>
+            </li>
+            <li class="tab">
+                <a href="{% url 'travel:3Dmap'  travelplan_id=travel.travelplan_id %}" 
+                   class="{% if request.resolver_match.url_name == '3Dmap' %}active{% endif %}">
+                    Снаряжение
+                </a>
+            </li>
             <li class="tab">
                 <a href="{% url 'travel:3Dmap'  travelplan_id=travel.travelplan_id %}" 
                    class="{% if request.resolver_match.url_name == '3Dmap' %}active{% endif %}">
@@ -70,7 +88,18 @@
     document.addEventListener('DOMContentLoaded', function() {
         var elems = document.querySelectorAll('.tabs');
         var instances = M.Tabs.init(elems, {});
-        
+
+        // Проверка активной вкладки и переход по ссылке
+        var activeTab = document.querySelector('.tabs .tab a.active');
+        if (activeTab) {
+            var activeTabHref = activeTab.getAttribute('href');
+            var currentUrl = window.location.href;
+    
+            // Проверка, совпадает ли URL активной вкладки с текущим URL
+            if (currentUrl.indexOf(activeTabHref) === -1) {
+                window.location.href = activeTabHref;
+            }
+        }       
         // Отключение перехвата событий
         document.querySelectorAll('.tabs a').forEach(function(tab) {
             tab.addEventListener('click', function(e) {
