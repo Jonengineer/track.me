@@ -33,7 +33,7 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0"></script>
 <!-- Графики-->
 <script>
   // Предположим, что переменная gpxData была инициализирована с данными из вашего GPX файла.
@@ -139,7 +139,7 @@
   
     let map_1;
     let firstPointCoordinates, lastPointCoordinates, centerCoordinates;
-    const travelGeoJSON = {{ gpx_data_track|safe }};
+    travelGeoJSON = {{ gpx_data_track|safe }};
   
     if (travelGeoJSON && travelGeoJSON.features && travelGeoJSON.features.length > 0) {
       firstPointCoordinates = travelGeoJSON.features[0].geometry.coordinates[0];
@@ -201,24 +201,35 @@
     // Создание маркера для анимации
     const animatedMarker = new mapboxgl.Marker({
       element: createCustomMarkerElement('/static/travel/img/hiking_moving.svg')
-    });
+    })       
 
     // Функция для создания анимации
     let counter = 0;
     const animationSpeed = 10;
-    function animateMarker() {
-      const coordinates = travelGeoJSON.features[0].geometry.coordinates;
-      if (counter < coordinates.length) {
-        animatedMarker.setLngLat(coordinates[counter]).addTo(map_1);
+    function animateTravel() {
+      const coordinates_animate = travelGeoJSON.features[0].geometry.coordinates;
+      if (counter < coordinates_animate.length) {
+        // Анимация маркера
+        animatedMarker.setLngLat(coordinates_animate[counter]);
+    
+        // Создание геометрии трека на основе пройденного пути
+        if (counter > 0) { // Изменение условия
+          const path = coordinates_animate.slice(0, counter + 1);
+          if (path.length >= 2) { // Добавление проверки на количество координат
+            lineString = turf.lineString(path);
+            map_1.getSource('route').setData(lineString);
+          }
+        }
         counter++;
-        setTimeout(() => requestAnimationFrame(animateMarker), animationSpeed);
+        setTimeout(() => requestAnimationFrame(animateTravel), animationSpeed);
       }
-    }
-
+    }    
     // Подключение функции анимации к кнопке
     document.getElementById('start-animation').addEventListener('click', () => {
-      counter = 0; // Сброс счётчика для повторного запуска
-      animateMarker();
+      counter = 0; // Сброс счетчика для повторного запуска
+      // Установка начального положения маркера и добавление его на карту
+      animatedMarker.setLngLat(firstPointCoordinates).addTo(map_1);
+      animateTravel(); // Используйте animateTravel
     });
   }
 });  
