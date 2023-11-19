@@ -1,5 +1,6 @@
 from django import forms
-from .models import travelplan, traveltype
+from .models import travelplan, traveltype, point_trek
+import json
 
 
 class TravelPlanformTrue(forms.ModelForm):
@@ -14,3 +15,33 @@ class TravelPlanformTrue(forms.ModelForm):
 
     image = forms.ImageField(required=False, label='Изображение (JPG)', 
                             widget=forms.FileInput(attrs={'accept':'image/jpeg'}))
+
+class PointTrekForm(forms.ModelForm):
+    # Добавляем кастомное поле для координат
+    point_сoordinates = forms.CharField(label='point_сoordinates', required=True)
+
+    class Meta:
+        model = point_trek
+        fields = ['namepoint', 'description', 'point_сoordinates']  # Обновляем список полей
+
+    def clean_point_сoordinates(self):
+        coordinates_str = self.cleaned_data['point_сoordinates']
+
+        try:
+            lat, lng = map(float, coordinates_str.split(', '))
+            geojson_data = {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [lng, lat]
+                },
+                "properties": {
+                    "name": "Your Point Name"  # Здесь вы можете установить имя, если это необходимо
+                }
+            }
+           
+            return geojson_data
+        except ValueError:
+            raise forms.ValidationError('Invalid coordinates format. Please use "latitude, longitude."')
+
+        return geojson_data

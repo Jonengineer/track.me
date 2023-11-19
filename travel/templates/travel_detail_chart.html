@@ -25,6 +25,42 @@
       <div id="heart_rate_chart_div"></div>
     </div>
   </div>
+  <div class="content-collapsible">
+    <ul class="collapsible">
+      <li>
+        <div class="collapsible-header">
+          <img class="point-icons" src="/static/travel/img/point.svg">Добавить точку                  
+        </div>
+        <div class="collapsible-body">
+          <!-- Форма для добавления новой точки -->
+          <form id="addPointForm" method="post" action="{% url 'travel:add_point_trek' travel.travelplan_id %}">
+            {% csrf_token %}
+            <input type="text" name="namepoint" placeholder="Название точки">
+            <input type="text" name="description" placeholder="Описание точки">
+            <input type="text" name="point_сoordinates" placeholder="Указать на карте">            
+            <button id="submitButton">Добавить</button>
+          </form>
+        </div>
+      </li>          
+    </ul>
+    <!-- Второй контейнер для отображения существующих точек -->
+    <ul class="collapsible">
+      {% for point in travel_points %}
+          <li>
+              <div class="collapsible-header">
+                  <img class="point-icons" src="/static/travel/img/point.svg">{{ point.namepoint }}
+              </div>
+              <div class="collapsible-body">
+                <span> {{ point.description }} </span>
+              </div>
+          </li>
+      {% empty %}
+          <li>
+              <div class="collapsible-header">Нет сохраненных точек</div>
+          </li>
+      {% endfor %}
+    </ul>
+  </div>   
 </div>   
 {% endblock %}
 
@@ -159,7 +195,18 @@
       selector.addEventListener('change', function() {
         map_1.setStyle(this.value);
       });
-    
+
+    // Предполагается, что 'map' - это ваша карта Mapbox
+    map_1.on('click', function(e) {
+      // Получаем координаты из события клика
+      var coords = e.lngLat;
+
+      // Форматируем координаты для отображения (например, до 4 знаков после запятой)
+      var formattedCoords = coords.lat.toFixed(4) + ", " + coords.lng.toFixed(4);
+
+      // Устанавливаем координаты в поле формы
+      document.getElementsByName('point_сoordinates')[0].value = formattedCoords;
+    });  
   
     map_1.on('style.load', function() {
       if (!map_1.getSource('route')) {
@@ -249,5 +296,14 @@ function createCustomMarkerElement(iconUrl) {
     var elems = document.querySelectorAll('select');
     var instances = M.FormSelect.init(elems, {});
   });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.collapsible');
+    var instances = M.Collapsible.init(elems);
+  });
+</script>
+<script>
+  
 </script>
 {% endblock %}

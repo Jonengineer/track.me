@@ -22,8 +22,8 @@
             <img src="{{ travel_plan.image }}" alt="{{ travel_plan.territory }}">
             <form action="{% url 'travel:delete_travel_plan' travel_plan.travelplan_id %}" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить этот план путешествия?');">
               {% csrf_token %}
-              <button id="delete-button" type="submit" class="delete-button">
-                <i id="delete-button-icons" class="material-icons">delete</i>
+              <button id="delete-button" type="submit" class="delete-button">                
+                <img id="delete-button-icons" src="/static/travel/img/delete.svg" data-tooltip="Удалить путешевствие">
               </button>
             </form>
           </div>
@@ -75,6 +75,10 @@
 {% block user_scripts %}
     {{ block.super }}
 <script src="path_to_materialize_js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>   
+<script src="https://unpkg.com/material-components-web@14.0.0/dist/material-components-web.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/js/jquery.tooltipster.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
       var elems = document.querySelectorAll('.modal');
@@ -84,6 +88,20 @@
       instance.open();
   });
 </script>
+<script>
+  $(document).ready(function() {
+      // Инициализация Tooltipster для элементов с классом .material-icons
+      $('.material-icons').each(function() {
+          var tooltipText = $(this).attr('data-tooltip');  // Получение текста подсказки из атрибута data-tooltip
+          $(this).tooltipster({
+              content: tooltipText
+              // theme: 'tooltipster-light' // Изменение темы
+          });
+      });
+  });
+</script>
+
+
 
 
   {% endblock %}
