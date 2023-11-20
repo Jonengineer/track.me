@@ -1,23 +1,94 @@
 {% extends 'travel_detail_full.html' %}
 {% load static %}
 
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'travel/style.css' %}">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/> 
+{% endblock %}
+
 {% block travel_detail_content %}
        {{ block.super }}
-<div class="content-container">
-  <div class="map-container_2">
-    <div id="map_1" style="height: 400px;"></div> <!-- Установите высоту контейнера карты -->
+<div class="content-travel-full">       
+  <div class="content-container">
+    <div class="map-container_2">
+      <div id="map_1"></div> <!-- Установите высоту контейнера карты -->
+      <div id="menu-container">
+        <button id="start-animation">Старт</button>
+        <div id='style-menu'>
+          <select id='style-selector'>        
+            <option value='mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj'>Природа</option>
+            <option value='mapbox://styles/mapbox/streets-v11'>Улицы</option>
+            <option value='mapbox://styles/mapbox/light-v10'>Светлый</option>
+            <option value='mapbox://styles/mapbox/dark-v10'>Тёмный</option>
+            <option value='mapbox://styles/mapbox/satellite-v9'>Спутник</option>        
+          </select>
+        </div>
+      </div>         
+    </div>
+    <div id="charts-container">
+      <div id="elevation_chart_div"></div>
+      <div id="heart_rate_chart_div"></div>
+    </div>
   </div>
-  <div id="charts-container">
-    <div id="elevation_chart_div"></div>
-    <div id="heart_rate_chart_div"></div>
-  </div>
-</div> 
+  <div class="content-collapsible">
+    <ul class="collapsible">
+      <li>
+        <div class="collapsible-header">
+          <img class="point-icons" src="/static/travel/img/point.svg">Добавить точку                  
+        </div>
+        <div class="collapsible-body">
+          <!-- Форма для добавления новой точки -->
+          <form id="addPointForm" method="post" action="{% url 'travel:add_point_trek' travel.travelplan_id %}">
+            {% csrf_token %}
+            <input type="text" name="namepoint" placeholder="Название точки">
+            <input type="text" name="description" placeholder="Описание точки">
+            <input type="text" name="point_сoordinates" placeholder="Указать на карте">            
+            <button id="submitButton">Добавить</button>
+          </form>
+        </div>
+      </li>          
+    </ul>
+    <!-- Второй контейнер для отображения существующих точек -->
+    <ul class="collapsible">
+      {% for point in travel_points %}
+          <li>
+              <div class="collapsible-header">
+                  <img class="point-icons" src="/static/travel/img/point.svg">
+                  <div class="collapsible-header-text">
+                    {{ point.namepoint }}
+                  </div>
+                  <div class="collapsible-header-delete-button">
+                    <form method="POST" action="{% url 'travel:delete_travel_point' point_trek_id=point.point_trek_id %}">
+                      {% csrf_token %}
+                      <button type="submit" class="delete-button-point">                
+                        <img id="delete-button-icons-point" src="/static/travel/img/delete.svg">
+                        <span class="tooltip-text">Удалить точку</span>
+                      </button>
+                    </form>
+                  </div>
+              </div>
+              <div class="collapsible-body">
+                <span> {{ point.description }} </span>
+              </div>
+          </li>
+      {% empty %}
+          <li>
+              <div class="collapsible-header">Нет сохраненных точек</div>
+          </li>
+      {% endfor %}
+    </ul>
+  </div>   
+</div>   
 {% endblock %}
 
 {% block travel_detail_scripts %}
     {{ block.super }}
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script>var gpxData = JSON.parse('{{ gpx_data|safe }}');</script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0"></script>
 <!-- Графики-->
 <script>
   // Предположим, что переменная gpxData была инициализирована с данными из вашего GPX файла.
@@ -116,30 +187,163 @@
   }, { passive: true });
 
 </script>
-<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<!-- Карта-->
 <script>
   document.addEventListener('DOMContentLoaded', (event) => {
-  mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ'; // Замените на свой токен доступа к Mapbox.
-  const map_1 = new mapboxgl.Map({
-    container: 'map_1', // container ID
-    center: [92.893248, 56.015283], // starting position [lng, lat]
-    zoom: 13, // starting zoom
-    projection: 'mercator',
-    style: 'mapbox://styles/jonengineer/cloot93m100gj01nzh9fa14pg', // style URL or style object
-    hash: true, // sync `center`, `zoom`, `pitch`, and `bearing` with URL
-    // Use `transformRequest` to modify requests that begin with `http://myHost`.
-    transformRequest: (url, resourceType) => {
-    if (resourceType === 'Source' && url.startsWith('http://myHost')) {
-    return {
-    url: url.replace('http', 'https'),
-    headers: {'my-custom-header': true},
-    credentials: 'include'  // Include cookies for cross-origin requests    
-    };
+    mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
+  
+    let map_1;
+    let firstPointCoordinates, lastPointCoordinates, centerCoordinates;
+    travelGeoJSON = {{ gpx_data_track|safe }};
+  
+    if (travelGeoJSON && travelGeoJSON.features && travelGeoJSON.features.length > 0) {
+      firstPointCoordinates = travelGeoJSON.features[0].geometry.coordinates[0];
+      lastPointCoordinates = travelGeoJSON.features[0].geometry.coordinates[travelGeoJSON.features[0].geometry.coordinates.length - 1];
+      centerCoordinates = firstPointCoordinates.slice(0, 2);
+  
+      map_1 = new mapboxgl.Map({
+        container: 'map_1',
+        center: centerCoordinates,
+        zoom: 13,
+        projection: 'mercator',
+        style: 'mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj',
+        // ... другие параметры карты
+      });
+  
+      var selector = document.getElementById('style-selector');
+      selector.addEventListener('change', function() {
+        map_1.setStyle(this.value);
+      });
+
+    // Предполагается, что 'map' - это ваша карта Mapbox
+    map_1.on('click', function(e) {
+      // Получаем координаты из события клика
+      var coords = e.lngLat;
+
+      // Форматируем координаты для отображения (например, до 4 знаков после запятой)
+      var formattedCoords = coords.lat.toFixed(4) + ", " + coords.lng.toFixed(4);
+
+      // Устанавливаем координаты в поле формы
+      document.getElementsByName('point_сoordinates')[0].value = formattedCoords;
+    });  
+  
+    map_1.on('style.load', function() {
+      if (!map_1.getSource('route')) {
+        map_1.addSource('route', {
+          type: 'geojson',
+          data: {{ gpx_data_track|safe }}
+        });
+      }
+  
+      if (!map_1.getLayer('route')) {
+        map_1.addLayer({
+          id: 'route',
+          type: 'line',
+          source: 'route',
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': '#D32F2F',
+            'line-width': 6
+          }
+        });
+      }  
+         
+      new mapboxgl.Marker({
+        element: createCustomMarkerElement('/static/travel/img/start-icon.svg')
+      })
+      .setLngLat(firstPointCoordinates)
+      .addTo(map_1);
+
+      new mapboxgl.Marker({
+        element: createCustomMarkerElement('/static/travel/img/end-icon.svg')
+      })
+      .setLngLat(lastPointCoordinates)
+      .addTo(map_1);
+    });
+
+    // Создание маркера для анимации
+    const animatedMarker = new mapboxgl.Marker({
+      element: createCustomMarkerElement('/static/travel/img/hiking_moving.svg')
+    })       
+
+    // Функция для создания анимации
+    let counter = 0;
+    const animationSpeed = 10;
+    function animateTravel() {
+      const coordinates_animate = travelGeoJSON.features[0].geometry.coordinates;
+      if (counter < coordinates_animate.length) {
+        // Анимация маркера
+        animatedMarker.setLngLat(coordinates_animate[counter]);
+    
+        // Создание геометрии трека на основе пройденного пути
+        if (counter > 0) { // Изменение условия
+          const path = coordinates_animate.slice(0, counter + 1);
+          if (path.length >= 2) { // Добавление проверки на количество координат
+            lineString = turf.lineString(path);
+            map_1.getSource('route').setData(lineString);
+          }
+        }
+        counter++;
+        setTimeout(() => requestAnimationFrame(animateTravel), animationSpeed);
+      }
+    }    
+    // Подключение функции анимации к кнопке
+    document.getElementById('start-animation').addEventListener('click', () => {
+      counter = 0; // Сброс счетчика для повторного запуска
+      // Установка начального положения маркера и добавление его на карту
+      animatedMarker.setLngLat(firstPointCoordinates).addTo(map_1);
+      animateTravel(); // Используйте animateTravel
+    });
+
+    var pointGeoJSON = {{ gpx_data_point|safe }};    
+    // Добавление иконок точек на карту
+    if (pointGeoJSON) {
+      Object.values(pointGeoJSON).forEach(function(point) {
+          // Создание иконки
+          var marker = new mapboxgl.Marker({
+              element: createCustomMarkerElement('/static/travel/img/location_point.svg') // Путь к вашей иконке
+          })
+              .setLngLat(point.geometry.coordinates) // Установка координат точки
+              .addTo(map_1);
+  
+          // Добавление всплывающего окна с именем точки при наведении
+          var popup = new mapboxgl.Popup({
+              offset: 25
+          })
+              .setHTML('<h3>' + point.properties.name + '</h3>');
+  
+          marker.setPopup(popup);
+      });
+    } else {
+      console.error('Ошибка: Нет данных о точках в GeoJSON.');
     }
-    }
-    })
+  }
+});  
+function createCustomMarkerElement(iconUrl) {
+  var container = document.createElement('div');  
+  var el = document.createElement('div');
+  el.style.backgroundImage = `url(${iconUrl})`;
+  el.style.width = '25px';
+  el.style.height = '25px';
+  el.style.backgroundSize = '100%';    
+  return el;
+}
+</script>
+<!-- Выпадающий список-->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems, {});
   });
 </script>
-
+<!-- точки -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.collapsible');
+    var instances = M.Collapsible.init(elems);
+  });
+</script>
 {% endblock %}

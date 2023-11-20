@@ -1,3 +1,6 @@
+.mdc-top-app-bar__row {
+  background-color: rgb(106, 85, 62);
+}
 /* Боковая панель контейнер */
 .mdc-drawer__content  { 
   position: fixed;
@@ -9,7 +12,6 @@
   overflow: auto; 
   z-index: 1000;
 }
-
 /* Боковая панель раздел */
 .mdc-list {
   display: flex;
@@ -22,14 +24,15 @@
   width: 50px;
   height: 50px;  
 }
-
 /* Боковая панель иконки */
 .material-icons{
   display: flex;
     justify-content: center;
     align-items: center;
     margin: 0;
-  color: white;  
+  color: white;
+  height: 30px;  
+  width: 30px;
 }
 
 /* Боковая панель иконки. Всплывающий текст (Стиль не удалось настроить, нужно подбирать другие) */
@@ -39,8 +42,6 @@
   font-family: 'Times New Roman';
   font-size: 10px;
 }
-
-
 #log {
   font-size: 25px;
   position: fixed; /* Фиксируем контейнер карты на странице */
@@ -49,7 +50,6 @@
   width: 300px;  /* Это будет занимать 100% ширины экрана */
   height: 200px; /* Это будет занимать 100% высоты экрана */
 }
-
 .select-wrapper + label {
   position: relative;  /* Измените на 'relative' или другое значение, если 'absolute' приводит к проблемам */
   top: 0;              /* Установите значение 'top' на 0, чтобы переместить метку обратно в ее исходное положение */
@@ -57,8 +57,6 @@
   overflow: visible;   /* Убедитесь, что текст не обрезается */
   white-space: normal; /* Если вы хотите, чтобы текст переносился на новую строку при необходимости */  
 }
-
-
 .login-container {
   position: fixed; /* Фиксируем контейнер карты на странице */
   top: 50%; /* Устанавливаем верхнюю позицию на 0, чтобы карта была прикреплена к верху страницы */
@@ -68,7 +66,6 @@
   height: 20px; /* Это будет занимать 100% высоты экрана */
   transform: translate(-50%, -50%);
 }
-
 .login-container-base {
   background-image: url(../img/imgonline-com-ua-Resize-2KVmXc6Iq1jbVarM.jpg);
   height: 900px;
@@ -95,8 +92,7 @@ position:fixed
   margin-top: -40px;
   font-size: 18px;
  
-}
-  
+} 
 .input-container {
   border: 1px solid #ccc; /* Линия границы */
   padding: 2px; /* Поля вокруг содержимого внутри контейнера */

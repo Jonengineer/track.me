@@ -72,14 +72,14 @@
 }
 /* Стили страницы get_travel_plan.html */
 /* Стили контейнера карточек */
-.row {
+.row_travel {
   position: relative; /* используем относительное позиционирование */
   top: 50px;
-  width: calc(100%- 66px); /* вычитаем left, чтобы контейнер не выходил за пределы экрана */
+  left: 66px;  
+  width: calc(100% - 66px); /* вычитаем left, чтобы контейнер не выходил за пределы экрана */
   height: calc(100vh - 50px); /* вычитаем top, чтобы контейнер не выходил за пределы экрана */  
   display: flex;
-  flex-direction: column; /* чтобы заголовок и карточки шли друг за другом */    
-  padding-left: 66px;  
+  flex-direction: column; /* чтобы заголовок и карточки шли друг за другом */  
   box-sizing: border-box; /* padding и border включены в ширину и высоту */
   background-color: #ECE7D6
 }
@@ -159,10 +159,13 @@
 }
 /* Иконка удаления */
 #delete-button-icons {
-  vertical-align: middle;
+  vertical-align: middle;  
   /* Set the size of the icon if necessary */
   font-size: 28px;
   color: #3C2C13;
+  top: 70px;
+  width: 30px;
+  height: 30px;
 }
 /* Содержимое карточки */
 .card-content {    
@@ -178,7 +181,7 @@
 }
 /* Содержимое карточки параграф*/
 .card-content p {
-  font-size: 16px; /* размер шрифта для текста */
+  font-size: 20px; /* размер шрифта для текста */
   color: #333; /* цвет текста, выберите нужный вам цвет */
 }
 /* Модальное окно */
@@ -204,7 +207,7 @@
 }
 
 
-/* Стиль для страницы travel_detail.html */
+/* Стиль для страницы travel_detail_chart.html */
 /* 3D карта */
 .content-container-3D {
   display: flex;
@@ -223,25 +226,178 @@
   width: 100%; /* Карта будет растягиваться на всю ширину .container-3Dmap */
   height: 100%; /* и на всю его высоту */
 }
-/* Контейнер для карты маршрута */
+/* Контейнер для карты и графиков маршрута */
+.content-travel-full {
+  display: flex;
+  flex-direction: row; /* Вертикальное расположение */
+  margin-left: 66px;
+  width: calc(100% - 66px);
+  min-height: 1300px;
+  background-color: #ECE7D6;
+  overflow: auto;
+  height: 100vh;  
+}
 .content-container {
   display: flex;
   flex-direction: column; /* Вертикальное расположение */
-  margin-left: 66px;
-  width: 100%;  
+  width: 70%;
+  background-color: #ECE7D6  
 }
-/* Карта маршрута */
+/* Контейнер для карты  */
 .map-container_2, #map_1 {
-  height: 400px; /* Высота карты */
+  position: relative;
+  height: 800px; /* Высота карты */
   display: flex;
-  flex-direction: column; /* Вертикальное расположение */     
+  flex-direction: column; /* Вертикальное расположение */
+  width: 100%; /* или любая другая ширина в процентах для адаптивности */
 }
 /* Установка одинаковой ширины для карты и графиков */
-#charts-container, #map_1 {
-  width: 50%; /* или любая другая ширина в процентах для адаптивности */
-}
-.charts-container > div {
+#charts-container{
+  width: 100%; /* или любая другая ширина в процентах для адаптивности */
   height: 300px; /* Высота каждого графика */
-  /* Другие стили графиков, если нужно */
 }
-
+/* Установка стилей для меню карты */
+#menu-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  background-color: #ECE7D6; /* Полупрозрачный белый фон */
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Расстояние между элементами */ 
+}
+/* Стили для кнопки на карте */
+#start-animation, #submitButton {  
+  background-color: #6F947F;
+  color: #ECE7D6;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#style-menu {
+  /* Добавьте здесь стили для контейнера селектора */
+  border-radius: 4px; /* Скругление углов */
+  background-color: #ECE7D6; /* Цвет фона */
+  height: 50px;  
+}
+/* Изменение стилей выпадающего списка Materialize */
+.dropdown-content li>a {
+  min-height: 20px;
+  font-size: 16px; /* Увеличение размера шрифта */
+}
+.select-wrapper input.select-dropdown {
+  border-bottom: 2px solid #6F947F !important;
+  outline: none; 
+  z-index: 1;
+  width: 90px;
+}
+.dropdown-content li>span {  
+  clear: both;
+  min-height: 20px;
+  width: 100%;
+  text-align: center;
+  background-color: #ECE7D6; /* Цвет фона */
+  color: #000000; /* Изменение цвета текста */
+}
+.dropdown-content li>span:hover {
+  background-color: #6F947F; /* Замените #цвет_фона на нужный цвет */
+}
+/* Контейнер для описания  */
+.content-collapsible {
+  display: flex;
+  flex-direction: column; /* Вертикальное расположение */
+  width: 30%;
+  background-color: #ECE7D6;
+  align-items: center; /* Выравнивание содержимого к началу контейнера */
+  top: 50px;
+}
+/* Контейнер для складной вкладки  */
+.collapsible {  
+  width: 90%;
+}
+/* Иконка новой точки */
+.point-icons {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+/* Стили заголовка меню для точек */
+.collapsible-header {
+  background-color: #9CABAE;
+  display: flex; /* Используем flexbox для управления распределением элементов внутри .collapsible-header */
+  align-items: center; /* Выравниваем элементы по вертикали */ 
+}
+/* Стили описания меню для точек */
+.collapsible-body {
+  background-color: #ECE7D6;
+}
+/* Стили точки маршрута */
+body .mapboxgl-popup-content {
+  background: #ECE7D6;
+  border-radius: 15px;
+  padding: 5px 5px 5px;
+  pointer-events: auto;
+  position: relative;
+  max-height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Текст выкакивающего меню */
+body .mapboxgl-popup-content h3{
+  font-size: 18px;
+}
+/* Кнопка выкакивающего меню */
+body .mapboxgl-popup-close-button {
+  background-color: #6F947F;
+}
+/* Кнопка удаления */
+body .delete-button-point{
+  position: relative;
+  left: 0%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+/* Кнопка удаления */
+.collapsible-header-delete-button{
+  width: 22px;
+  height: 22px;
+  margin-left: auto; /* Выравнивание по правому краю */
+}
+/* Кнопка удаления */
+#delete-button-icons-point {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border: none; /* Убираем рамку вокруг иконки */
+  background-color: transparent; /* Используйте transparent вместо none */
+}
+/* Всплывающий текст кнопки удаления */
+.tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: #6F947F;
+  color: #ECE7D6;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 50%; /* Выравнивание по вертикали относительно кнопки */
+  right: 100%; /* Позиционирование слева от кнопки */
+  transform: translateY(-50%); /* Дополнительное выравнивание по вертикали */
+  margin-right: 5px; /* Отступ от кнопки */
+}
+.delete-button-point {
+  position: relative; /* Для корректного позиционирования всплывающего текста */
+}
+.delete-button-point:hover .tooltip-text {
+  visibility: visible;
+}

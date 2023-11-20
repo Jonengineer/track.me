@@ -1,5 +1,7 @@
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 class traveltype(models.Model):
     traveltype_id = models.AutoField(primary_key=True)
@@ -65,7 +67,7 @@ class booking(models.Model):
     namebooking = models.CharField(max_length=60, null=False)
     datestart = models.DateTimeField(null=False)
     datefinish = models.DateTimeField(null=False)
-    adress = models.CharField(max_length=200)    
+    adress = models.CharField(max_length=200) 
 
     class Meta:
         managed = True
@@ -114,6 +116,30 @@ class ticket(models.Model):
     def __str__(self):
         return f"Expense {self.sight_id}"
     
+class point_trek(models.Model):
+    point_trek_id = models.AutoField(primary_key=True)
+    namepoint = models.CharField(max_length=40)
+    description = models.CharField(max_length=400)
+    point_сoordinates = models.JSONField(null=True, blank=True)    
+
+    class Meta:
+        managed = True
+        db_table = 'point_trek' 
+    
+    def __str__(self):
+        return f"Point {self.point_trek_id}"
+
+class plpoint_trek(models.Model):
+    travelplan = models.ForeignKey('travelplan', on_delete=models.CASCADE)
+    point_trek = models.ForeignKey('point_trek', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('travelplan', 'point_trek')
+
+    def __str__(self):
+        return f"Travel Plan Sight ({self.travelplan.travelplan_id}, {self.point_trek.point_trek_id})"
+
+    
 class Friendship(models.Model):
     user1 = models.ForeignKey('user.user', on_delete=models.CASCADE, related_name="friendships1")
     user2 = models.ForeignKey('user.user', on_delete=models.CASCADE, related_name="friendships2")
@@ -161,3 +187,7 @@ class travelplanbooking(models.Model):
 
     def __str__(self):
         return f"Travel Plan Booking ({self.travelplan.travelplan_id}, {self.booking.booking_id})"
+    
+@receiver(pre_delete, sender=point_trek)
+def delete_plpoint_trek(sender, instance, **kwargs):
+    instance.plpoint_trek_set.all().delete()
