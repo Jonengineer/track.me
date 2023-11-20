@@ -21,6 +21,7 @@ user/migrations/__pycache__/0002_user_login_history.cpython-311.pyc
 Dockerfile
 compose.yaml
 requirements.txt
-
+trek/settings.py
+settings.py
 
 
