@@ -1,6 +1,13 @@
 {% extends 'travel_detail_full.html' %}
 {% load static %}
 
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'travel/style.css' %}">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/> 
+{% endblock %}
+
 {% block travel_detail_content %}
        {{ block.super }}
 <div class="content-travel-full">       
@@ -48,7 +55,19 @@
       {% for point in travel_points %}
           <li>
               <div class="collapsible-header">
-                  <img class="point-icons" src="/static/travel/img/point.svg">{{ point.namepoint }}
+                  <img class="point-icons" src="/static/travel/img/point.svg">
+                  <div class="collapsible-header-text">
+                    {{ point.namepoint }}
+                  </div>
+                  <div class="collapsible-header-delete-button">
+                    <form method="POST" action="{% url 'travel:delete_travel_point' point_trek_id=point.point_trek_id %}">
+                      {% csrf_token %}
+                      <button type="submit" class="delete-button-point">                
+                        <img id="delete-button-icons-point" src="/static/travel/img/delete.svg">
+                        <span class="tooltip-text">Удалить точку</span>
+                      </button>
+                    </form>
+                  </div>
               </div>
               <div class="collapsible-body">
                 <span> {{ point.description }} </span>
@@ -278,14 +297,37 @@
       animatedMarker.setLngLat(firstPointCoordinates).addTo(map_1);
       animateTravel(); // Используйте animateTravel
     });
+
+    var pointGeoJSON = {{ gpx_data_point|safe }};    
+    // Добавление иконок точек на карту
+    if (pointGeoJSON) {
+      Object.values(pointGeoJSON).forEach(function(point) {
+          // Создание иконки
+          var marker = new mapboxgl.Marker({
+              element: createCustomMarkerElement('/static/travel/img/location_point.svg') // Путь к вашей иконке
+          })
+              .setLngLat(point.geometry.coordinates) // Установка координат точки
+              .addTo(map_1);
+  
+          // Добавление всплывающего окна с именем точки при наведении
+          var popup = new mapboxgl.Popup({
+              offset: 25
+          })
+              .setHTML('<h3>' + point.properties.name + '</h3>');
+  
+          marker.setPopup(popup);
+      });
+    } else {
+      console.error('Ошибка: Нет данных о точках в GeoJSON.');
+    }
   }
 });  
 function createCustomMarkerElement(iconUrl) {
   var container = document.createElement('div');  
   var el = document.createElement('div');
   el.style.backgroundImage = `url(${iconUrl})`;
-  el.style.width = '30px';
-  el.style.height = '30px';
+  el.style.width = '25px';
+  el.style.height = '25px';
   el.style.backgroundSize = '100%';    
   return el;
 }
@@ -297,13 +339,11 @@ function createCustomMarkerElement(iconUrl) {
     var instances = M.FormSelect.init(elems, {});
   });
 </script>
+<!-- точки -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.collapsible');
     var instances = M.Collapsible.init(elems);
   });
-</script>
-<script>
-  
 </script>
 {% endblock %}

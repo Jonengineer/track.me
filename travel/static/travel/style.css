@@ -325,10 +325,79 @@
   height: 30px;
   margin-right: 5px;
 }
-/* Стили заголовка */
+/* Стили заголовка меню для точек */
 .collapsible-header {
-  background-color: #9CABAE; 
+  background-color: #9CABAE;
+  display: flex; /* Используем flexbox для управления распределением элементов внутри .collapsible-header */
+  align-items: center; /* Выравниваем элементы по вертикали */ 
 }
+/* Стили описания меню для точек */
 .collapsible-body {
   background-color: #ECE7D6;
+}
+/* Стили точки маршрута */
+body .mapboxgl-popup-content {
+  background: #ECE7D6;
+  border-radius: 15px;
+  padding: 5px 5px 5px;
+  pointer-events: auto;
+  position: relative;
+  max-height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Текст выкакивающего меню */
+body .mapboxgl-popup-content h3{
+  font-size: 18px;
+}
+/* Кнопка выкакивающего меню */
+body .mapboxgl-popup-close-button {
+  background-color: #6F947F;
+}
+/* Кнопка удаления */
+body .delete-button-point{
+  position: relative;
+  left: 0%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+/* Кнопка удаления */
+.collapsible-header-delete-button{
+  width: 22px;
+  height: 22px;
+  margin-left: auto; /* Выравнивание по правому краю */
+}
+/* Кнопка удаления */
+#delete-button-icons-point {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border: none; /* Убираем рамку вокруг иконки */
+  background-color: transparent; /* Используйте transparent вместо none */
+}
+/* Всплывающий текст кнопки удаления */
+.tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: #6F947F;
+  color: #ECE7D6;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 50%; /* Выравнивание по вертикали относительно кнопки */
+  right: 100%; /* Позиционирование слева от кнопки */
+  transform: translateY(-50%); /* Дополнительное выравнивание по вертикали */
+  margin-right: 5px; /* Отступ от кнопки */
+}
+.delete-button-point {
+  position: relative; /* Для корректного позиционирования всплывающего текста */
+}
+.delete-button-point:hover .tooltip-text {
+  visibility: visible;
 }

@@ -1,5 +1,7 @@
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 class traveltype(models.Model):
     traveltype_id = models.AutoField(primary_key=True)
@@ -185,3 +187,7 @@ class travelplanbooking(models.Model):
 
     def __str__(self):
         return f"Travel Plan Booking ({self.travelplan.travelplan_id}, {self.booking.booking_id})"
+    
+@receiver(pre_delete, sender=point_trek)
+def delete_plpoint_trek(sender, instance, **kwargs):
+    instance.plpoint_trek_set.all().delete()

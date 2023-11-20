@@ -26,6 +26,7 @@ class PointTrekForm(forms.ModelForm):
 
     def clean_point_сoordinates(self):
         coordinates_str = self.cleaned_data['point_сoordinates']
+        namepoint = self.cleaned_data['namepoint']
 
         try:
             lat, lng = map(float, coordinates_str.split(', '))
@@ -36,12 +37,10 @@ class PointTrekForm(forms.ModelForm):
                     "coordinates": [lng, lat]
                 },
                 "properties": {
-                    "name": "Your Point Name"  # Здесь вы можете установить имя, если это необходимо
+                    "name": namepoint  # Здесь вы можете установить имя, если это необходимо
                 }
             }
            
             return geojson_data
         except ValueError:
             raise forms.ValidationError('Invalid coordinates format. Please use "latitude, longitude."')
-
-        return geojson_data

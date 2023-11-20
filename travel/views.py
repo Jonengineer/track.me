@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def create_travel_plan(request):
+    # Создание путешевствия по треку существующему
     form = TravelPlanformTrue()
     # Если форма отправлена методом POST, то мы создаем экземпляр формы  с данными
     if request.method == 'POST':
@@ -126,24 +127,8 @@ def create_travel_plan(request):
     # Отображаем шаблон с формой, передавая форму в контексте
     return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
 
-@login_required
-def map_page(request):
-    # Страница с картой
-    current_user = request.user
-
-    return render(request, 'map_page.html')
-
-@login_required
-def get_travel_plan(request):
-    # Страница с карточками путешевствий
-    current_user = request.user
-
-    # Получение данных только для текущего пользователя
-    travel = travelplan.objects.filter(user=current_user)
-
-    return render(request, 'get_travel_plan.html', {'travel': travel})
-
 def import_imge(file, output_size=(400, 267)):
+    # Импорт изображений для карточки путешевствия
     if file is None:
         return None
     try:
@@ -181,11 +166,22 @@ def import_imge(file, output_size=(400, 267)):
         return None
 
 @login_required
+def get_travel_plan(request):
+    # Страница с карточками путешевствий
+    current_user = request.user
+
+    # Получение данных только для текущего пользователя
+    travel = travelplan.objects.filter(user=current_user)
+
+    return render(request, 'get_travel_plan.html', {'travel': travel})
+
+@login_required
 def travel_detail_chart(request, travelplan_id):
+    # Функция передает данные для графиков, и карт, точек маршрута, точек трека
     current_user = request.user
 
     # Получение плана путешествия и проверка доступа
-    travel_plan = get_object_or_404(travelplan, pk=travelplan_id)
+    travel_plan = get_object_or_404(travelplan, pk=travelplan_id)    
     if travel_plan.user != current_user and not travel_plan.is_public and not (
         travel_plan.friends_only and Friendship.objects.filter(
             (Q(user1=current_user) & Q(user2=travel_plan.user)) |
@@ -195,9 +191,15 @@ def travel_detail_chart(request, travelplan_id):
     
     # Получение связанных точек путешествия
     travel_points = plpoint_trek.objects.filter(travelplan=travel_plan).select_related('point_trek')
-    points = [tp.point_trek for tp in travel_points]
-    
-    # Проверяем, есть ли связанный travelplan_geo
+    points = [tp.point_trek for tp in travel_points]  
+  
+    # Обрабатываем данные GPX_point, если они имеются
+    gpx_data_point = {}
+    for point in points:
+        if point.point_сoordinates:
+            gpx_data_point[point.point_trek_id] = point.point_сoordinates
+
+        # Проверяем, есть ли связанный travelplan_geo
     if hasattr(travel_plan, 'travelplan_geo'):
        travelplan_geo_instance = travel_plan.travelplan_geo
 
@@ -224,6 +226,7 @@ def travel_detail_chart(request, travelplan_id):
         'travel_points': points,
         'gpx_data': json.dumps(processed_gpx_data),
         'gpx_data_track': json.dumps(track_coordinates),
+        'gpx_data_point': json.dumps(gpx_data_point),
     }
     return render(request, 'travel_detail_chart.html', context)
 
@@ -236,6 +239,7 @@ def convert_to_iso_format(time_element):
     return datetime.strptime(time_element, '%b. %d, %Y, %I:%M %p').isoformat() + "Z"
 
 @login_required
+@require_POST
 def delete_travel_plan(request, travelplan_id):
     # Удаление планов путешевствий
     logger.info("Запрос на удаление плана путешествия с ID: %s", travelplan_id)
@@ -262,11 +266,13 @@ def delete_travel_plan(request, travelplan_id):
 
 @login_required
 def travel_detail_full(request, travelplan_id):
+    # Функция для передачи деталей путешевствия в шаблон
     travel = get_object_or_404(travelplan, pk=travelplan_id)
     return render(request, 'travel_detail_full.html', {'travel': travel})
 
 @login_required
 def get_travel_plan_3D(request, travelplan_id):
+    # 3D картав путешевствии
     travel = get_object_or_404(travelplan, pk=travelplan_id)
 
     # Проверяем, принадлежит ли путешествие текущему пользователю
@@ -305,7 +311,8 @@ def get_travel_plan_3D(request, travelplan_id):
     return render(request, '3Dmap.html', context)
 
 @login_required
-def add_point_trek(request, travelplan_id):    
+def add_point_trek(request, travelplan_id):
+    # Обработка формы для записи точек путешеввствий в БД
     travel = get_object_or_404(travelplan, pk=travelplan_id)
     if request.method == 'POST':
         point_form = PointTrekForm(request.POST)
@@ -330,3 +337,18 @@ def add_point_trek(request, travelplan_id):
 
     return render(request, 'travel_detail_chart.html', {'form': point_form, 'travel': travel})
 
+@login_required
+@require_POST
+def delete_travel_point(request, point_trek_id):
+    # Удаление планов путешевствий
+    logger.info("Запрос на удаление точек путешествия с ID: %s", point_trek_id)
+
+    travel_point = get_object_or_404(point_trek, pk=point_trek_id)
+
+    # Получаем travelplan_id перед удалением
+    travelplan_id = travel_point.plpoint_trek_set.first().travelplan_id
+    
+    # Удаляем саму точку путешествия
+    travel_point.delete()
+
+    return HttpResponseRedirect(reverse('travel:travel_detail_chart', args=[travelplan_id]))
