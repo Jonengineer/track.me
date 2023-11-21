@@ -318,6 +318,9 @@
 /* Контейнер для складной вкладки  */
 .collapsible {  
   width: 90%;
+  border-radius: 15px;
+  border: 1px solid #9CABAE;
+  overflow: hidden;
 }
 /* Иконка новой точки */
 .point-icons {
@@ -330,10 +333,15 @@
   background-color: #9CABAE;
   display: flex; /* Используем flexbox для управления распределением элементов внутри .collapsible-header */
   align-items: center; /* Выравниваем элементы по вертикали */ 
+  border-radius: 0px;
+  height: 50px;
 }
+
 /* Стили описания меню для точек */
 .collapsible-body {
   background-color: #ECE7D6;
+  white-space: normal; /* Это заставит текст переноситься, а не оставаться в одной строке */
+  word-wrap: break-word; /* Это позволяет переносить длинные слова, которые не помещаются в строке */  
 }
 /* Стили точки маршрута */
 body .mapboxgl-popup-content {
@@ -400,4 +408,9 @@ body .delete-button-point{
 }
 .delete-button-point:hover .tooltip-text {
   visibility: visible;
+}
+  /* Текст для полей ввода для точки */
+.input-point::placeholder {
+  color: #000000;
+  font-size: 14px;
 }
