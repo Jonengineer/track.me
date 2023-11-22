@@ -60,6 +60,7 @@
 /* Блоки с текстом */
 .container-travel-detail-1,
 .container-travel-detail-2,
+.container-travel-detail-3,
 .container-travel-detail-3 {
   flex-grow: 1; /* Или используйте 'flex-basis: 33.3333%;', если не хотите использовать 'flex-grow' */  
 }
@@ -67,8 +68,8 @@
 .container-travel-detail-1 p,
 .container-travel-detail-2 p,
 .container-travel-detail-3 p {
-  font-size: 14px;
-  margin: 4px 4px 15px 4px; /* Объединенный отступ */
+  font-size: 19px;
+  margin: 2px 2px 1px 2px; /* Объединенный отступ */
 }
 /* Стили страницы get_travel_plan.html */
 /* Стили контейнера карточек */
@@ -231,10 +232,10 @@
   display: flex;
   flex-direction: row; /* Вертикальное расположение */
   margin-left: 66px;
-  width: calc(100% - 66px);
-  min-height: 1300px;
+  width: calc(100% - 66px);  
   background-color: #ECE7D6;
   overflow: auto;
+  min-height: 1040px;  
   height: 100vh;  
 }
 .content-container {
@@ -255,6 +256,7 @@
 #charts-container{
   width: 100%; /* или любая другая ширина в процентах для адаптивности */
   height: 300px; /* Высота каждого графика */
+  overflow: hidden; /* Скрывает любое содержимое, выходящее за пределы контейнера */  
 }
 /* Установка стилей для меню карты */
 #menu-container {
@@ -309,11 +311,11 @@
 /* Контейнер для описания  */
 .content-collapsible {
   display: flex;
+  background: #ECE7D6;
   flex-direction: column; /* Вертикальное расположение */
-  width: 30%;
-  background-color: #ECE7D6;
+  width: 30%;  
   align-items: center; /* Выравнивание содержимого к началу контейнера */
-  top: 50px;
+  top: 50px;   
 }
 /* Контейнер для складной вкладки  */
 .collapsible {  
@@ -336,7 +338,6 @@
   border-radius: 0px;
   height: 50px;
 }
-
 /* Стили описания меню для точек */
 .collapsible-body {
   background-color: #ECE7D6;

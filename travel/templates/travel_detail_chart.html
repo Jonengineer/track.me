@@ -29,7 +29,6 @@
     </div>
     <div id="charts-container">
       <div id="elevation_chart_div"></div>
-      <div id="heart_rate_chart_div"></div>
     </div>
   </div>
   <div class="content-collapsible">
@@ -97,8 +96,7 @@
   var gpxData = JSON.parse('{{ gpx_data|safe }}');
 
   google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(drawElevationDistanceChart);
-  google.charts.setOnLoadCallback(drawHeartRateTimeChart);
+  google.charts.setOnLoadCallback(drawElevationDistanceChart);  
 
   var elevationChart, heartRateChart;
   var elevationData, heartRateData;
@@ -114,21 +112,25 @@
     }
 
     elevationOptions = {
-      title: 'Высота над уровнем моря в зависимости от расстояния',
+      width: '100%',
+      height: '100%',
+      title: 'Профиль высот',
       curveType: 'function',
       legend: { position: 'none' },            
       colors: ['#676418'],
-      hAxis: { title: 'Расстояние, км' },
-      vAxis: { title: 'Высота, м' },
+      hAxis: { title: 'S, км' },
+      vAxis: { title: 'H, м' },
       backgroundColor: '#9CABAE',
+      colors: ['#676418'],
+      areaOpacity: 0.6, // Пример прозрачности заливки (от 0.0 до 1.0)
       chartArea: {
         backgroundColor: {
           stroke: '#3C2C13',
           strokeWidth: 1
         },
-        left: 50,
+        left: 70,
         top: 20,
-        width: '90%',
+        width: '85%',
         height: '60%'
       }
     };
@@ -145,46 +147,13 @@
     elevationOptions.vAxis.viewWindow.min = minElevation - (minElevation * 0.01); // Добавляем 3% отступа, если есть отрицательные значения
 
 
-    elevationChart = new google.visualization.LineChart(document.getElementById('elevation_chart_div'));
+    elevationChart = new google.visualization.AreaChart(document.getElementById('elevation_chart_div'));
     elevationChart.draw(elevationData, elevationOptions);
-
   }
-  function drawHeartRateTimeChart() {
-    heartRateData = new google.visualization.DataTable();
-    heartRateData.addColumn('datetime', 'Время');
-    heartRateData.addColumn('number', 'Пульс');
-
-    for (var i = 0; i < gpxData.time_points.length; i++) {
-      heartRateData.addRow([new Date(gpxData.time_points[i]), gpxData.heart_rate_points[i]]);
-    }
-
-    heartRateOptions = {
-      title: 'Пульс от времени',
-      curveType: 'function',
-      legend: { position: 'none' },      
-      colors: ['red'],
-      hAxis: { title: 'Время', format: 'HH:mm' },
-      vAxis: { title: 'Пульс' },
-      backgroundColor: '#9CABAE',
-      chartArea: {
-        backgroundColor: {
-          stroke: '#3C2C13',
-          strokeWidth: 1
-        },
-        left: 50,
-        top: 20,
-        width: '90%',
-        height: '60%'
-      }
-    };
-
-    heartRateChart = new google.visualization.LineChart(document.getElementById('heart_rate_chart_div'));
-    heartRateChart.draw(heartRateData, heartRateOptions);
-  }
+  
   window.addEventListener('resize', function() {
-    if (elevationChart && heartRateChart) {
+    if (elevationChart) {
       elevationChart.draw(elevationData, elevationOptions);
-      heartRateChart.draw(heartRateData, heartRateOptions);
     }
   }, { passive: true });
 
@@ -254,13 +223,13 @@
       }  
          
       new mapboxgl.Marker({
-        element: createCustomMarkerElement('/static/travel/img/start-icon.svg')
+        element: createCustomMarkerElement('/static/travel/img/start-icon.svg', 25, 25)
       })
       .setLngLat(firstPointCoordinates)
       .addTo(map_1);
 
       new mapboxgl.Marker({
-        element: createCustomMarkerElement('/static/travel/img/end-icon.svg')
+        element: createCustomMarkerElement('/static/travel/img/end-icon.svg', 25, 25)
       })
       .setLngLat(lastPointCoordinates)
       .addTo(map_1);
@@ -268,12 +237,12 @@
 
     // Создание маркера для анимации
     const animatedMarker = new mapboxgl.Marker({
-      element: createCustomMarkerElement('/static/travel/img/hiking_moving.svg')
+      element: createCustomMarkerElement('/static/travel/img/hiking_moving.svg', 40, 40)
     })       
 
     // Функция для создания анимации
     let counter = 0;
-    const animationSpeed = 10;
+    const animationSpeed = 5;
     function animateTravel() {
       const coordinates_animate = travelGeoJSON.features[0].geometry.coordinates;
       if (counter < coordinates_animate.length) {
@@ -306,7 +275,7 @@
       Object.values(pointGeoJSON).forEach(function(point) {
           // Создание иконки
           var marker = new mapboxgl.Marker({
-              element: createCustomMarkerElement('/static/travel/img/location_point.svg') // Путь к вашей иконке
+              element: createCustomMarkerElement('/static/travel/img/location_point.svg', 35, 35) // Путь к вашей иконке
           })
               .setLngLat(point.geometry.coordinates) // Установка координат точки
               .addTo(map_1);
@@ -323,16 +292,16 @@
       console.error('Ошибка: Нет данных о точках в GeoJSON.');
     }
   }
-});  
-function createCustomMarkerElement(iconUrl) {
-  var container = document.createElement('div');  
-  var el = document.createElement('div');
-  el.style.backgroundImage = `url(${iconUrl})`;
-  el.style.width = '25px';
-  el.style.height = '25px';
-  el.style.backgroundSize = '100%';    
-  return el;
-}
+  });  
+  function createCustomMarkerElement(iconUrl, width, height) {
+    var container = document.createElement('div');  
+    var el = document.createElement('div');
+    el.style.backgroundImage = `url(${iconUrl})`;
+    el.style.width = width + 'px';
+    el.style.height = height + 'px';
+    el.style.backgroundSize = 'contain'; // Используйте 'contain' для сохранения пропорций
+    return el;
+  }
 </script>
 <!-- Выпадающий список-->
 <script>
@@ -352,6 +321,6 @@ function createCustomMarkerElement(iconUrl) {
   document.addEventListener('DOMContentLoaded', function() {
     var textNeedCount = document.querySelectorAll('#input_text, #textarea2');
     M.CharacterCounter.init(textNeedCount);
-});
+  });
 </script>
 {% endblock %}

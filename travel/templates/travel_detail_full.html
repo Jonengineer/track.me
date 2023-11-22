@@ -18,24 +18,26 @@
         </div>
         <div class="container-travel-detail-flex">
           <div class="container-travel-detail-1">
-          <p><strong>Дата начала:</strong> {{ travel.datestart|custom_date_format }}</p>
-          <p><strong>Дата окончания:</strong> {{ travel.datefinish|custom_date_format }}</p>
-          <p><strong>Количество: дней: </strong> {{ travel.quantitydays }}</p>
-          <p><strong>Тип путешествия:</strong> {{ travel.traveltype.traveltypedescription }}</p>
+            <p><strong>Дата начала:</strong> {{ travel.datestart|custom_date_format }}</p>
+            <p><strong>Дата окончания:</strong> {{ travel.datefinish|custom_date_format }}</p>
+            <p><strong>Количество: дней: </strong> {{ travel.quantitydays }}</p>
+            <p><strong>Тип путешествия:</strong> {{ travel.traveltype.traveltypedescription }}</p>
           </div>
           <div class="container-travel-detail-2">
-          <p><strong>Общая дистанция:</strong> {{ travel.total_distance_travelled|to_kilometers|floatformat:2 }} км</p>
-          <p><strong>Набор высоты: </strong> {{ travel.total_ascent|floatformat:2 }} м </p>
-          <p><strong>Сброс высоты: </strong> {{ travel.total_descent|floatformat:2 }} м </p>
-          <p><strong>Количество участников: </strong>  человек </p>
+            <p><strong>Общая дистанция:</strong> {{ travel.total_distance_travelled|to_kilometers|floatformat:2 }} км</p>
+            <p><strong>Набор высоты: </strong> {{ travel.total_ascent|floatformat:2 }} м </p>
+            <p><strong>Сброс высоты: </strong> {{ travel.total_descent|floatformat:2 }} м </p>
+            <p><strong>Количество участников: </strong>  человек </p>
           </div>
          <div class="container-travel-detail-3">
-          <p><strong>Общее время: </strong> {{ travel.total_time_seconds|format_seconds }} ч:м </p>
-          <p><strong>Время в движение: </strong> {{ travel.moving_time_seconds|format_seconds }} ч:м </p>
-          <p><strong>Средняя скорость: </strong> {{ travel.speed_midle|floatformat:2 }} км/ч </p>             
-          <p><strong>Скорость в движение: </strong> {{ travel.speed_moving|floatformat:2 }} км/ч </p>
+            <p><strong>Общее время: </strong> {{ travel.total_time_seconds|format_seconds }} ч:м </p>
+            <p><strong>Время в движение: </strong> {{ travel.moving_time_seconds|format_seconds }} ч:м </p>
+            <p><strong>Средняя скорость: </strong> {{ travel.speed_midle|floatformat:2 }} км/ч </p>             
+            <p><strong>Скорость в движение: </strong> {{ travel.speed_moving|floatformat:2 }} км/ч </p>
           </div>
-        </div>
+          <div class="container-travel-detail-4">
+          </div>
+        </div>        
     </div>      
     <div class="nav-content">
         <ul class="tabs tabs-transparent">
