@@ -160,6 +160,7 @@
 </script>
 <!-- Карта-->
 <script>
+  let animatedMarker; // Объявление в глобальной области видимости
   document.addEventListener('DOMContentLoaded', (event) => {
     mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
   
@@ -223,26 +224,31 @@
       }  
          
       new mapboxgl.Marker({
-        element: createCustomMarkerElement('/static/travel/img/start-icon.svg', 25, 25)
+        element: createStaticMarkerElement('/static/travel/img/start-icon.svg', 25, 25)
       })
       .setLngLat(firstPointCoordinates)
       .addTo(map_1);
 
       new mapboxgl.Marker({
-        element: createCustomMarkerElement('/static/travel/img/end-icon.svg', 25, 25)
+        element: createStaticMarkerElement('/static/travel/img/end-icon.svg', 25, 25)
       })
       .setLngLat(lastPointCoordinates)
       .addTo(map_1);
     });
 
-    // Создание маркера для анимации
-    const animatedMarker = new mapboxgl.Marker({
-      element: createCustomMarkerElement('/static/travel/img/hiking_moving.svg', 40, 40)
-    })       
+      // Убедитесь, что firstPointCoordinates определены
+    if (firstPointCoordinates) {
+      // Создание маркера для анимации
+      var travelType = {{ travel.traveltype_id }};
+      const markerElement = createCustomMarkerElement(travelType, 35, 35);
+      animatedMarker = new mapboxgl.Marker({
+        element: markerElement
+      }).setLngLat(firstPointCoordinates); // Инициализация с начальными координатами
+    }
 
     // Функция для создания анимации
     let counter = 0;
-    const animationSpeed = 5;
+    const animationSpeed = 1;
     function animateTravel() {
       const coordinates_animate = travelGeoJSON.features[0].geometry.coordinates;
       if (counter < coordinates_animate.length) {
@@ -275,7 +281,7 @@
       Object.values(pointGeoJSON).forEach(function(point) {
           // Создание иконки
           var marker = new mapboxgl.Marker({
-              element: createCustomMarkerElement('/static/travel/img/location_point.svg', 35, 35) // Путь к вашей иконке
+              element: createStaticMarkerElement('/static/travel/img/location_point.svg', 35, 35) // Путь к вашей иконке
           })
               .setLngLat(point.geometry.coordinates) // Установка координат точки
               .addTo(map_1);
@@ -293,8 +299,44 @@
     }
   }
   });  
-  function createCustomMarkerElement(iconUrl, width, height) {
-    var container = document.createElement('div');  
+  function createCustomMarkerElement(travelType, width, height, rotationAngle) {
+    var iconUrl;
+    // Определение URL иконки на основе типа путешествия
+    switch (travelType) {
+      case 1: 
+        iconUrl = '/static/travel/img/hiking_treking.svg';
+        break;
+      case 2: 
+        iconUrl = '/static/travel/img/hiking_mountains.svg';
+        break;
+      case 3: 
+        iconUrl = '/static/travel/img/bicycle.svg';
+        break;
+      case 4: 
+        iconUrl = '/static/travel/img/skiing_man.svg';
+        break;  
+      case 5: 
+        iconUrl = '/static/travel/img/river_rafting.svg'; 
+        break;
+      case 6: 
+        iconUrl = '/static/travel/img/motorcycle_traveller.svg';
+        break;  
+      case 7: 
+        iconUrl = '/static/travel/img/car.svg'; 
+        break;
+      // Добавьте дополнительные случаи для других типов путешествий
+      default:
+      iconUrl = '/static/travel/img/car.svg'; // URL иконки по умолчанию
+    }
+        
+    var el = document.createElement('div');
+    el.style.backgroundImage = `url(${iconUrl})`;
+    el.style.width = width + 'px';
+    el.style.height = height + 'px';
+    el.style.backgroundSize = 'contain'; // Используйте 'contain' для сохранения пропорций
+    return el;
+  }
+  function createStaticMarkerElement(iconUrl, width, height) {
     var el = document.createElement('div');
     el.style.backgroundImage = `url(${iconUrl})`;
     el.style.width = width + 'px';
