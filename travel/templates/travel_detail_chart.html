@@ -16,6 +16,18 @@
       <div id="map_1"></div> <!-- Установите высоту контейнера карты -->
       <div id="menu-container">
         <button id="start-animation">Старт</button>
+        <div id='start-animation-speed'>
+          <select id='style-selector-speed'>        
+            <option value="150">x1</option>
+            <option value="50">x2</option>
+            <option value="20">x3</option>
+            <option value="10">x4</option>
+            <option value="1">x5</option>
+            <option value="0.1">x6</option>
+            <option value="0.01">x7</option>
+            <option value="0.001">x8</option>          
+          </select>
+        </div>
         <div id='style-menu'>
           <select id='style-selector'>        
             <option value='mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj'>Природа</option>
@@ -246,9 +258,13 @@
       }).setLngLat(firstPointCoordinates); // Инициализация с начальными координатами
     }
 
+    let animationSpeed = 100; // Объявите animationSpeed в глобальной области видимости
+    
+    document.getElementById('style-selector-speed').addEventListener('change', function() {
+      animationSpeed = parseFloat(this.value)
+    });
     // Функция для создания анимации
-    let counter = 0;
-    const animationSpeed = 1;
+    let counter = 0;    
     function animateTravel() {
       const coordinates_animate = travelGeoJSON.features[0].geometry.coordinates;
       if (counter < coordinates_animate.length) {
