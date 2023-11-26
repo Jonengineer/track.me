@@ -18,19 +18,19 @@
         <button id="start-animation">Старт</button>
         <div id='start-animation-speed'>
           <select id='style-selector-speed'>        
-            <option value="800000">x1</option>
-            <option value="500000">x2</option>
-            <option value="200000">x3</option>
-            <option value="100000">x4</option>
-            <option value="70000">x5</option>
+            <option value="900000">x1</option>
+            <option value="700000">x2</option>
+            <option value="500000">x3</option>
+            <option value="300000">x4</option>
+            <option value="100000">x5</option>
             <option value="50000">x6</option>
             <option value="30000">x7</option>
-            <option value="15000">x8</option>        
+            <option value="20000">x8</option>        
           </select>
         </div>
         {% csrf_token %}
-        <button id="start-recording">Начать запись</button>
-        <button id="stop-recording" style="display:none;">Остановить запись</button>
+        <button id="start-recording">Записать</button>
+        <button id="stop-recording" style="display:none;">Стоп</button>
         <div id='style-menu'>
           <select id='style-selector'>        
             <option value='mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj'>Природа</option>
@@ -370,7 +370,33 @@
 
 
     let startAnimationTime = null;
-    const totalAnimationDuration = 15000; // Продолжительность анимации в миллисекундах
+    let totalAnimationDuration = 15000; // Продолжительность анимации в миллисекундах
+
+    let isAnimating = false;
+
+    function restartAnimation() {
+      // Остановка текущей анимации
+      isAnimating = false;
+
+      // Задержка для убеждения, что предыдущая анимация остановлена
+      setTimeout(() => {
+        startAnimationTime = null;
+        isAnimating = true;
+        requestAnimationFrame(animateTravel);
+      }, 100); // Задержка в 100 мс
+    }        
+    
+    // Обработчик изменения скорости анимации
+    document.getElementById('style-selector-speed').addEventListener('change', function() {
+      totalAnimationDuration = parseFloat(this.value);
+      restartAnimation(); 
+    });
+
+    // Инициализация анимации
+    isAnimating = true;
+    requestAnimationFrame(animateTravel);
+     
+
     
     // Функция для анимации маркера
     function animateTravel(timestamp) {
