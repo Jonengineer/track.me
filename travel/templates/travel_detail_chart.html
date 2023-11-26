@@ -382,7 +382,7 @@
       setTimeout(() => {
         startAnimationTime = null;
         isAnimating = true;
-        requestAnimationFrame(animateTravel);
+        window.requestAnimationFrame(animateTravel);
       }, 100); // Задержка в 100 мс
     }        
     
@@ -394,7 +394,7 @@
 
     // Инициализация анимации
     isAnimating = true;
-    requestAnimationFrame(animateTravel);
+    window.requestAnimationFrame(animateTravel);
      
 
     
@@ -411,7 +411,7 @@
       // Если анимация завершена, сбрасываем время и начинаем заново
       if (animationProgress > 1) {
         startAnimationTime = null; // Сбросить начальное время
-        requestAnimationFrame(animateTravel); // Запустить следующий кадр анимации
+        window.requestAnimationFrame(animateTravel); // Запустить следующий кадр анимации
         return;
       }
     
@@ -445,7 +445,7 @@
       }
 
       // Запрашиваем следующий кадр анимации
-      requestAnimationFrame(animateTravel);
+      window.requestAnimationFrame(animateTravel);
     }
     
     // Функция для обновления позиции маркера
@@ -477,17 +477,17 @@
       if (travelType === 1) {
         iconPath = '/static/travel/img/hiking_treking.png';
       } else if (travelType === 2) {
-        iconPath = '/static/travel/img/hiking_mountains.svg';
+        iconPath = '/static/travel/img/hiking_mountains.png';
       } else if (travelType === 3) {
-        iconPath = '/static/travel/img/bicycle.svg';
+        iconPath = '/static/travel/img/bicycle.png';
       } else if (travelType === 4) {
-        iconPath = '/static/travel/img/skiing_man.svg';
+        iconPath = '/static/travel/img/skiing_man.png';
       } else if (travelType === 5) {
-        iconPath = '/static/travel/img/river_rafting.svg';
+        iconPath = '/static/travel/img/river_rafting.png';
       } else if (travelType === 6) {
-        iconPath = '/static/travel/img/motorcycle_traveller.svg';
+        iconPath = '/static/travel/img/motorcycle_traveller.png';
       } else if (travelType === 7) {
-        iconPath = '/static/travel/img/car.svg';
+        iconPath = '/static/travel/img/car.png';
       }
 
       // Загрузка и добавление изображения
@@ -504,7 +504,7 @@
         // Установка начального положения маркера и добавление его на карту
         updateMarkerPosition(firstPointCoordinates);
 
-        requestAnimationFrame(animateTravel); // Начало анимации
+        window.requestAnimationFrame(animateTravel); // Начало анимации
       });
     });
 
