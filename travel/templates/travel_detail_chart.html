@@ -18,14 +18,14 @@
         <button id="start-animation">Старт</button>
         <div id='start-animation-speed'>
           <select id='style-selector-speed'>        
-            <option value="150">x1</option>
-            <option value="50">x2</option>
-            <option value="20">x3</option>
-            <option value="10">x4</option>
-            <option value="1">x5</option>
-            <option value="0.1">x6</option>
-            <option value="0.01">x7</option>
-            <option value="0.001">x8</option>          
+            <option value="800000">x1</option>
+            <option value="500000">x2</option>
+            <option value="200000">x3</option>
+            <option value="100000">x4</option>
+            <option value="70000">x5</option>
+            <option value="50000">x6</option>
+            <option value="30000">x7</option>
+            <option value="15000">x8</option>        
           </select>
         </div>
         {% csrf_token %}
@@ -294,16 +294,29 @@
         }
         if (map_1.getSource('animated-marker-source')) {
           map_1.removeSource('animated-marker-source');
+        }        
+
+        function addImageSafe(id, image) {
+          if (!map_1.hasImage(id)) {
+            map_1.addImage(id, image);
+          }
         }
-      
+
+        // Функция для безопасного добавления источника данных
+        function addSourceSafe(id, data) {
+          if (!map_1.getSource(id)) {
+            map_1.addSource(id, data);
+          }
+        }
+
         // Загрузка и добавление иконок
         map_1.loadImage(iconUrlstart, (error, startImage) => {
           if (error) throw error;
-          map_1.addImage('icon-start', startImage);
+          addImageSafe('icon-start', startImage);
       
           map_1.loadImage(iconUrlfinish, (error, finishImage) => {
             if (error) throw error;
-            map_1.addImage('icon-finish', finishImage);
+            addImageSafe('icon-finish', finishImage);
       
             // Определение features для иконок
             let features = [
@@ -320,7 +333,7 @@
             ];
       
             // Добавление источника данных для иконок
-            map_1.addSource('icon-source', {
+            addSourceSafe('icon-source', {
               type: 'geojson',
               data: { type: 'FeatureCollection', features: features },
             });
@@ -334,7 +347,7 @@
             });
       
             // Инициализация источника данных для анимированного маркера
-            map_1.addSource('animated-marker-source', {
+            addSourceSafe('animated-marker-source', {
               type: 'geojson',
               data: { type: 'FeatureCollection', features: [] },
             });
