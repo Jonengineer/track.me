@@ -141,6 +141,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'travel', 'media')
 
+
+FFMPEG_PATH = 'F:\\Trek.me\\Project\\ffmpeg-2023-11-22-git-0008e1c5d5-full_build\\bin\\ffmpeg.exe'
+
+
 AUTH_USER_MODEL = 'user.User'
 
 AUTHENTICATION_BACKENDS = [

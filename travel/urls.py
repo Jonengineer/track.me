@@ -11,5 +11,7 @@ urlpatterns = [
     path('delete_travel_plan/<int:travelplan_id>/', views.delete_travel_plan, name='delete_travel_plan'),
     path('travel_detail_full/<int:travelplan_id>/', views.travel_detail_full, name='travel_detail_full'),
     path('add_point_trek/<int:travelplan_id>/', views.add_point_trek, name='add_point_trek'),
-    path('delete_travel_point/<int:point_trek_id>/', views.delete_travel_point, name='delete_travel_point'),   
+    path('delete_travel_point/<int:point_trek_id>/', views.delete_travel_point, name='delete_travel_point'),
+    path('upload-video', views.upload_video, name='upload_video'),
+
 ]

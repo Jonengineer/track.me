@@ -266,13 +266,13 @@
   z-index: 1;
   background-color: #ECE7D6; /* Полупрозрачный белый фон */
   border-radius: 8px;
-  padding: 10px;
+  padding: 5px;
   display: flex;
   flex-direction: column;
   gap: 10px; /* Расстояние между элементами */ 
 }
 /* Стили для кнопки на карте */
-#start-animation, #submitButton {  
+#start-animation, #submitButton, #start-recording {  
   background-color: #6F947F;
   color: #ECE7D6;
   border: none;
@@ -280,6 +280,15 @@
   border-radius: 4px;
   cursor: pointer;
 }
+#stop-recording {  
+  background-color: #F44336;
+  color: #ECE7D6;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 #style-menu {
   /* Добавьте здесь стили для контейнера селектора */
   border-radius: 4px; /* Скругление углов */

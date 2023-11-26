@@ -28,6 +28,9 @@
             <option value="0.001">x8</option>          
           </select>
         </div>
+        {% csrf_token %}
+        <button id="start-recording">Начать запись</button>
+        <button id="stop-recording" style="display:none;">Остановить запись</button>
         <div id='style-menu'>
           <select id='style-selector'>        
             <option value='mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj'>Природа</option>
@@ -172,7 +175,11 @@
 </script>
 <!-- Карта-->
 <script>
+  const iconUrlstart = '/static/travel/img/start.png';
+  const iconUrlfinish = '/static/travel/img/finish.png';    
   let animatedMarker; // Объявление в глобальной области видимости
+  let animationSpeed = 100; // Объявите animationSpeed в глобальной области видимости
+  let travelType = {{ travel.traveltype_id }};
   document.addEventListener('DOMContentLoaded', (event) => {
     mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
   
@@ -193,11 +200,274 @@
         style: 'mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj',
         // ... другие параметры карты
       });
+
+        // Шаг 1: Инициализация источника данных и слоя для анимированного маркера
+        map_1.on('load', () => {
+          map_1.addSource('animated-marker-source', {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: []
+            }
+          });
+
+          map_1.addLayer({
+            id: 'animated-marker-layer',
+            type: 'symbol',
+            source: 'animated-marker-source',
+            layout: {
+              'icon-image': 'your-icon', // Идентификатор вашего изображения иконки
+              'icon-size': 0.25
+            }
+          });
+          
+          // Загрузка первой иконки
+          map_1.loadImage(iconUrlstart, (error, image) => {
+            if (error) throw error;
+            map_1.addImage('icon-start', image);
+      
+            // Загрузка второй иконки
+            map_1.loadImage(iconUrlfinish, (error, image) => {
+              if (error) throw error;
+              map_1.addImage('icon-finish', image);
+      
+              let features = [
+                {
+                  type: 'Feature',
+                  properties: {
+                    icon: 'icon-start',
+                    iconSize: 0.3 // Размер для первой иконки
+                  },
+                  geometry: {
+                    type: 'Point',
+                    coordinates: firstPointCoordinates,
+                  },
+                },
+                {
+                  type: 'Feature',
+                  properties: {
+                    icon: 'icon-finish',
+                    iconSize: 0.3 // Размер для второй иконки
+                  },
+                  geometry: {
+                    type: 'Point',
+                    coordinates: lastPointCoordinates,
+                  },
+                },
+              ];
+      
+              map_1.addLayer({
+                id: 'icon-layer',
+                type: 'symbol',
+                source: {
+                  type: 'geojson',
+                  data: {
+                    type: 'FeatureCollection',
+                    features: features,
+                  },
+                },
+                layout: {
+                  'icon-image': ['get', 'icon'],
+                  'icon-size': 0.3                  
+                },
+              });
+            });
+          });
+        });
   
       var selector = document.getElementById('style-selector');
       selector.addEventListener('change', function() {
         map_1.setStyle(this.value);
       });
+
+      // Функция для повторного добавления слоев карты
+      function addCustomLayers() {
+        // Удаление предыдущих слоев и источников данных, если они существуют
+        if (map_1.getLayer('icon-layer')) {
+          map_1.removeLayer('icon-layer');
+        }
+        if (map_1.getSource('icon-source')) {
+          map_1.removeSource('icon-source');
+        }
+        if (map_1.getLayer('animated-marker-layer')) {
+          map_1.removeLayer('animated-marker-layer');
+        }
+        if (map_1.getSource('animated-marker-source')) {
+          map_1.removeSource('animated-marker-source');
+        }
+      
+        // Загрузка и добавление иконок
+        map_1.loadImage(iconUrlstart, (error, startImage) => {
+          if (error) throw error;
+          map_1.addImage('icon-start', startImage);
+      
+          map_1.loadImage(iconUrlfinish, (error, finishImage) => {
+            if (error) throw error;
+            map_1.addImage('icon-finish', finishImage);
+      
+            // Определение features для иконок
+            let features = [
+              {
+                type: 'Feature',
+                properties: { icon: 'icon-start', iconSize: 0.3 },
+                geometry: { type: 'Point', coordinates: firstPointCoordinates },
+              },
+              {
+                type: 'Feature',
+                properties: { icon: 'icon-finish', iconSize: 0.3 },
+                geometry: { type: 'Point', coordinates: lastPointCoordinates },
+              },
+            ];
+      
+            // Добавление источника данных для иконок
+            map_1.addSource('icon-source', {
+              type: 'geojson',
+              data: { type: 'FeatureCollection', features: features },
+            });
+      
+            // Добавление слоя с иконками
+            map_1.addLayer({
+              id: 'icon-layer',
+              type: 'symbol',
+              source: 'icon-source',
+              layout: { 'icon-image': ['get', 'icon'], 'icon-size': 0.3 },
+            });
+      
+            // Инициализация источника данных для анимированного маркера
+            map_1.addSource('animated-marker-source', {
+              type: 'geojson',
+              data: { type: 'FeatureCollection', features: [] },
+            });
+      
+            // Добавление слоя для анимированного маркера
+            map_1.addLayer({
+              id: 'animated-marker-layer',
+              type: 'symbol',
+              source: 'animated-marker-source',
+              layout: { 'icon-image': 'your-icon', 'icon-size': 0.25 },
+            });
+          });
+        });
+      }
+
+      // Обработчик события изменения стиля карты
+      map_1.on('style.load', () => {
+      addCustomLayers();
+      });
+
+
+    let startAnimationTime = null;
+    const totalAnimationDuration = 15000; // Продолжительность анимации в миллисекундах
+    
+    // Функция для анимации маркера
+    function animateTravel(timestamp) {
+      // Проверяем, задано ли начальное время анимации
+      if (!startAnimationTime) startAnimationTime = timestamp;
+    
+      // Вычисляем, сколько времени прошло с начала анимации
+      const elapsedTime = timestamp - startAnimationTime;
+      // Вычисляем прогресс анимации от 0 до 1
+      const animationProgress = elapsedTime / totalAnimationDuration;
+    
+      // Если анимация завершена, сбрасываем время и начинаем заново
+      if (animationProgress > 1) {
+        startAnimationTime = null; // Сбросить начальное время
+        requestAnimationFrame(animateTravel); // Запустить следующий кадр анимации
+        return;
+      }
+    
+      // Получаем массив координат из GeoJSON
+      const coordinates_animate = travelGeoJSON.features[0].geometry.coordinates;
+      // Вычисляем общее расстояние маршрута
+      const totalDistance = turf.length(travelGeoJSON.features[0]);
+      // Вычисляем расстояние до текущей точки маршрута
+      const currentPointDistance = totalDistance * animationProgress;
+      // Получаем координаты текущей точки на маршруте
+      const currentPoint = turf.along(travelGeoJSON.features[0], currentPointDistance);
+    
+      // Если текущая точка существует, обновляем позицию маркера
+      if (currentPoint && currentPoint.geometry && currentPoint.geometry.coordinates) {
+        updateMarkerPosition(currentPoint.geometry.coordinates);
+    
+        // Обновляем трек до текущего местоположения маркера
+        const pathLengthAtCurrentPoint = turf.distance(
+          turf.point(travelGeoJSON.features[0].geometry.coordinates[0]),
+          turf.point(currentPoint.geometry.coordinates)
+        );
+        const updatedPath = turf.lineSlice(
+          turf.point(travelGeoJSON.features[0].geometry.coordinates[0]),
+          turf.point(currentPoint.geometry.coordinates),
+          travelGeoJSON.features[0]
+        );
+        
+        if (updatedPath.geometry.coordinates.length >= 2) {
+          map_1.getSource('route').setData(updatedPath);
+        }
+      }
+
+      // Запрашиваем следующий кадр анимации
+      requestAnimationFrame(animateTravel);
+    }
+    
+    // Функция для обновления позиции маркера
+    function updateMarkerPosition(newCoordinates) {
+      // Убедитесь, что передаются только двухмерные координаты
+      const twoDimensionalCoords = [newCoordinates[0], newCoordinates[1]];
+      console.log(`twoDimensionalCoords ${twoDimensionalCoords}`);
+
+
+      const source = map_1.getSource('animated-marker-source');
+      source.setData({
+        type: 'FeatureCollection',
+        features: [{
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: twoDimensionalCoords
+          }
+        }]
+      });
+    }  
+
+    // Подключение функции анимации к кнопке
+    document.getElementById('start-animation').addEventListener('click', () => {
+      startAnimationTime = null; // Сброс времени анимации
+      // Установка начального положения маркера и добавление его на карту
+      // Определение пути к изображению в зависимости от travelType
+      let iconPath;
+      if (travelType === 1) {
+        iconPath = '/static/travel/img/hiking_treking.png';
+      } else if (travelType === 2) {
+        iconPath = '/static/travel/img/hiking_mountains.svg';
+      } else if (travelType === 3) {
+        iconPath = '/static/travel/img/bicycle.svg';
+      } else if (travelType === 4) {
+        iconPath = '/static/travel/img/skiing_man.svg';
+      } else if (travelType === 5) {
+        iconPath = '/static/travel/img/river_rafting.svg';
+      } else if (travelType === 6) {
+        iconPath = '/static/travel/img/motorcycle_traveller.svg';
+      } else if (travelType === 7) {
+        iconPath = '/static/travel/img/car.svg';
+      }
+
+      // Загрузка и добавление изображения
+      map_1.loadImage(iconPath, (error, image) => {
+        if (error) throw error;
+
+        // Добавление или обновление изображения маркера на карте
+        if (map_1.hasImage('your-icon')) {
+          map_1.updateImage('your-icon', image);
+        } else {
+          map_1.addImage('your-icon', image);
+        }
+
+        // Установка начального положения маркера и добавление его на карту
+        updateMarkerPosition(firstPointCoordinates);
+
+        requestAnimationFrame(animateTravel); // Начало анимации
+      });
+    });
 
     // Предполагается, что 'map' - это ваша карта Mapbox
     map_1.on('click', function(e) {
@@ -230,11 +500,11 @@
           },
           paint: {
             'line-color': '#D32F2F',
-            'line-width': 6
+            'line-width': 8
           }
         });
-      }  
-         
+      }
+      
       new mapboxgl.Marker({
         element: createStaticMarkerElement('/static/travel/img/start-icon.svg', 25, 25)
       })
@@ -248,48 +518,14 @@
       .addTo(map_1);
     });
 
-      // Убедитесь, что firstPointCoordinates определены
-    if (firstPointCoordinates) {
-      // Создание маркера для анимации
-      var travelType = {{ travel.traveltype_id }};
-      const markerElement = createCustomMarkerElement(travelType, 35, 35);
-      animatedMarker = new mapboxgl.Marker({
-        element: markerElement
-      }).setLngLat(firstPointCoordinates); // Инициализация с начальными координатами
+    function createStaticMarkerElement(iconUrl, width, height) {
+      var el = document.createElement('div');
+      el.style.backgroundImage = `url(${iconUrl})`;
+      el.style.width = width + 'px';
+      el.style.height = height + 'px';
+      el.style.backgroundSize = 'contain'; // Используйте 'contain' для сохранения пропорций
+      return el;
     }
-
-    let animationSpeed = 100; // Объявите animationSpeed в глобальной области видимости
-    
-    document.getElementById('style-selector-speed').addEventListener('change', function() {
-      animationSpeed = parseFloat(this.value)
-    });
-    // Функция для создания анимации
-    let counter = 0;    
-    function animateTravel() {
-      const coordinates_animate = travelGeoJSON.features[0].geometry.coordinates;
-      if (counter < coordinates_animate.length) {
-        // Анимация маркера
-        animatedMarker.setLngLat(coordinates_animate[counter]);
-    
-        // Создание геометрии трека на основе пройденного пути
-        if (counter > 0) { // Изменение условия
-          const path = coordinates_animate.slice(0, counter + 1);
-          if (path.length >= 2) { // Добавление проверки на количество координат
-            lineString = turf.lineString(path);
-            map_1.getSource('route').setData(lineString);
-          }
-        }
-        counter++;
-        setTimeout(() => requestAnimationFrame(animateTravel), animationSpeed);
-      }
-    }    
-    // Подключение функции анимации к кнопке
-    document.getElementById('start-animation').addEventListener('click', () => {
-      counter = 0; // Сброс счетчика для повторного запуска
-      // Установка начального положения маркера и добавление его на карту
-      animatedMarker.setLngLat(firstPointCoordinates).addTo(map_1);
-      animateTravel(); // Используйте animateTravel
-    });
 
     var pointGeoJSON = {{ gpx_data_point|safe }};    
     // Добавление иконок точек на карту
@@ -314,52 +550,8 @@
       console.error('Ошибка: Нет данных о точках в GeoJSON.');
     }
   }
-  });  
-  function createCustomMarkerElement(travelType, width, height, rotationAngle) {
-    var iconUrl;
-    // Определение URL иконки на основе типа путешествия
-    switch (travelType) {
-      case 1: 
-        iconUrl = '/static/travel/img/hiking_treking.svg';
-        break;
-      case 2: 
-        iconUrl = '/static/travel/img/hiking_mountains.svg';
-        break;
-      case 3: 
-        iconUrl = '/static/travel/img/bicycle.svg';
-        break;
-      case 4: 
-        iconUrl = '/static/travel/img/skiing_man.svg';
-        break;  
-      case 5: 
-        iconUrl = '/static/travel/img/river_rafting.svg'; 
-        break;
-      case 6: 
-        iconUrl = '/static/travel/img/motorcycle_traveller.svg';
-        break;  
-      case 7: 
-        iconUrl = '/static/travel/img/car.svg'; 
-        break;
-      // Добавьте дополнительные случаи для других типов путешествий
-      default:
-      iconUrl = '/static/travel/img/car.svg'; // URL иконки по умолчанию
-    }
-        
-    var el = document.createElement('div');
-    el.style.backgroundImage = `url(${iconUrl})`;
-    el.style.width = width + 'px';
-    el.style.height = height + 'px';
-    el.style.backgroundSize = 'contain'; // Используйте 'contain' для сохранения пропорций
-    return el;
-  }
-  function createStaticMarkerElement(iconUrl, width, height) {
-    var el = document.createElement('div');
-    el.style.backgroundImage = `url(${iconUrl})`;
-    el.style.width = width + 'px';
-    el.style.height = height + 'px';
-    el.style.backgroundSize = 'contain'; // Используйте 'contain' для сохранения пропорций
-    return el;
-  }
+  });
+  
 </script>
 <!-- Выпадающий список-->
 <script>
@@ -381,4 +573,69 @@
     M.CharacterCounter.init(textNeedCount);
   });
 </script>
+<!-- Видеозахват -->
+<script>
+  let mediaRecorder;
+  let recordedChunks = [];
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.getElementById('start-recording').addEventListener('click', function() {
+        let canvas = document.querySelector('#map_1 canvas');
+        let stream = canvas.captureStream(30); // Захват видеопотока с частотой 30 кадров
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+        mediaRecorder.ondataavailable = function(e) {
+            if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = sendVideoToServer;
+        mediaRecorder.start();
+
+        this.style.display = 'none';
+        document.getElementById('stop-recording').style.display = 'block';
+    });
+
+    document.getElementById('stop-recording').addEventListener('click', function() {
+        mediaRecorder.stop();
+
+        this.style.display = 'none';
+        document.getElementById('start-recording').style.display = 'block';
+    });
+
+    function sendVideoToServer() {
+        let videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+        let formData = new FormData();
+        formData.append('video', videoBlob, 'animation.webm');
+
+        fetch('/travel/upload-video', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-CSRFToken': csrfToken
+            }
+        }).then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error('Error:', error));
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+  
+    const csrfToken = getCookie('csrftoken');
+  });  
+</script>
+
+
+
 {% endblock %}
