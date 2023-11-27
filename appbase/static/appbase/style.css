@@ -56,7 +56,7 @@
   justify-content: center; /* Центрирование содержимого по горизонтали */
   align-items: center; /* Центрирование содержимого по вертикали */
 }
-  h1 {
+.main_text h1 {
  
   height: 200px;
   color: #ffffff; /* Цвет текста */
