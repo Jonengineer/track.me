@@ -1,0 +1,131 @@
+{% extends 'travel_detail_full.html' %}
+{% load static %}
+
+{% block styles %}
+    {{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'travel/style_2.css' %}">
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+{% endblock %}
+
+{% block travel_detail_content %}
+  {{ block.super }}
+  <div class="content-travel-description">
+    <div class="content-travel-description-text">
+      <div class="content-description">
+        <form method="post" action="URL_обработчика_данных">      
+            <div class="input-field col s12">
+              <textarea  id="textarea3" class="materialize-textarea" name="description" data-length="150"></textarea>
+              <label for="textarea3">Добавьте заголовок</label>
+            </div>      
+          <button id = 'btndescription' class="waves-light btn custom-btn">
+            <span class="waves-light btn__label">Сохранить</span>
+        </button>
+        </form>
+      </div>
+      <div class="content-description">
+        <form method="post" action="URL_обработчика_данных">      
+            <div class="input-field col s12">
+              <textarea  id="textarea4" class="materialize-textarea" name="description" data-length="6000"></textarea>
+              <label for="textarea4">Добавьте описание</label>
+            </div>      
+          <button class="waves-light btn custom-btn">
+            <span id = 'btndescription' class="waves-light btn__label">Сохранить</span>
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="content-travel-description-media">
+      <div class="slider">
+        <ul class="slides">
+          <li>
+            <img src="https://lorempixel.com/580/250/nature/1"> <!-- random image -->
+            <div class="caption center-align">
+              <h3>This is our big Tagline!</h3>
+              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            </div>
+          </li>
+          <li>
+            <img src="https://lorempixel.com/580/250/nature/2"> <!-- random image -->
+            <div class="caption left-align">
+              <h3>Left Aligned Caption</h3>
+              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            </div>
+          </li>
+          <li>
+            <img src="https://lorempixel.com/580/250/nature/3"> <!-- random image -->
+            <div class="caption right-align">
+              <h3>Right Aligned Caption</h3>
+              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            </div>
+          </li>
+          <li>
+            <img src="https://lorempixel.com/580/250/nature/4"> <!-- random image -->
+            <div class="caption center-align">
+              <h3>This is our big Tagline!</h3>
+              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            </div>
+          </li>
+          <li>
+            <img src="https://lorempixel.com/580/250/nature/1"> <!-- random image -->
+            <div class="caption center-align">
+              <h3>This is our big Tagline!</h3>
+              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            </div>
+          </li>
+          <li>
+            <img src="https://lorempixel.com/580/250/nature/2"> <!-- random image -->
+            <div class="caption left-align">
+              <h3>Left Aligned Caption</h3>
+              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            </div>
+          </li>
+          <li>
+            <img src="https://lorempixel.com/580/250/nature/3"> <!-- random image -->
+            <div class="caption right-align">
+              <h3>Right Aligned Caption</h3>
+              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            </div>
+          </li>
+          <li>
+            <img src="https://lorempixel.com/580/250/nature/4"> <!-- random image -->
+            <div class="caption center-align">
+              <h3>This is our big Tagline!</h3>
+              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            </div>
+          </li>
+          <li>
+            <img src="https://lorempixel.com/580/250/nature/3"> <!-- random image -->
+            <div class="caption right-align">
+              <h3>Right Aligned Caption</h3>
+              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            </div>
+          </li>
+          <li>
+            <img src="https://lorempixel.com/580/250/nature/4"> <!-- random image -->
+            <div class="caption center-align">
+              <h3>This is our big Tagline!</h3>
+              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            </div>
+          </li>
+        </ul>
+      </div>        
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block travel_detail_scripts %}
+    {{ block.super }}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var textArea3 = document.querySelector('#textarea3');
+    var textArea4 = document.querySelector('#textarea4');
+    if (textArea3) M.CharacterCounter.init(textArea3);
+    if (textArea4) M.CharacterCounter.init(textArea4);       
+  
+    var elems = document.querySelectorAll('.slider');
+    var instances = M.Slider.init(elems); // Инициализация без `options`, если нет специальных настроек
+});
+</script>
+{% endblock %}
