@@ -371,3 +371,10 @@ def upload_video(request):
         return JsonResponse({'status': 'success', 'url': file_url})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+
+@login_required
+def travel_description(request, travelplan_id):
+    # Функция для передачи деталей путешевствия в шаблон
+    travel = get_object_or_404(travelplan, pk=travelplan_id)
+    return render(request, 'travel_description.html', {'travel': travel})
