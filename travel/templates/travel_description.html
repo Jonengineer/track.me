@@ -11,30 +11,25 @@
 {% block travel_detail_content %}
   {{ block.super }}
   <div class="content-travel-description">
-    <div class="content-travel-description-text">
-      <div class="content-description">
-        <form method="post" action="URL_обработчика_данных">      
+    <div class="content-travel-description-text"> 
+      <div class="content-travel-description-text-form">     
+        <form method="post" action="URL_обработчика_данных">
+          {% csrf_token %}      
             <div class="input-field col s12">
-              <textarea  id="textarea3" class="materialize-textarea" name="description" data-length="150"></textarea>
-              <label for="textarea3">Добавьте заголовок</label>
-            </div>      
-          <button id = 'btndescription' class="waves-light btn custom-btn">
-            <span class="waves-light btn__label">Сохранить</span>
-        </button>
-        </form>
-      </div>      
-      <div class="content-description">
-        <form method="post" action="URL_обработчика_данных">      
+              {{ form.title_descriptiond.label_tag }}
+              {{ form.title_descriptiond }}              
+            </div>  
             <div class="input-field col s12">
-              <textarea  id="textarea4" class="materialize-textarea" name="description" data-length="6000"></textarea>
-              <label for="textarea4">Добавьте описание</label>
-            </div>      
+              {{ form.name_descriptiond.label_tag }}
+              {{ form.name_descriptiond }}
+            </div> 
           <button class="waves-light btn custom-btn">
             <span id = 'btndescription' class="waves-light btn__label">Сохранить</span>
           </button>
         </form>
-      </div>   
+      </div>          
     </div>
+
     <div class="content-travel-description-media">
       <div class="slider">
         <ul class="slides" id="imageSlider">
@@ -42,7 +37,7 @@
             {% for photo in photos %}
             <li>
                 <img src="{{ photo.image_url }}"> <!-- URL изображения -->
-                <div class="caption center-align">
+                <div class="caption right-align">
                     <h3>{{ photo.description }}</h3> <!-- Описание фотографии -->
                 </div>
             </li>

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .form import TravelPlanformTrue, PointTrekForm
+from .form import TravelPlanformTrue, PointTrekForm, TravelDescriptionForm
 from .models import travelplan, traveltype, Friendship, travelplan_geo, plpoint_trek, point_trek, description, travelplandescription
 import os
 from django.conf import settings
@@ -382,6 +382,8 @@ def travel_description(request, travelplan_id):
     # Получаем все связанные объекты description для данного travelplan
     descriptions = travelplandescription.objects.filter(travelplan=travel).select_related('description')
 
+    form = TravelDescriptionForm()  # Создайте экземпляр формы
+
     # Собираем все фотографии и описания
     photos = []
     for item in descriptions:
@@ -394,7 +396,7 @@ def travel_description(request, travelplan_id):
                 photos.append({'image_url': image_url, 'description': description})
 
 
-    return render(request, 'travel_description.html', {'travel': travel, 'photos': photos})
+    return render(request, 'travel_description.html', {'travel': travel, 'photos': photos, 'form': form})
 
 @login_required
 @require_POST

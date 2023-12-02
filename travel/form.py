@@ -1,6 +1,9 @@
 from django import forms
-from .models import travelplan, traveltype, point_trek
+from .models import travelplan, traveltype, point_trek, description, travelplandescription
 import json
+from PIL import Image
+from django.conf import settings
+import os
 
 
 class TravelPlanformTrue(forms.ModelForm):
@@ -44,3 +47,18 @@ class PointTrekForm(forms.ModelForm):
             return geojson_data
         except ValueError:
             raise forms.ValidationError('Invalid coordinates format. Please use "latitude, longitude."')
+        
+class TravelDescriptionForm(forms.ModelForm):
+
+    class Meta:
+        model = description
+        fields = ['title_descriptiond', 'name_descriptiond']  # Обновляем список полей
+        labels = {
+            'title_descriptiond': 'Добавьте заголовок',
+            'name_descriptiond': 'Добавьте описание'            
+        }
+        widgets = {
+            'title_descriptiond': forms.Textarea(attrs={'class': 'materialize-textarea', 'id': 'textarea3', 'data-length': '100'}),
+            'name_descriptiond': forms.Textarea(attrs={'class': 'materialize-textarea', 'id': 'textarea4', 'data-length': '6000'}),
+        }
+        
