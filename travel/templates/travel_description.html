@@ -22,7 +22,7 @@
             <span class="waves-light btn__label">Сохранить</span>
         </button>
         </form>
-      </div>
+      </div>      
       <div class="content-description">
         <form method="post" action="URL_обработчика_данных">      
             <div class="input-field col s12">
@@ -33,81 +33,50 @@
             <span id = 'btndescription' class="waves-light btn__label">Сохранить</span>
           </button>
         </form>
-      </div>
+      </div>   
     </div>
     <div class="content-travel-description-media">
       <div class="slider">
-        <ul class="slides">
-          <li>
-            <img src="https://lorempixel.com/580/250/nature/1"> <!-- random image -->
-            <div class="caption center-align">
-              <h3>This is our big Tagline!</h3>
-              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+        <ul class="slides" id="imageSlider">
+            <!-- Пример слайда с изображением и описанием -->
+            {% for photo in photos %}
+            <li>
+                <img src="{{ photo.image_url }}"> <!-- URL изображения -->
+                <div class="caption center-align">
+                    <h3>{{ photo.description }}</h3> <!-- Описание фотографии -->
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+      </div>
+      <div class="media-input">
+        <ul class="collapsible">
+          <li id="li">
+            <div class="collapsible-header">
+              <img class="point-icons" src="/static/travel/img/photograph.svg">Добавить фотографии и описание                 
             </div>
-          </li>
-          <li>
-            <img src="https://lorempixel.com/580/250/nature/2"> <!-- random image -->
-            <div class="caption left-align">
-              <h3>Left Aligned Caption</h3>
-              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+            <div class="collapsible-body">
+              <!-- Форма для добавления новой точки -->
+              <form id="addPointForm" method="post" action="{% url 'travel:add_media_travel' travel.travelplan_id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="collapsible-input_text">
+                  <input id="input_text" type="text" class="input-point" name="namepoint" placeholder="Укажите название для фотографии" data-length="35">
+                </div>                            
+                <div class="collapsible-input_file">
+                  <div class="file-field input-field">
+                    <button  id="submitButton">
+                        <span>Выбрать фото:</span>
+                        <input type="file"  id="image" name="image" accept=".jpg">
+                    </button>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text" placeholder="Выберите файл в формате JPG">
+                    </div>
+                  </div>
+                </div>  
+                <button id="submitButton">Добавить</button>
+              </form>
             </div>
-          </li>
-          <li>
-            <img src="https://lorempixel.com/580/250/nature/3"> <!-- random image -->
-            <div class="caption right-align">
-              <h3>Right Aligned Caption</h3>
-              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-            </div>
-          </li>
-          <li>
-            <img src="https://lorempixel.com/580/250/nature/4"> <!-- random image -->
-            <div class="caption center-align">
-              <h3>This is our big Tagline!</h3>
-              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-            </div>
-          </li>
-          <li>
-            <img src="https://lorempixel.com/580/250/nature/1"> <!-- random image -->
-            <div class="caption center-align">
-              <h3>This is our big Tagline!</h3>
-              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-            </div>
-          </li>
-          <li>
-            <img src="https://lorempixel.com/580/250/nature/2"> <!-- random image -->
-            <div class="caption left-align">
-              <h3>Left Aligned Caption</h3>
-              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-            </div>
-          </li>
-          <li>
-            <img src="https://lorempixel.com/580/250/nature/3"> <!-- random image -->
-            <div class="caption right-align">
-              <h3>Right Aligned Caption</h3>
-              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-            </div>
-          </li>
-          <li>
-            <img src="https://lorempixel.com/580/250/nature/4"> <!-- random image -->
-            <div class="caption center-align">
-              <h3>This is our big Tagline!</h3>
-              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-            </div>
-          </li>
-          <li>
-            <img src="https://lorempixel.com/580/250/nature/3"> <!-- random image -->
-            <div class="caption right-align">
-              <h3>Right Aligned Caption</h3>
-              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-            </div>
-          </li>
-          <li>
-            <img src="https://lorempixel.com/580/250/nature/4"> <!-- random image -->
-            <div class="caption center-align">
-              <h3>This is our big Tagline!</h3>
-              <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-            </div>
-          </li>
+          </li>          
         </ul>
       </div>        
     </div>
@@ -119,13 +88,20 @@
     {{ block.super }}
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    var textArea2 = document.querySelector('#textarea2');
     var textArea3 = document.querySelector('#textarea3');
-    var textArea4 = document.querySelector('#textarea4');
+    var textArea4 = document.querySelector('#textarea4');  
+     
+    if (textArea2) M.CharacterCounter.init(textArea2);
     if (textArea3) M.CharacterCounter.init(textArea3);
-    if (textArea4) M.CharacterCounter.init(textArea4);       
+    if (textArea4) M.CharacterCounter.init(textArea4);
   
     var elems = document.querySelectorAll('.slider');
     var instances = M.Slider.init(elems); // Инициализация без `options`, если нет специальных настроек
-});
+
+    var elems = document.querySelectorAll('.collapsible');
+    var instances = M.Collapsible.init(elems);
+  });
 </script>
+
 {% endblock %}

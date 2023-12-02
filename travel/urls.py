@@ -14,5 +14,6 @@ urlpatterns = [
     path('delete_travel_point/<int:point_trek_id>/', views.delete_travel_point, name='delete_travel_point'),
     path('upload-video', views.upload_video, name='upload_video'),
     path('travel_description/<int:travelplan_id>/', views.travel_description, name='travel_description'),
+    path('add_media_travel/<int:travelplan_id>/', views.add_media_travel, name='add_media_travel'),
 
 ]

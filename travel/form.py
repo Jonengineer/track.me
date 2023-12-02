@@ -7,7 +7,7 @@ class TravelPlanformTrue(forms.ModelForm):
     # Создание путешевствий
     class Meta:
         model = travelplan
-        fields = ['country', 'territory', 'datestart', 'datefinish', 'description', 'traveltype', 'gpxtrek']
+        fields = ['country', 'territory', 'datestart', 'datefinish', 'traveltype', 'gpxtrek']
     gpxtrek = forms.FileField(required=False, label='GPX Trek (GPX)',
                               widget=forms.FileInput(attrs={'accept': '.gpx'}))
     
