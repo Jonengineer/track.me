@@ -376,13 +376,21 @@ def upload_video(request):
     
 @login_required
 def travel_description(request, travelplan_id):
-    # Функция для передачи деталей путешевствия в шаблон
+    # Функция для передачи фотографийй в шаблон и форма для текста
     travel = get_object_or_404(travelplan, pk=travelplan_id)    
+
+    # Определяем, существует ли уже описание и заголовок
+    has_description = travelplandescription.objects.filter(
+        travelplan=travel, 
+        description__title_descriptiond__isnull=False,
+        description__name_descriptiond__isnull=False
+    ).exists()
+    
+
+    form = TravelDescriptionForm()
 
     # Получаем все связанные объекты description для данного travelplan
     descriptions = travelplandescription.objects.filter(travelplan=travel).select_related('description')
-
-    form = TravelDescriptionForm()  # Создайте экземпляр формы
 
     # Собираем все фотографии и описания
     photos = []
@@ -391,16 +399,30 @@ def travel_description(request, travelplan_id):
             image_field = f'media_{i}'
             desc_field = f'description_media_{i}'
             image_url = getattr(item.description, image_field, None)
-            description = getattr(item.description, desc_field, '')
+            description_photo = getattr(item.description, desc_field, '')
             if image_url:
-                photos.append({'image_url': image_url, 'description': description})
+                photos.append({'image_url': image_url, 'description': description_photo})
 
-
-    return render(request, 'travel_description.html', {'travel': travel, 'photos': photos, 'form': form})
+    # Создаем список для хранения данных
+    descriptions_data = []
+    for item in descriptions:
+        title = getattr(item.description, 'title_descriptiond', None)
+        name = getattr(item.description, 'name_descriptiond', None)
+        descriptions_data.append({'title': title, 'name': name})
+        
+    print(descriptions_data)    
+    return render(request, 'travel_description.html', {
+        'travel': travel,
+          'photos': photos,
+            'form': form,
+            'has_description': has_description,
+            'descriptions_data': descriptions_data,         
+        })
 
 @login_required
 @require_POST
 def add_media_travel(request, travelplan_id):
+    # Функция для загрузки изображений
     name_descriptiond = request.POST.get('namepoint')
     image_file = request.FILES.get('image')
     print(name_descriptiond)
@@ -458,3 +480,30 @@ def add_media_travel(request, travelplan_id):
             break
 
     return HttpResponseRedirect(reverse('travel:travel_description', kwargs={'travelplan_id': travelplan_id}))
+
+@login_required
+@require_POST
+def add_description_travel(request, travelplan_id):
+    # Функция для записи описания в базу 
+    travel = get_object_or_404(travelplan, pk=travelplan_id)
+
+    # Поиск существующего объекта description или создание нового
+    travelplandescription_obj = travelplandescription.objects.filter(travelplan=travel).first()
+
+    if travelplandescription_obj:
+        description_obj = travelplandescription_obj.description
+        form = TravelDescriptionForm(request.POST, instance=description_obj)
+    else:
+        form = TravelDescriptionForm(request.POST)
+
+    if form.is_valid():
+        description_obj = form.save()
+        if not travelplandescription_obj:
+            # Создаем связь только если это новое описание
+            travelplandescription.objects.create(travelplan=travel, description=description_obj)
+            # Перенаправляем пользователя после успешного сохранения
+            return render(request, 'travel_description.html', {'travel': travel, 'description': description_obj})
+    else:        
+        form = TravelDescriptionForm(request.POST)  # Форма с данными
+
+    return render(request, 'travel_description.html', {'travel': travel, 'form': form})

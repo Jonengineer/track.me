@@ -53,12 +53,8 @@ class TravelDescriptionForm(forms.ModelForm):
     class Meta:
         model = description
         fields = ['title_descriptiond', 'name_descriptiond']  # Обновляем список полей
-        labels = {
-            'title_descriptiond': 'Добавьте заголовок',
-            'name_descriptiond': 'Добавьте описание'            
-        }
         widgets = {
-            'title_descriptiond': forms.Textarea(attrs={'class': 'materialize-textarea', 'id': 'textarea3', 'data-length': '100'}),
-            'name_descriptiond': forms.Textarea(attrs={'class': 'materialize-textarea', 'id': 'textarea4', 'data-length': '6000'}),
+            'title_descriptiond': forms.Textarea(attrs={'class': 'materialize-textarea', 'id': 'textarea3', 'data-length': '100', 'placeholder': 'Добавьте заголовок'}),
+            'name_descriptiond': forms.Textarea(attrs={'class': 'materialize-textarea', 'id': 'textarea4', 'data-length': '6000', 'placeholder': 'Добавьте описание'}),
         }
         

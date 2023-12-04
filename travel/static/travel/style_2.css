@@ -8,7 +8,7 @@
     width: calc(100% - 66px);  
     background-color: #ECE7D6;
     overflow: auto;
-    min-height: 1540px;  
+    min-height: 1040px;  
     height: 100%;  
 }
 /* Стили контейнера c текстом */
@@ -16,18 +16,28 @@
     width: 40%;  
     background-color: #ECE7D6;
     overflow: auto;
-    height: 100vh;  
+    min-height: 940px;
+    flex-direction: column; /* Вертикальное расположение */
+    margin-left: 0px;  
 }
-.content-travel-description-text-form {
-    width: 95%;
-    margin-left: 10px;
+.content-travel-description-text2 {    
+    width: 90%;  
+    background-color: #ECE7D6;
+    overflow: auto;
+    min-height: 940px;
+    margin-left: 10px;  
+}
+.content-travel-description-text2-title {
+    display: flex; /* Используем flexbox */
+    align-items: center; /* Центрируем элементы по вертикали */
+    
 }
 
 .content-travel-description-media {          
     width: 60%;    
     background-color: #ECE7D6;
     overflow: auto;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-right: 20px;    
     min-height: 1140px;  
     height: 100%;  
@@ -48,10 +58,6 @@
     height: 35px;
     width: 105px;
   }
-.content-travel-description-media {
-    max-width: 1400px;
-    max-height: 720px;
-}
 /* Слайдер */
 .slides img {
     width: 100%; /* Установка ширины изображения на 100% от ширины контейнера */
@@ -73,7 +79,9 @@
 }
 .media-input  {
     position: relative;
-    margin-top: 50px;
+    width: 60%;
+    margin-top: 10px;
+    margin-left: 10px;
 }
 .slider .slides li .caption {
     position: absolute;
@@ -83,4 +91,32 @@
     left: auto;    /* Аннулировать стандартное горизонтальное позиционирование */
     text-align: right; /* Выравнивание текста по правому краю */
 
+}
+/* иконка редактирования */
+.edit-button-point {
+    position: relative;
+    left: 0%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+    margin-left: 0px; /* Добавляем немного пространства между текстом и кнопкой */
+    margin-top: 0px; /* Добавляем немного пространства между текстом и кнопкой */
+}
+.edit-button-point:active,
+.edit-button-point:focus {
+    background-color: transparent; /* Устанавливаем прозрачный фон */
+    outline: none; /* Убираем контур при фокусе */
+}
+
+#submitButton-description-title, #submitButton-description-name {
+    display: none; /* Изначально скрыта */
+}
+#title-field {
+    border-bottom: none; /* Убираем подчеркивание */
+    /* Другие стили, которые нужно скрыть */
+}
+#description-field {
+    border-bottom: none; /* Убираем подчеркивание */
+    /* Другие стили, которые нужно скрыть */
 }

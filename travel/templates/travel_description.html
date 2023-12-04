@@ -10,40 +10,8 @@
 
 {% block travel_detail_content %}
   {{ block.super }}
-  <div class="content-travel-description">
-    <div class="content-travel-description-text"> 
-      <div class="content-travel-description-text-form">     
-        <form method="post" action="URL_обработчика_данных">
-          {% csrf_token %}      
-            <div class="input-field col s12">
-              {{ form.title_descriptiond.label_tag }}
-              {{ form.title_descriptiond }}              
-            </div>  
-            <div class="input-field col s12">
-              {{ form.name_descriptiond.label_tag }}
-              {{ form.name_descriptiond }}
-            </div> 
-          <button class="waves-light btn custom-btn">
-            <span id = 'btndescription' class="waves-light btn__label">Сохранить</span>
-          </button>
-        </form>
-      </div>          
-    </div>
-
-    <div class="content-travel-description-media">
-      <div class="slider">
-        <ul class="slides" id="imageSlider">
-            <!-- Пример слайда с изображением и описанием -->
-            {% for photo in photos %}
-            <li>
-                <img src="{{ photo.image_url }}"> <!-- URL изображения -->
-                <div class="caption right-align">
-                    <h3>{{ photo.description }}</h3> <!-- Описание фотографии -->
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-      </div>
+  <div class="content-travel-description">    
+    <div class="content-travel-description-text">
       <div class="media-input">
         <ul class="collapsible">
           <li id="li">
@@ -55,7 +23,7 @@
               <form id="addPointForm" method="post" action="{% url 'travel:add_media_travel' travel.travelplan_id %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="collapsible-input_text">
-                  <input id="input_text" type="text" class="input-point" name="namepoint" placeholder="Укажите название для фотографии" data-length="35">
+                  <input id="title-text" type="text" class="input-point" name="namepoint" placeholder="Укажите название для фотографии" data-length="150">
                 </div>                            
                 <div class="collapsible-input_file">
                   <div class="file-field input-field">
@@ -73,7 +41,42 @@
             </div>
           </li>          
         </ul>
-      </div>        
+      </div>
+      <div class="content-travel-description-text2">
+        <form id="description-form">
+          <div class="content-travel-description-text2-title">
+            <button type="button" id="edit-title-button" class="edit-button-point">                
+              <img id="delete-button-icons-point" src="/static/travel/img/edit.svg">
+              <span class="tooltip-text">Редактировать</span>
+            </button>
+            <input type="text" id="title-field" class="input-point" value="" placeholder="Добавьте заголовок" data-length="150" readonly>  
+          </div>
+          <button type="submit" id="submitButton-description-title">Сохранить</button>
+          <div class="content-travel-description-text2-title">
+            <button type="button" id="edit-description-button" class="edit-button-point">                
+              <img id="delete-button-icons-point" src="/static/travel/img/edit.svg">
+              <span class="tooltip-text">Редактировать</span>
+            </button>
+            <textarea  id="description-field" class="materialize-textarea" name="description" placeholder="Добавьте описание" data-length="6000" readonly></textarea>
+          </div>
+          <button type="submit" id="submitButton-description-name">Сохранить</button>                         
+        </form>          
+      </div>
+    </div>
+    <div class="content-travel-description-media">      
+      <div class="slider">
+        <ul class="slides" id="imageSlider">
+            <!-- Пример слайда с изображением и описанием -->
+            {% for photo in photos %}
+            <li>
+                <img src="{{ photo.image_url }}"> <!-- URL изображения -->
+                <div class="caption right-align">
+                    <h3>{{ photo.description }}</h3> <!-- Описание фотографии -->
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+      </div>          
     </div>
   </div>
 
@@ -82,21 +85,37 @@
 {% block travel_detail_scripts %}
     {{ block.super }}
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var textArea2 = document.querySelector('#textarea2');
-    var textArea3 = document.querySelector('#textarea3');
-    var textArea4 = document.querySelector('#textarea4');  
-     
-    if (textArea2) M.CharacterCounter.init(textArea2);
-    if (textArea3) M.CharacterCounter.init(textArea3);
-    if (textArea4) M.CharacterCounter.init(textArea4);
-  
+  function makeEditable_title(fieldId) {
+    var field = document.getElementById(fieldId);
+    field.readOnly = false;    
+    M.CharacterCounter.init(field); // Инициализируем счетчик символов для поля
+    document.getElementById('submitButton-description-title').style.display = 'block'; // Показываем кнопку
+    field.focus(); // Активируем курсор в поле
+}
+
+function makeEditable_name(fieldId) {
+    var field = document.getElementById(fieldId);
+    field.readOnly = false;
+    M.CharacterCounter.init(field); // Инициализируем счетчик символов для поля
+    document.getElementById('submitButton-description-name').style.display = 'block'; // Показываем кнопку
+    field.focus(); // Активируем курсор в поле
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('edit-title-button').addEventListener('click', () => makeEditable_title('title-field'));
+    document.getElementById('edit-description-button').addEventListener('click', () => makeEditable_name('description-field'));
+
+    // Другая инициализация Materialize, которая не зависит от редактирования
     var elems = document.querySelectorAll('.slider');
-    var instances = M.Slider.init(elems); // Инициализация без `options`, если нет специальных настроек
+    M.Slider.init(elems);
 
     var elems = document.querySelectorAll('.collapsible');
-    var instances = M.Collapsible.init(elems);
-  });
+    M.Collapsible.init(elems);
+
+    var title_text = document.querySelector('#title-text');
+
+    if (title_text) M.CharacterCounter.init(title_text);
+});
 </script>
 
 {% endblock %}
