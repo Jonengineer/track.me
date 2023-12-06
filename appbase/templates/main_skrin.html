@@ -6,15 +6,124 @@
     <!-- Стили специфичные для профиля пользователя -->
     <link rel="stylesheet" type="text/css" href="{% static 'appbase/style.css' %}">    
     <link rel="icon" href="{% static 'favicon.ico' %}">
+   
+    
 {% endblock %}
 
 {% block content %}
-<div class="main_pic">
-    <div class="main_text"> <h1>Создай<br>свое путешествие </h2> </div></div>
-<div class="main_menue">
-</div>
-{% endblock %}
+{% comment %} <div class="carousel carousel-slider center">
+    <div class="carousel-fixed-item center">
+        
+    </div>
+    <div class="carousel-item" href="#one!">  <img src="/static/appbase/img/mon.jpg">
     
+        <div class="content"> 
+      <h2>Создай своё путешествие!</h2>
+      <p class="white-text">Посещай города и страны, наноси на карту свои маршруты, оставь путешествие навсегда в своей памяти</p>  
+      <a class="btn white black-text darken-text-2">Присоединиться</a>
+      
+     
+    </div>
+    </div>
+    <div class="carousel-item" href="#two!"> <img src="/static/appbase/img/pic2.jpg">
+      <h2>Second Panel</h2>
+      <p class="white-text">This is your second panel</p>
+    </div>
+    <div class="carousel-item white-text" href="#three!"> <img src="/static/appbase/img/pic6.jpg">
+      <h2>Third Panel</h2>
+      <p class="white-text">This is your third panel</p>
+    </div>
+    <div class="carousel-item white-text" href="#four!"><img src="/static/appbase/img/pic5.jpg">
+      <h2>Fourth Panel</h2>
+      <p class="white-text">This is your fourth panel</p>
+    </div>
+  </div> {% endcomment %}
+  <div class="carousel-container">
+  <div class="carousel">
+    <div class="carousel-item" href="#one!" dist="0" numVisible="1">
+      <div class="content"> 
+        <h2>Создай своё путешествие!</h2>
+        <p class="white-text">Посещай города и страны, наноси на карту свои маршруты, оставь путешествие навсегда в своей памяти</p>  
+        <a class="btn white black-text darken-text-2">Присоединиться</a>            
+      </div>
+      <div class="overlay"> </div>
+    </div>
+    <div class="carousel-item" href="#two!" dist="0" numVisible="1">
+      <div class="content"> 
+        <h2>Создай своё путешествие!</h2>
+        <p class="white-text">Посещай города и страны, наноси на карту свои маршруты, оставь путешествие навсегда в своей памяти</p>  
+        <a class="btn white black-text darken-text-2">Присоединиться</a>            
+      </div>
+      <div class="overlay"> </div>
+    </div>
+    <div class="carousel-item" href="#three!" dist="0" numVisible="1">
+      <div class="content"> 
+        <h2>Создай своё путешествие!</h2>
+        <p class="white-text">Посещай города и страны, наноси на карту свои маршруты, оставь путешествие навсегда в своей памяти</p>  
+        <a class="btn white black-text darken-text-2">Присоединиться</a>            
+      </div>
+      <div class="overlay"> </div>
+    </div>
+    <div class="carousel-item" href="#four!" dist="0" numVisible="1">
+      <div class="content"> 
+        <h2>Создай своё путешествие!</h2>
+        <p class="white-text">Посещай города и страны, наноси на карту свои маршруты, оставь путешествие навсегда в своей памяти</p>  
+        <a class="btn white black-text darken-text-2">Присоединиться</a>            
+      </div>
+      <div class="overlay"> </div>
+    </div>
+    <div class="carousel-item" href="#five!" dist="0" numVisible="1">
+      <div class="content"> 
+        <h2 class="black-text">Создай своё путешествие!</h2>
+        <p class="black-text">Посещай города и страны, наноси на карту свои маршруты, оставь путешествие навсегда в своей памяти</p>  
+        <a class="btn white black-text darken-text-2">Присоединиться</a>            
+      </div>
+      <div class="overlay"> </div>
+    </div>
+  </div>
+</div>
+      
+<div class="main_menue"></div>
+
+
+{% endblock %}
 
 {% block scripts %}
+{{ block.super }}
+ <!-- Подключение jQuery -->
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <!-- Подключение скриптов Materialize -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+ <script>
+  $(document).ready(function() {
+    // Инициализация карусели
+    var carousel = $('.carousel').carousel();
+
+    // Функция для переинициализации карусели
+    function reinitCarousel() {
+        // Уничтожаем текущую карусель
+        carousel.carousel('destroy');
+        // Пересоздаем карусель
+        carousel = $('.carousel').carousel();
+    }
+
+    // Переинициализация карусели при изменении размера окна
+    $(window).on('resize', function() {
+        reinitCarousel();
+    });
+
+    // Автоматическая прокрутка слайдов
+    setInterval(function() {
+        carousel.carousel('next');
+    }, 8000); // Интервал времени в миллисекундах для автоматической прокрутки
+});
+</script>
+      
+<!-- Подключение Bootstrap JS -->
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script> {% endcomment %}
+  
+
 {% endblock %}
+
+   
