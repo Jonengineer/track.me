@@ -386,7 +386,6 @@ def travel_description(request, travelplan_id):
         description__name_descriptiond__isnull=False
     ).exists()
     
-
     form = TravelDescriptionForm()
 
     # Получаем все связанные объекты description для данного travelplan
@@ -402,21 +401,26 @@ def travel_description(request, travelplan_id):
             description_photo = getattr(item.description, desc_field, '')
             if image_url:
                 photos.append({'image_url': image_url, 'description': description_photo})
-
+    
+    # Получаем первое описание (или None, если описаний нет)
+    first_description = descriptions.first()
+    
     # Создаем список для хранения данных
-    descriptions_data = []
-    for item in descriptions:
-        title = getattr(item.description, 'title_descriptiond', None)
-        name = getattr(item.description, 'name_descriptiond', None)
-        descriptions_data.append({'title': title, 'name': name})
+    if first_description:
+        title = getattr(first_description.description, 'title_descriptiond', None)
+        name = getattr(first_description.description, 'name_descriptiond', None)
+    else:
+        title = None
+        name = None
         
-    print(descriptions_data)    
+  
     return render(request, 'travel_description.html', {
         'travel': travel,
           'photos': photos,
             'form': form,
             'has_description': has_description,
-            'descriptions_data': descriptions_data,         
+            'title': title,
+            'name': name,        
         })
 
 @login_required

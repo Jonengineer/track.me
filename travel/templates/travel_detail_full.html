@@ -43,7 +43,7 @@
         <ul class="tabs tabs-transparent">
             <li class="tab">
                 <a href="{% url 'travel:travel_detail_chart' travelplan_id=travel.travelplan_id %}" 
-                class="{% if request.resolver_match.url_name == 'travel_detail_chart' or not request.resolver_match.url_name %}active{% endif %}">
+                class="{% if request.resolver_match.url_name == 'travel_detail_chart' %}active{% endif %}">
                     Маршрут
                 </a>
             </li>         

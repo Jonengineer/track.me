@@ -20,19 +20,7 @@
     flex-direction: column; /* Вертикальное расположение */
     margin-left: 0px;  
 }
-.content-travel-description-text2 {    
-    width: 90%;  
-    background-color: #ECE7D6;
-    overflow: auto;
-    min-height: 940px;
-    margin-left: 10px;  
-}
-.content-travel-description-text2-title {
-    display: flex; /* Используем flexbox */
-    align-items: center; /* Центрируем элементы по вертикали */
-    
-}
-
+/* Стили контейнера для картинок */
 .content-travel-description-media {          
     width: 60%;    
     background-color: #ECE7D6;
@@ -42,8 +30,22 @@
     min-height: 1140px;  
     height: 100%;  
 }
-/* Стили контейнера с ззаголовком */
+/* Стили контейнера для с формой */
+.content-travel-description-text2 {    
+    width: 90%;  
+    background-color: #ECE7D6;
+    overflow: auto;
+    min-height: 940px;
+    margin-left: 10px;  
+}
+/* Стили контейнера для текста описания и заголовка*/
+.content-travel-description-text2-title {
+    display: flex; /* Используем flexbox */
+    align-items: center; /* Центрируем элементы по вертикали */
+    
+}
 
+/* Стили контейнера с ззаголовком */
 .input-field>label {
     color: rgb(0, 0, 0);
     margin-top: 0px;
@@ -103,15 +105,7 @@
     margin-left: 0px; /* Добавляем немного пространства между текстом и кнопкой */
     margin-top: 0px; /* Добавляем немного пространства между текстом и кнопкой */
 }
-.edit-button-point:active,
-.edit-button-point:focus {
-    background-color: transparent; /* Устанавливаем прозрачный фон */
-    outline: none; /* Убираем контур при фокусе */
-}
-
-#submitButton-description-title, #submitButton-description-name {
-    display: none; /* Изначально скрыта */
-}
+/* Убираем подчеркивание полей инпут */
 #title-field {
     border-bottom: none; /* Убираем подчеркивание */
     /* Другие стили, которые нужно скрыть */
@@ -119,4 +113,40 @@
 #description-field {
     border-bottom: none; /* Убираем подчеркивание */
     /* Другие стили, которые нужно скрыть */
+}
+/* Кнопка отправки формы */
+#submitButton-description-name, #submitButton-description-title {
+    display: none; /* Изначально скрыта */  
+    background-color: #6F947F;
+    color: #ECE7D6;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-left: 75%;
+  }
+/* Всплывающий текст кнопки удаления */
+.tooltip-text-description {
+    visibility: hidden;
+    width: 120px;
+    background-color: #6F947F;
+    color: #ECE7D6;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 33px; /* Выравнивание по вертикали относительно кнопки */
+    left: 50%; /* Позиционирование слева от кнопки */
+    transform: translateY(-50%); /* Дополнительное выравнивание по вертикали */
+    margin-right: 5px; /* Отступ от кнопки */
+  }
+.edit-button-point:hover .tooltip-text-description {
+    visibility: visible;
+    opacity: 1;
+}
+.edit-button-point:active,
+.edit-button-point:focus {
+    background-color: transparent; /* Устанавливаем прозрачный фон */
+    outline: none; /* Убираем контур при фокусе */
 }

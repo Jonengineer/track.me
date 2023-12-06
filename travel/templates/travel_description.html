@@ -43,21 +43,22 @@
         </ul>
       </div>
       <div class="content-travel-description-text2">
-        <form id="description-form">
+        <form id="description-form" method="post" action="{% url 'travel:add_description_travel' travel.travelplan_id %}">
+          {% csrf_token %}
           <div class="content-travel-description-text2-title">
             <button type="button" id="edit-title-button" class="edit-button-point">                
               <img id="delete-button-icons-point" src="/static/travel/img/edit.svg">
-              <span class="tooltip-text">Редактировать</span>
+              <span class="tooltip-text-description">Редактировать</span>
             </button>
-            <input type="text" id="title-field" class="input-point" value="" placeholder="Добавьте заголовок" data-length="150" readonly>  
+            <input type="text" id="title-field" class="input-point" value="{{ title }}" name="title_descriptiond" placeholder="Добавьте заголовок" data-length="150" readonly>  
           </div>
           <button type="submit" id="submitButton-description-title">Сохранить</button>
           <div class="content-travel-description-text2-title">
             <button type="button" id="edit-description-button" class="edit-button-point">                
               <img id="delete-button-icons-point" src="/static/travel/img/edit.svg">
-              <span class="tooltip-text">Редактировать</span>
+              <span class="tooltip-text-description">Редактировать</span>
             </button>
-            <textarea  id="description-field" class="materialize-textarea" name="description" placeholder="Добавьте описание" data-length="6000" readonly></textarea>
+            <textarea  id="description-field" class="materialize-textarea" name="name_descriptiond" placeholder="Добавьте описание" data-length="6000" readonly>{{ name }}</textarea>
           </div>
           <button type="submit" id="submitButton-description-name">Сохранить</button>                         
         </form>          
@@ -79,11 +80,10 @@
       </div>          
     </div>
   </div>
-
 {% endblock %}
 
 {% block travel_detail_scripts %}
-    {{ block.super }}
+{{ block.super }}
 <script>
   function makeEditable_title(fieldId) {
     var field = document.getElementById(fieldId);
@@ -92,7 +92,6 @@
     document.getElementById('submitButton-description-title').style.display = 'block'; // Показываем кнопку
     field.focus(); // Активируем курсор в поле
 }
-
 function makeEditable_name(fieldId) {
     var field = document.getElementById(fieldId);
     field.readOnly = false;
@@ -100,7 +99,6 @@ function makeEditable_name(fieldId) {
     document.getElementById('submitButton-description-name').style.display = 'block'; // Показываем кнопку
     field.focus(); // Активируем курсор в поле
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('edit-title-button').addEventListener('click', () => makeEditable_title('title-field'));
     document.getElementById('edit-description-button').addEventListener('click', () => makeEditable_name('description-field'));
@@ -117,5 +115,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (title_text) M.CharacterCounter.init(title_text);
 });
 </script>
-
 {% endblock %}

@@ -6,6 +6,7 @@
     <!-- Стили специфичные для профиля пользователя -->
     <link rel="stylesheet" type="text/css" href="{% static 'appbase/style.css' %}">    
     <link rel="icon" href="{% static 'favicon.ico' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/> 
 {% endblock %}
 
 {% block content %}
@@ -13,8 +14,42 @@
     <div class="main_text"> <h1>Создай<br>свое путешествие </h2> </div></div>
 <div class="main_menue">
 </div>
+<div class="carousel carousel-slider center">
+    <div class="carousel-fixed-item center">
+      <a class="btn waves-effect white grey-text darken-text-2">button</a>
+    </div>
+    <div class="carousel-item red white-text" href="#one!">
+      <h2>First Panel</h2>
+      <p class="white-text">This is your first panel</p>
+    </div>
+    <div class="carousel-item amber white-text" href="#two!">
+      <h2>Second Panel</h2>
+      <p class="white-text">This is your second panel</p>
+    </div>
+    <div class="carousel-item green white-text" href="#three!">
+      <h2>Third Panel</h2>
+      <p class="white-text">This is your third panel</p>
+    </div>
+    <div class="carousel-item blue white-text" href="#four!">
+      <h2>Fourth Panel</h2>
+      <p class="white-text">This is your fourth panel</p>
+    </div>
+</div>
 {% endblock %}
     
 
 {% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>   
+<script src="https://unpkg.com/material-components-web@14.0.0/dist/material-components-web.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/js/jquery.tooltipster.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        var elems = document.querySelectorAll('.carousel');
+        var instances = M.Carousel.init(elems, {
+            fullWidth: true,
+            indicators: true
+        });
+    });
+</script>
 {% endblock %}
