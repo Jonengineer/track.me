@@ -16,6 +16,11 @@ from django.views.decorators.http import require_POST
 import logging
 from PIL import Image
 from django import forms
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import subprocess
 
 logger = logging.getLogger(__name__)
 
@@ -352,3 +357,24 @@ def delete_travel_point(request, point_trek_id):
     travel_point.delete()
 
     return HttpResponseRedirect(reverse('travel:travel_detail_chart', args=[travelplan_id]))
+
+@login_required
+@require_POST
+def upload_video(request):
+    video = request.FILES.get('video')
+    if not video:
+        return JsonResponse({'status': 'error', 'message': 'No video file provided'}, status=400)
+    try:
+        # Генерация уникального имени файла
+        file_name = default_storage.save(os.path.join('video', video.name), ContentFile(video.read()))
+        file_url = default_storage.url(file_name)
+        return JsonResponse({'status': 'success', 'url': file_url})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+
+@login_required
+def travel_description(request, travelplan_id):
+    # Функция для передачи деталей путешевствия в шаблон
+    travel = get_object_or_404(travelplan, pk=travelplan_id)
+    return render(request, 'travel_description.html', {'travel': travel})
