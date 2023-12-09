@@ -49,37 +49,90 @@
   margin-left: 0px;
 }
 
-.main_text {
-  margin-top: 50px;
-  height: 800px;
-  display: flex;
-  justify-content: center; /* Центрирование содержимого по горизонтали */
-  align-items: center; /* Центрирование содержимого по вертикали */
-}
-.main_text h1 {
- 
-  height: 200px;
-  color: #ffffff; /* Цвет текста */
-  font-size: 8vw; /* Размер шрифта */
-  font-weight:600; /* Настройки шрифта */
-  font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  text-shadow: 4px 4px 12px #3C2C13;
-  margin: 60px 0 0;
-  white-space: pre-line; /* Разрешить использование переносов строк */
- text-indent: -50px;
- line-height: 1;
-}
-
-.main_pic {
-  background-image: url(../appbase/img/mon.jpg);
-  height: 950px;
+.carousel .carousel-item {
+  width: 100%;
+  height: 100%; /* Высота карусели */
   background-size: cover;
   background-position: center;
+  display: flex;
+  max-width: 100%;
+  overflow: hidden;
+  display: block;
+}
 
+.carousel-item[href="#one!"] {
+  background-image: url(img/mon.jpg);
+}
+.carousel-item[href="#two!"] {
+  background-image: url(img/pic2.jpg);
+}
+.carousel-item[href="#three!"] {
+  background-image: url(img/pic5.jpg);
+}
+.carousel-item[href="#four!"] {
+  background-image: url(img/pic6.jpg);
   
 }
-.main_menue {
-  background: linear-gradient(180deg, #1B1510 12%, rgb(111, 98, 83) 35%, rgb(236, 231, 214) 94%);
-  box-shadow: 100px 100px 100px rgba(0, 0, 0, 0.3);
-height: 800px;
+.carousel-item[href="#five!"] {
+  background-image: url(img/sea.jpg);
+  
+}
+.carousel {
+  height: 800px;
+  overflow: hidden;
+  margin: auto;
+  
+ 
+}
+.carousel-container {
+  max-width: 100%;
+  height: 800px; /* Высота карусели */
+  overflow: hidden;
+  display: flex;
+  justify-content: center; /* Выравнивание элементов по горизонтали */
+  align-items: center; /* Выравнивание элементов по вертикали */
+  display: flex;
+ 
+}
+.content {
+  position: absolute;
+  
+  left: 10%;
+  bottom: 38%;
+}
+.content h2 {
+  color: white;
+  text-align: left;
+  font-size: 50px;
+}
+.carousel-container .carousel .carousel-item .content h2 {
+  font-size: 30px; /* Измените размер шрифта по вашему усмотрению */
+}
+
+.content p {
+  text-align: left;
+  font-size: 20px;
+  max-width: 600px;
+}
+.content a.btn {
+  display: block;
+  text-align: left;
+  width: fit-content;
+   opacity: 0.9;
+   
+}
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  
+  background: black;
+  opacity: 0.2;
+}
+
+.container {
+  margin:0;
+  padding: 10px;
+  width: 100%;
+  max-width: 100%;
 }
