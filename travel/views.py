@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .form import TravelPlanformTrue, PointTrekForm, TravelDescriptionForm
-from .models import travelplan, traveltype, Friendship, travelplan_geo, plpoint_trek, point_trek, description, travelplandescription
+from .form import TravelPlanformTrue, PointTrekForm, TravelDescriptionForm, TravelFinanceForm
+from .models import travelplan, traveltype, Friendship, travelplan_geo, plpoint_trek, point_trek, description, travelplandescription, travelplanexpense, expense, typeexpense
 import os
 from django.conf import settings
 from django.http import HttpResponse
@@ -23,6 +23,7 @@ from django.core.files.base import ContentFile
 import subprocess
 import shutil
 from django.core.files.storage import FileSystemStorage
+from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
@@ -506,8 +507,61 @@ def add_description_travel(request, travelplan_id):
             # Создаем связь только если это новое описание
             travelplandescription.objects.create(travelplan=travel, description=description_obj)
             # Перенаправляем пользователя после успешного сохранения
-            return render(request, 'travel_description.html', {'travel': travel, 'description': description_obj})
+            return redirect('travel:travel_description', travelplan_id=travelplan_id)
     else:        
         form = TravelDescriptionForm(request.POST)  # Форма с данными
 
-    return render(request, 'travel_description.html', {'travel': travel, 'form': form})
+    return redirect('travel:travel_description', travelplan_id=travelplan_id)
+
+@login_required
+def travel_finance(request, travelplan_id):
+    # Функция для передачи деталей путешевствия в шаблон
+    travel_plan = get_object_or_404(travelplan, pk=travelplan_id)
+
+    form = TravelFinanceForm()
+
+    # Получение связанных точек путешествия
+    expense_position = travelplanexpense.objects.filter(travelplan=travel_plan).select_related('expense')
+    points = [tp.expense for tp in expense_position]  
+
+    return render(request, 'travel_finance.html', {'travel': travel_plan, 'form': form, 'expense_position': points})
+
+@login_required
+@require_POST
+def add_travel_finance(request, travelplan_id):
+    # Получение объекта travelplan
+    travel = get_object_or_404(travelplan, pk=travelplan_id)
+
+    # Получение списка названий расходов и сумм из POST-запроса
+    nameexpenses = request.POST.getlist('nameexpense[]')
+    amounts = request.POST.getlist('amount[]')
+    typeexpense_id = int(request.POST.get('typeexpense'))
+
+    # Получение объекта typeexpense
+    typeexpense_instance = typeexpense.objects.get(typeexpense_id=typeexpense_id)
+
+    is_valid = True
+    expenses_to_save = []
+
+    for nameexpense_valid, amount_valid in zip(nameexpenses, amounts):
+        # Создание временного объекта expense
+        temp_expense = expense(nameexpense=nameexpense_valid, amount=amount_valid)
+        # Проверка данных с помощью формы
+        form = TravelFinanceForm({'nameexpense': nameexpense_valid, 'amount': amount_valid})
+        if form.is_valid():
+            temp_expense.typeexpense = typeexpense_instance
+            expenses_to_save.append(temp_expense)
+        else:
+            is_valid = False
+            break
+
+    if is_valid:
+        with transaction.atomic():
+            for expense_obj in expenses_to_save:
+                expense_obj.save()
+                travelplanexpense.objects.create(travelplan=travel, expense=expense_obj)
+        messages.success(request, 'Данные успешно добавлены!')
+    else:
+        messages.error(request, 'Ошибка при добавлении данных!')
+
+    return redirect('travel:travel_finance', travelplan_id=travelplan_id)

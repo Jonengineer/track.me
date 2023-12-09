@@ -1,5 +1,5 @@
 from django import forms
-from .models import travelplan, traveltype, point_trek, description, travelplandescription
+from .models import travelplan, traveltype, point_trek, description, travelplandescription, expense, typeexpense
 import json
 from PIL import Image
 from django.conf import settings
@@ -58,3 +58,20 @@ class TravelDescriptionForm(forms.ModelForm):
             'name_descriptiond': forms.Textarea(attrs={'class': 'materialize-textarea', 'id': 'textarea4', 'data-length': '6000', 'placeholder': 'Добавьте описание'}),
         }
         
+class TravelFinanceForm(forms.ModelForm):    
+    
+    class Meta:
+        model = expense
+        fields = ['amount', 'nameexpense' ]  # Обновляем список полей
+        widgets = {            
+            'amount': forms.NumberInput(attrs={
+                'class': 'input-point', 
+                'id': 'input_amount', 
+                'step': '0.01',  # Шаг для числовых значений                
+            }),
+            'nameexpense': forms.TextInput(attrs={
+                'class': 'input-point', 
+                'id': 'input_nameexpense', 
+                'data-length': '100'
+            }),
+        }

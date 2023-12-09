@@ -103,16 +103,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('edit-title-button').addEventListener('click', () => makeEditable_title('title-field'));
     document.getElementById('edit-description-button').addEventListener('click', () => makeEditable_name('description-field'));
 
-    // Другая инициализация Materialize, которая не зависит от редактирования
-    var elems = document.querySelectorAll('.slider');
-    M.Slider.init(elems);
-
     var elems = document.querySelectorAll('.collapsible');
     M.Collapsible.init(elems);
 
     var title_text = document.querySelector('#title-text');
 
     if (title_text) M.CharacterCounter.init(title_text);
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var elems = document.querySelectorAll('.slider');
+  var options = {
+      indicators: true // Включение индикаторов
+  };
+  M.Slider.init(elems, options);
 });
 </script>
 {% endblock %}

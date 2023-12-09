@@ -34,6 +34,7 @@ class travelplan(models.Model):
     total_ascent = models.FloatField(null=True, blank=True)
     total_descent = models.FloatField(null=True, blank=True)
     travelplan_geo = models.ForeignKey('travelplan_geo', on_delete=models.CASCADE, null=False)
+    currency = models.CharField(max_length=30, null=False)
 
     class Meta:
         managed = True
@@ -77,9 +78,9 @@ class booking(models.Model):
     
 class expense(models.Model):
     expense_id = models.AutoField(primary_key=True)
-    typeexpense = models.CharField(max_length=30, null=False)
-    amount = models.DecimalField(max_digits=10, decimal_places=2, null=False)
-    currency = models.CharField(max_length=30, null=False)    
+    typeexpense = models.ForeignKey('typeexpense', on_delete=models.CASCADE, related_name='expenses')
+    nameexpense = models.CharField(max_length=100, null=False)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=False)        
 
     class Meta:
         managed = True
@@ -88,6 +89,18 @@ class expense(models.Model):
     def __str__(self):
         return f"Expense {self.expense_id}"
     
+class typeexpense(models.Model):
+    typeexpense_id = models.AutoField(primary_key=True)    
+    nametypeexpense = models.CharField(max_length=100, null=False)    
+
+    class Meta:
+        managed = True
+        db_table = 'typeexpense' 
+    
+    def __str__(self):
+        return f"Expense {self.typeexpense_id, self.nametypeexpense}"
+
+       
 class sight(models.Model):
     sight_id = models.AutoField(primary_key=True)
     coordinates = models.PointField(geography=True, null=False)

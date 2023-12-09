@@ -16,4 +16,6 @@ urlpatterns = [
     path('travel_description/<int:travelplan_id>/', views.travel_description, name='travel_description'),
     path('add_media_travel/<int:travelplan_id>/', views.add_media_travel, name='add_media_travel'),
     path('add_description_travel/<int:travelplan_id>/', views.add_description_travel, name='add_description_travel'),
+    path('travel_finance/<int:travelplan_id>/', views.travel_finance, name='travel_finance'),
+    path('add_travel_finance/<int:travelplan_id>/', views.add_travel_finance, name='add_travel_finance'),
 ]

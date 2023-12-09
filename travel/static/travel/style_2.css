@@ -150,3 +150,100 @@
     background-color: transparent; /* Устанавливаем прозрачный фон */
     outline: none; /* Убираем контур при фокусе */
 }
+
+/* Стили страницы с расходами */
+/* Стили контейнера с ззаголовком */
+.content-travel-finance {
+    display: flex;
+    position: relative;
+    flex-direction: row; /* Вертикальное расположение */
+    margin-left: 66px;
+    width: calc(100% - 66px);  
+    background-color: #ECE7D6;
+    overflow: auto;
+    min-height: 1040px;  
+    height: 100%;  
+}
+/* Стили модального окна */
+.modal {
+    position: fixed; /* Используйте fixed вместо absolute для позиционирования относительно окна браузера */
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 400px; /* или любая другая ширина по вашему усмотрению */
+    min-height: 200px; /* минимальная высота */
+    height: 600px;
+    background: #ECE7D6;
+    padding: 0 !important; /* Убирает внутренние отступы */
+    margin: 0; /* Убирает внешние отступы */
+    overflow-y: auto;
+}
+/* Стили модального окна */
+.modal-content {
+    background: #ECE7D6;
+    padding: 0 !important; /* Убирает внутренние отступы */
+    margin: 0; /* Убирает внешние отступы */
+    max-height: 600px;
+    overflow-y: auto;
+}
+/* Стили модального окна */
+#fieldsContainer {
+    display: flex;    
+    flex-direction: column; /* Изменение оси на вертикальную */
+    overflow-y: auto;
+}
+.modal-content-nameexpense, .modal-content-amount {
+    margin-bottom: 10px; /* Отступ между элементами */
+}
+/* Стили контейнера общего для имени и суммы затрат */
+.modal-content-group {
+    display: flex;    
+    justify-content: space-between; /* Распределение элементов в строке с пространством между ними */
+    margin-bottom: 10px; /* Отступ снизу для каждой группы */
+}
+/* Стили модального окна */
+.modal-content-nameexpense {
+    flex: 3; /* Больше места для этого контейнера */
+    margin-right: 10px;
+}
+/* Стили модального окна */
+.modal-content-amount {
+    flex: 1; /* Больше места для этого контейнера */
+}
+/* Стили для кнопки модального окна */
+.modal-content-btn {
+    display: flex;
+    justify-content: flex-end; /* Выравнивает кнопку по правому краю */
+}
+#submitButton, #addMoreButton {  
+    background-color: #6F947F;
+    color: #ECE7D6;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+ #addMoreButton {
+    margin-right: 10px;
+}  
+/* Стили текста в полях */
+.input-nameexpense::placeholder {
+    color: rgb(0, 0, 0); /* Цвет текста плейсхолдера */
+}
+.input-amount::placeholder {
+    color: rgb(0, 0, 0); /* Цвет текста плейсхолдера */
+}
+.bold-title {
+    font-weight: bold;
+}
+/* Стили контейнера с кнопкой вызова модального окна */
+.dropdown-trigger {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+/* Стили для уведомлений */
+.custom-error {
+    background-color: #F44336;
+
+  }
