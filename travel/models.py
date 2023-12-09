@@ -20,10 +20,9 @@ class travelplan(models.Model):
     territory = models.CharField(max_length=100, null=False)
     datestart = models.DateTimeField(null=False)
     datefinish = models.DateTimeField(null=False)
-    quantitydays = models.IntegerField(null=False)
-    description = models.CharField(max_length=1000)
+    quantitydays = models.IntegerField(null=False)    
     traveltype = models.ForeignKey('traveltype', on_delete=models.CASCADE, null=False)    
-    image = models.CharField(max_length=300, null=True, blank=True)
+    image = models.CharField(max_length=200, null=True, blank=True)
     user = models.ForeignKey('user.user', on_delete=models.CASCADE, null=False)
     is_public = models.BooleanField(default=False)
     friends_only = models.BooleanField(default=False)
@@ -35,6 +34,7 @@ class travelplan(models.Model):
     total_ascent = models.FloatField(null=True, blank=True)
     total_descent = models.FloatField(null=True, blank=True)
     travelplan_geo = models.ForeignKey('travelplan_geo', on_delete=models.CASCADE, null=False)
+    currency = models.CharField(max_length=30, null=False)
 
     class Meta:
         managed = True
@@ -78,9 +78,9 @@ class booking(models.Model):
     
 class expense(models.Model):
     expense_id = models.AutoField(primary_key=True)
-    typeexpense = models.CharField(max_length=30, null=False)
-    amount = models.DecimalField(max_digits=10, decimal_places=2, null=False)
-    currency = models.CharField(max_length=30, null=False)    
+    typeexpense = models.ForeignKey('typeexpense', on_delete=models.CASCADE, related_name='expenses')
+    nameexpense = models.CharField(max_length=100, null=False)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=False)        
 
     class Meta:
         managed = True
@@ -89,6 +89,18 @@ class expense(models.Model):
     def __str__(self):
         return f"Expense {self.expense_id}"
     
+class typeexpense(models.Model):
+    typeexpense_id = models.AutoField(primary_key=True)    
+    nametypeexpense = models.CharField(max_length=100, null=False)    
+
+    class Meta:
+        managed = True
+        db_table = 'typeexpense' 
+    
+    def __str__(self):
+        return f"Expense {self.typeexpense_id, self.nametypeexpense}"
+
+       
 class sight(models.Model):
     sight_id = models.AutoField(primary_key=True)
     coordinates = models.PointField(geography=True, null=False)
@@ -129,6 +141,54 @@ class point_trek(models.Model):
     def __str__(self):
         return f"Point {self.point_trek_id}"
 
+class Friendship(models.Model):
+    user1 = models.ForeignKey('user.user', on_delete=models.CASCADE, related_name="friendships1")
+    user2 = models.ForeignKey('user.user', on_delete=models.CASCADE, related_name="friendships2")
+
+class description(models.Model):
+    descriptiond_id = models.AutoField(primary_key=True)
+    title_descriptiond = models.CharField(max_length=100)
+    name_descriptiond = models.CharField(max_length=6000)
+    media_1 = models.CharField(max_length=200, null=True, blank=True)
+    description_media_1 = models.CharField(max_length=200, null=True, blank=True)
+    media_2 = models.CharField(max_length=200, null=True, blank=True)
+    description_media_2 = models.CharField(max_length=200, null=True, blank=True)
+    media_3 = models.CharField(max_length=200, null=True, blank=True)
+    description_media_3 = models.CharField(max_length=200, null=True, blank=True)
+    media_4 = models.CharField(max_length=200, null=True, blank=True)
+    description_media_4 = models.CharField(max_length=200, null=True, blank=True)
+    media_5 = models.CharField(max_length=200, null=True, blank=True)
+    description_media_5 = models.CharField(max_length=200, null=True, blank=True)
+    media_6 = models.CharField(max_length=200, null=True, blank=True)
+    description_media_6 = models.CharField(max_length=200, null=True, blank=True)
+    media_7 = models.CharField(max_length=200, null=True, blank=True)
+    description_media_7 = models.CharField(max_length=200, null=True, blank=True)
+    media_8 = models.CharField(max_length=200, null=True, blank=True)
+    description_media_8 = models.CharField(max_length=200, null=True, blank=True)
+    media_9 = models.CharField(max_length=200, null=True, blank=True)
+    description_media_9 = models.CharField(max_length=200, null=True, blank=True)
+    media_10 = models.CharField(max_length=200, null=True, blank=True)
+    description_media_10 = models.CharField(max_length=200, null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'description' 
+    
+    def __str__(self):
+        return f"Description {self.description_id}"
+
+#Дальше идут таблицы многие ко многим
+
+class travelplandescription(models.Model):
+    travelplan = models.ForeignKey('travelplan', on_delete=models.CASCADE)
+    description = models.ForeignKey('description', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('travelplan', 'description')
+
+    def __str__(self):
+        return f"Travel Plan Sight ({self.travelplan.travelplan_id}, {self.description.descriptiond_id})"
+
 class plpoint_trek(models.Model):
     travelplan = models.ForeignKey('travelplan', on_delete=models.CASCADE)
     point_trek = models.ForeignKey('point_trek', on_delete=models.CASCADE)
@@ -138,13 +198,6 @@ class plpoint_trek(models.Model):
 
     def __str__(self):
         return f"Travel Plan Sight ({self.travelplan.travelplan_id}, {self.point_trek.point_trek_id})"
-
-    
-class Friendship(models.Model):
-    user1 = models.ForeignKey('user.user', on_delete=models.CASCADE, related_name="friendships1")
-    user2 = models.ForeignKey('user.user', on_delete=models.CASCADE, related_name="friendships2")
-
-#Дальше идут таблицы многие ко многим
 
 class travelplansight(models.Model):
     travelplan = models.ForeignKey('travelplan', on_delete=models.CASCADE)
@@ -156,7 +209,6 @@ class travelplansight(models.Model):
     def __str__(self):
         return f"Travel Plan Sight ({self.travelplan.travelplan_id}, {self.sight.sight_id})"
 
-
 class travelplanexpense(models.Model):
     travelplan = models.ForeignKey('travelplan', on_delete=models.CASCADE)
     expense = models.ForeignKey('expense', on_delete=models.CASCADE)
@@ -166,7 +218,6 @@ class travelplanexpense(models.Model):
 
     def __str__(self):
         return f"Travel Plan Expense ({self.travelplan.travelplan_id}, {self.expense.expense_id})"
-
 
 class travelplanticket(models.Model):
     travelplan = models.ForeignKey('travelplan', on_delete=models.CASCADE)

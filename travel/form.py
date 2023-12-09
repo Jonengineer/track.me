@@ -1,13 +1,16 @@
 from django import forms
-from .models import travelplan, traveltype, point_trek
+from .models import travelplan, traveltype, point_trek, description, travelplandescription, expense, typeexpense
 import json
+from PIL import Image
+from django.conf import settings
+import os
 
 
 class TravelPlanformTrue(forms.ModelForm):
     # Создание путешевствий
     class Meta:
         model = travelplan
-        fields = ['country', 'territory', 'datestart', 'datefinish', 'description', 'traveltype', 'gpxtrek']
+        fields = ['country', 'territory', 'datestart', 'datefinish', 'traveltype', 'gpxtrek']
     gpxtrek = forms.FileField(required=False, label='GPX Trek (GPX)',
                               widget=forms.FileInput(attrs={'accept': '.gpx'}))
     
@@ -44,3 +47,31 @@ class PointTrekForm(forms.ModelForm):
             return geojson_data
         except ValueError:
             raise forms.ValidationError('Invalid coordinates format. Please use "latitude, longitude."')
+        
+class TravelDescriptionForm(forms.ModelForm):
+
+    class Meta:
+        model = description
+        fields = ['title_descriptiond', 'name_descriptiond']  # Обновляем список полей
+        widgets = {
+            'title_descriptiond': forms.Textarea(attrs={'class': 'materialize-textarea', 'id': 'textarea3', 'data-length': '100', 'placeholder': 'Добавьте заголовок'}),
+            'name_descriptiond': forms.Textarea(attrs={'class': 'materialize-textarea', 'id': 'textarea4', 'data-length': '6000', 'placeholder': 'Добавьте описание'}),
+        }
+        
+class TravelFinanceForm(forms.ModelForm):    
+    
+    class Meta:
+        model = expense
+        fields = ['amount', 'nameexpense' ]  # Обновляем список полей
+        widgets = {            
+            'amount': forms.NumberInput(attrs={
+                'class': 'input-point', 
+                'id': 'input_amount', 
+                'step': '0.01',  # Шаг для числовых значений                
+            }),
+            'nameexpense': forms.TextInput(attrs={
+                'class': 'input-point', 
+                'id': 'input_nameexpense', 
+                'data-length': '100'
+            }),
+        }
