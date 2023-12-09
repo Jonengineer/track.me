@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .form import TravelPlanformTrue, PointTrekForm
-from .models import travelplan, traveltype, Friendship, travelplan_geo, plpoint_trek, point_trek
+from .form import TravelPlanformTrue, PointTrekForm, TravelDescriptionForm, TravelFinanceForm
+from .models import travelplan, traveltype, Friendship, travelplan_geo, plpoint_trek, point_trek, description, travelplandescription, travelplanexpense, expense, typeexpense
 import os
 from django.conf import settings
 from django.http import HttpResponse
@@ -21,6 +21,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import subprocess
+import shutil
+from django.core.files.storage import FileSystemStorage
+from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
@@ -38,28 +41,7 @@ def create_travel_plan(request):
             # Создаем экземпляр модели travelplan с данными из формы
             travel_plan = form.save(commit=False)
 
-            # Получаем файл GPX из формы
-            gpx_file = request.FILES.get('gpxtrek')
-
-            # Получаем файл JPX из формы
-            image_file = request.FILES.get('image')
-            if image_file:
-                if not image_file.name.endswith('.jpg'):
-                    messages.error(
-                        request, "Неверный формат файла. Пожалуйста, загрузите jpg файл.")
-                    return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
-                try:
-                    # Сохраняем изображение в папку
-                    image_path = import_imge(image_file)
-                    travel_plan.image = image_path
-                    # Дальнейшая обработка
-                except Exception as e:
-                    # Обработка исключения
-                    messages.error(
-                        request, "Произошла ошибка при обработке jpg файла: {}".format(e))
-                    return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
-
-             # Обрабатываем файл GPX, считываем его содержимое
+            # Обрабатываем файл GPX, считываем его содержимое
             gpx_file = request.FILES.get('gpxtrek')
             if gpx_file:
                 if not gpx_file.name.endswith('.gpx'):
@@ -76,7 +58,7 @@ def create_travel_plan(request):
                     messages.error(
                         request, "Произошла ошибка при обработке GPX файла: {}".format(e))
                     return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
-
+            
             # Вызываем gpx_data_travel_static для анализа данных GPX
             gpx_statistics = parse_gpx_data(gpxtrek)
 
@@ -122,6 +104,28 @@ def create_travel_plan(request):
 
             # Сохраняем экземпляр модели в базе данных
             travel_plan.save()
+
+            # Получаем файл JPG из формы
+            image_file = request.FILES.get('image')
+            if image_file:
+                if not image_file.name.endswith('.jpg'):
+                    messages.error(
+                        request, "Неверный формат файла. Пожалуйста, загрузите jpg файл.")
+                    # Удаляем только что созданный travel_plan, так как процесс создания не завершен
+                    travel_plan.delete()
+                    return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
+                try:
+                    # Сохраняем изображение в папку
+                    image_path = import_imge(image_file, travel_plan.travelplan_id)
+                    travel_plan.image = image_path
+                    travel_plan.save()  # Обновляем объект с изображением
+                    # Дальнейшая обработка
+                except Exception as e:
+                    # Обработка исключения
+                    messages.error(request, "Произошла ошибка при обработке jpg файла: {}".format(e))
+                    travel_plan.delete()  # Удаляем только что созданный travel_plan
+                    return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
+                
             messages.success(request, "Путешевствие создано успешно!")
             return redirect('travel:get_travel_plan')
 
@@ -132,14 +136,14 @@ def create_travel_plan(request):
     # Отображаем шаблон с формой, передавая форму в контексте
     return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
 
-def import_imge(file, output_size=(400, 267)):
+def import_imge(file, travelplan_id, output_size=(400, 267)):
     # Импорт изображений для карточки путешевствия
     if file is None:
         return None
     try:
         # Путь и имя файла для сохранения
-        base_name = os.path.splitext(file.name)[0]  # без расширения
-        file_name = os.path.join('travelfoto', file.name)
+        folder_name = os.path.join('travelfoto', str(travelplan_id))  # Папка с ID путешествия
+        file_name = os.path.join(folder_name, file.name)
         file_path = os.path.join(settings.MEDIA_ROOT, file_name)
 
         # Создаем директорию, если она не существует
@@ -156,8 +160,7 @@ def import_imge(file, output_size=(400, 267)):
         quality_val = 85
         image.save(file_path, image.format, quality=quality_val, optimize=True)
 
-        media_url = os.path.join(
-            settings.MEDIA_URL, 'travelfoto', file.name).replace('\\', '/')
+        media_url = os.path.join(settings.MEDIA_URL, file_name).replace('\\', '/')
 
         return media_url
     except IOError:
@@ -256,10 +259,10 @@ def delete_travel_plan(request, travelplan_id):
         travel_plan.travelplan_geo.delete()
 
     # Удаление картинки из папки media
-    if travel_plan.image:
-        image_path = os.path.join(settings.MEDIA_ROOT, travel_plan.image)
-        if os.path.isfile(image_path):
-            os.remove(image_path)
+    folder_path = os.path.join(settings.MEDIA_ROOT, 'travelfoto', str(travelplan_id))
+    if os.path.exists(folder_path) and os.path.isdir(folder_path):
+        shutil.rmtree(folder_path)
+
     try:
         travel_plan.delete()
         logger.info("План путешествия удалён: %s", travelplan_id)
@@ -372,9 +375,193 @@ def upload_video(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     
-
 @login_required
 def travel_description(request, travelplan_id):
-    # Функция для передачи деталей путешевствия в шаблон
+    # Функция для передачи фотографийй в шаблон и форма для текста
+    travel = get_object_or_404(travelplan, pk=travelplan_id)    
+
+    # Определяем, существует ли уже описание и заголовок
+    has_description = travelplandescription.objects.filter(
+        travelplan=travel, 
+        description__title_descriptiond__isnull=False,
+        description__name_descriptiond__isnull=False
+    ).exists()
+    
+    form = TravelDescriptionForm()
+
+    # Получаем все связанные объекты description для данного travelplan
+    descriptions = travelplandescription.objects.filter(travelplan=travel).select_related('description')
+
+    # Собираем все фотографии и описания
+    photos = []
+    for item in descriptions:
+        for i in range(1, 11):
+            image_field = f'media_{i}'
+            desc_field = f'description_media_{i}'
+            image_url = getattr(item.description, image_field, None)
+            description_photo = getattr(item.description, desc_field, '')
+            if image_url:
+                photos.append({'image_url': image_url, 'description': description_photo})
+    
+    # Получаем первое описание (или None, если описаний нет)
+    first_description = descriptions.first()
+    
+    # Создаем список для хранения данных
+    if first_description:
+        title = getattr(first_description.description, 'title_descriptiond', None)
+        name = getattr(first_description.description, 'name_descriptiond', None)
+    else:
+        title = None
+        name = None
+        
+  
+    return render(request, 'travel_description.html', {
+        'travel': travel,
+          'photos': photos,
+            'form': form,
+            'has_description': has_description,
+            'title': title,
+            'name': name,        
+        })
+
+@login_required
+@require_POST
+def add_media_travel(request, travelplan_id):
+    # Функция для загрузки изображений
+    name_descriptiond = request.POST.get('namepoint')
+    image_file = request.FILES.get('image')
+    print(name_descriptiond)
+
+    # Получаем объект travelplan
     travel = get_object_or_404(travelplan, pk=travelplan_id)
-    return render(request, 'travel_description.html', {'travel': travel})
+
+    try:
+        # Обработка и сжатие изображения
+        output_size = (1280, 720)  # Новый размер изображения
+        folder_name = os.path.join('travelfoto', str(travelplan_id))
+        file_name = os.path.join(folder_name, image_file.name)
+        file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+
+        # Создаем директорию, если она не существует
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+        # Открываем файл изображения с помощью Pillow
+        image = Image.open(image_file)
+
+        # Меняем размер и сохраняем
+        image = image.resize(output_size, Image.Resampling.LANCZOS)
+        image.save(file_path, image.format, quality=85, optimize=True)
+        uploaded_file_url = os.path.join(settings.MEDIA_URL, file_name).replace('\\', '/')
+    except IOError:
+        print("Ошибка при обработке изображения")
+        return None  
+
+    # Поиск существующего объекта description или создание нового
+    travelplandescription_obj = travelplandescription.objects.filter(travelplan=travel).first()
+    if travelplandescription_obj:
+        description_obj = travelplandescription_obj.description
+    else:
+        description_obj = description()
+        description_obj.save()
+        travelplandescription_obj = travelplandescription.objects.create(
+            travelplan=travel,
+            description=description_obj
+        )
+    
+    # Проверка, не превышено ли максимальное количество изображений
+    image_fields = [f'media_{i}' for i in range(1, 11)]
+    existing_images = [getattr(description_obj, field) for field in image_fields if getattr(description_obj, field)]
+    if len(existing_images) >= 10:
+        # Отправляем сообщение об ошибке, если количество изображений превысило 10
+        messages.error(request, "Вы уже загрузили максимальное количество изображений.")
+        return HttpResponseRedirect(reverse('travel:travel_description', kwargs={'travelplan_id': travelplan_id}))
+    
+    # Добавляем новое изображение в первое свободное поле
+    for field in image_fields:
+        if not getattr(description_obj, field):
+            setattr(description_obj, field, uploaded_file_url)
+            setattr(description_obj, f'description_{field}', name_descriptiond)
+            description_obj.save()
+            break
+
+    return HttpResponseRedirect(reverse('travel:travel_description', kwargs={'travelplan_id': travelplan_id}))
+
+@login_required
+@require_POST
+def add_description_travel(request, travelplan_id):
+    # Функция для записи описания в базу 
+    travel = get_object_or_404(travelplan, pk=travelplan_id)
+
+    # Поиск существующего объекта description или создание нового
+    travelplandescription_obj = travelplandescription.objects.filter(travelplan=travel).first()
+
+    if travelplandescription_obj:
+        description_obj = travelplandescription_obj.description
+        form = TravelDescriptionForm(request.POST, instance=description_obj)
+    else:
+        form = TravelDescriptionForm(request.POST)
+
+    if form.is_valid():
+        description_obj = form.save()
+        if not travelplandescription_obj:
+            # Создаем связь только если это новое описание
+            travelplandescription.objects.create(travelplan=travel, description=description_obj)
+            # Перенаправляем пользователя после успешного сохранения
+            return redirect('travel:travel_description', travelplan_id=travelplan_id)
+    else:        
+        form = TravelDescriptionForm(request.POST)  # Форма с данными
+
+    return redirect('travel:travel_description', travelplan_id=travelplan_id)
+
+@login_required
+def travel_finance(request, travelplan_id):
+    # Функция для передачи деталей путешевствия в шаблон
+    travel_plan = get_object_or_404(travelplan, pk=travelplan_id)
+
+    form = TravelFinanceForm()
+
+    # Получение связанных точек путешествия
+    expense_position = travelplanexpense.objects.filter(travelplan=travel_plan).select_related('expense')
+    points = [tp.expense for tp in expense_position]  
+
+    return render(request, 'travel_finance.html', {'travel': travel_plan, 'form': form, 'expense_position': points})
+
+@login_required
+@require_POST
+def add_travel_finance(request, travelplan_id):
+    # Получение объекта travelplan
+    travel = get_object_or_404(travelplan, pk=travelplan_id)
+
+    # Получение списка названий расходов и сумм из POST-запроса
+    nameexpenses = request.POST.getlist('nameexpense[]')
+    amounts = request.POST.getlist('amount[]')
+    typeexpense_id = int(request.POST.get('typeexpense'))
+
+    # Получение объекта typeexpense
+    typeexpense_instance = typeexpense.objects.get(typeexpense_id=typeexpense_id)
+
+    is_valid = True
+    expenses_to_save = []
+
+    for nameexpense_valid, amount_valid in zip(nameexpenses, amounts):
+        # Создание временного объекта expense
+        temp_expense = expense(nameexpense=nameexpense_valid, amount=amount_valid)
+        # Проверка данных с помощью формы
+        form = TravelFinanceForm({'nameexpense': nameexpense_valid, 'amount': amount_valid})
+        if form.is_valid():
+            temp_expense.typeexpense = typeexpense_instance
+            expenses_to_save.append(temp_expense)
+        else:
+            is_valid = False
+            break
+
+    if is_valid:
+        with transaction.atomic():
+            for expense_obj in expenses_to_save:
+                expense_obj.save()
+                travelplanexpense.objects.create(travelplan=travel, expense=expense_obj)
+        messages.success(request, 'Данные успешно добавлены!')
+    else:
+        messages.error(request, 'Ошибка при добавлении данных!')
+
+    return redirect('travel:travel_finance', travelplan_id=travelplan_id)

@@ -6,8 +6,7 @@
     <!-- Стили специфичные для профиля пользователя -->
     <link rel="stylesheet" type="text/css" href="{% static 'appbase/style.css' %}">    
     <link rel="icon" href="{% static 'favicon.ico' %}">
-   
-    
+
 {% endblock %}
 
 {% block content %}
@@ -114,6 +113,7 @@
 {% endblock %}
 
 {% block scripts %}
+
 {{ block.super }}
  <!-- Подключение jQuery -->
  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -140,10 +140,7 @@
     autoplaySlider(); // Запустить автоматическое перелистывание слайдов
   });
 </script>
-      
-<!-- Подключение Bootstrap JS -->
-{% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script> {% endcomment %}
-  
+=====
 
 {% endblock %}
 
