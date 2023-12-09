@@ -11,35 +11,10 @@
 {% endblock %}
 
 {% block content %}
-{% comment %} <div class="carousel carousel-slider center">
-    <div class="carousel-fixed-item center">
-        
-    </div>
-    <div class="carousel-item" href="#one!">  <img src="/static/appbase/img/mon.jpg">
-    
-        <div class="content"> 
-      <h2>Создай своё путешествие!</h2>
-      <p class="white-text">Посещай города и страны, наноси на карту свои маршруты, оставь путешествие навсегда в своей памяти</p>  
-      <a class="btn white black-text darken-text-2">Присоединиться</a>
-      
-     
-    </div>
-    </div>
-    <div class="carousel-item" href="#two!"> <img src="/static/appbase/img/pic2.jpg">
-      <h2>Second Panel</h2>
-      <p class="white-text">This is your second panel</p>
-    </div>
-    <div class="carousel-item white-text" href="#three!"> <img src="/static/appbase/img/pic6.jpg">
-      <h2>Third Panel</h2>
-      <p class="white-text">This is your third panel</p>
-    </div>
-    <div class="carousel-item white-text" href="#four!"><img src="/static/appbase/img/pic5.jpg">
-      <h2>Fourth Panel</h2>
-      <p class="white-text">This is your fourth panel</p>
-    </div>
-  </div> {% endcomment %}
+
   <div class="carousel-container">
-  <div class="carousel">
+  <div class="carousel carousel-slider center">
+   
     <div class="carousel-item" href="#one!" dist="0" numVisible="1">
       <div class="content"> 
         <h2>Создай своё путешествие!</h2>
@@ -83,7 +58,57 @@
   </div>
 </div>
       
-<div class="main_menue"></div>
+<div class="main_menue">
+  <div class="container">
+    <div class="row">
+      <div class="col l4 m6 s12">
+        <div class="card">
+          <div class="card-image">
+            <img src="/static/appbase/img/card1.jpg">
+            <span class="card-title">Card Title</span>
+          </div>
+          <div class="card-content">
+            <p>I am a very simple card. I am good at containing small bits of information.
+            I am convenient because I require little markup to use effectively.</p>
+          </div>
+          <div class="card-action">
+            <a href="#">This is a link</a>
+          </div>
+        </div>
+      </div>  
+      <div class="col l4 m6 s12">
+        <div class="card">
+          <div class="card-image">
+            <img src="/static/appbase/img/card2.jpg">
+            <span class="card-title">Card Title</span>
+          </div>
+          <div class="card-content">
+            <p>I am a very simple card. I am good at containing small bits of information.
+            I am convenient because I require little markup to use effectively.</p>
+          </div>
+          <div class="card-action">
+            <a href="#">This is a link</a>
+          </div>
+        </div>
+      </div>  
+      <div class="col l4 m6 s12">
+        <div class="card">
+          <div class="card-image">
+            <img src="/static/appbase/img/card3.jpg">
+            <span class="card-title">Card Title</span>
+          </div>
+          <div class="card-content">
+            <p>I am a very simple card. I am good at containing small bits of information.
+            I am convenient because I require little markup to use effectively.</p>
+          </div>
+          <div class="card-action">
+            <a href="#">This is a link</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 {% endblock %}
@@ -96,28 +121,24 @@
  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
  <script>
-  $(document).ready(function() {
-    // Инициализация карусели
-    var carousel = $('.carousel').carousel();
-
-    // Функция для переинициализации карусели
-    function reinitCarousel() {
-        // Уничтожаем текущую карусель
-        carousel.carousel('destroy');
-        // Пересоздаем карусель
-        carousel = $('.carousel').carousel();
-    }
-
-    // Переинициализация карусели при изменении размера окна
-    $(window).on('resize', function() {
-        reinitCarousel();
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelector('.carousel.carousel-slider');
+    var instances = M.Carousel.init(elems, {
+      fullWidth: true, // Развернуть слайды на всю ширину
+      indicators: false, // Показать индикаторы слайдов
+      duration: 0.000000000000000000000000000000001, // Длительность анимации перелистывания
     });
 
-    // Автоматическая прокрутка слайдов
-    setInterval(function() {
-        carousel.carousel('next');
-    }, 8000); // Интервал времени в миллисекундах для автоматической прокрутки
-});
+    // Функция для автоматического перелистывания слайдов
+    var autoplaySlider = function() {
+      setInterval(function() {
+        var instance = M.Carousel.getInstance(elems);
+        instance.next(); // Переключиться на следующий слайд
+      }, 10000); // Интервал времени между переключениями слайдов в миллисекундах (в данном случае 3 секунды)
+    };
+
+    autoplaySlider(); // Запустить автоматическое перелистывание слайдов
+  });
 </script>
       
 <!-- Подключение Bootstrap JS -->
