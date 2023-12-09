@@ -187,7 +187,7 @@
     overflow-y: auto;
 }
 /* Стили модального окна */
-#fieldsContainer {
+#fieldsContainer1, #fieldsContainer2  {
     display: flex;    
     flex-direction: column; /* Изменение оси на вертикальную */
     overflow-y: auto;
@@ -204,7 +204,7 @@
 /* Стили модального окна */
 .modal-content-nameexpense {
     flex: 3; /* Больше места для этого контейнера */
-    margin-right: 10px;
+    margin-right: 10px;    
 }
 /* Стили модального окна */
 .modal-content-amount {
@@ -227,7 +227,7 @@
  #addMoreButton {
     margin-right: 10px;
 }  
-/* Стили текста в полях */
+/* Стили текста в полях формы модального окна */
 .input-nameexpense::placeholder {
     color: rgb(0, 0, 0); /* Цвет текста плейсхолдера */
 }
@@ -241,9 +241,29 @@
 .dropdown-trigger {
     margin-top: 10px;
     margin-left: 10px;
+    min-width: 210px;
+    
+
 }
-/* Стили для уведомлений */
+.dropdown-trigger.btn:hover {
+    background-color: #6F947F; /* Тот же цвет, что и в обычном состоянии */
+}
+.dropdown-content li>a, .dropdown-content li>span {
+    color: #000000;
+}
+.dropdown-content a {
+    background: #ECE7D6;
+}
+.dropdown-content a {
+    background: #ECE7D6;   
+}
+.dropdown-content a:hover {
+    background: #6F947F; /* Замените на желаемый цвет */
+}
+/* Стили для уведомлений (Тосты) */
 .custom-error {
     background-color: #F44336;
-
+  }
+  .custom-success {
+    background-color: #43A047;
   }

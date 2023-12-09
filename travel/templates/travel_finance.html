@@ -13,10 +13,20 @@
 
 <div class="content-travel-finance">
     <!-- Dropdown Trigger -->
-    <a class='dropdown-trigger btn' data-target='dropdown1'>+Добавить</a>
+    <a class='dropdown-trigger btn' data-target='dropdown1'> + Добавить затраты</a>
     <ul id='dropdown1' class='dropdown-content'>
-        <li><a data-target="modal1">Затраты на транспорт</a></li>
-        <li><a data-target="modal2">Затраты на проживание</a></li>        
+        <li><a data-target="modal1">Транспорт</a></li>
+        <li><a data-target="modal2">Проживание</a></li>
+        <li><a data-target="modal3">Питание</a></li> 
+        <li><a data-target="modal4">Развлечения</a></li>
+        <li><a data-target="modal5">Сувениры</a></li> 
+        <li><a data-target="modal6">Виза</a></li>
+        <li><a data-target="modal7">Медицинская страховка</a></li>
+        <li><a data-target="modal8">Аренда снаряжения</a></li>
+        <li><a data-target="modal9">Экскурсии</a></li>
+        <li><a data-target="modal10">Тур</a></li>
+        <li><a data-target="modal11">Медицина</a></li>
+        <li><a data-target="modal12">Прочие</a></li>                    
     </ul>
     <div id="modal1" class="modal">
         <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
@@ -24,24 +34,217 @@
             <input type="hidden" name="typeexpense" value="1"> <!-- Значение для первого типа расходов -->
             <div class="modal-content">
                 <div id="header">
-                    <h6 class="bold-title">Укажите затраты на транспорт</h6>
+                    <h6 class="bold-title">Укажите затраты на транспорт!</h6>
                 </div>               
-                <div id="fieldsContainer">
+                <div id="fieldsContainer1">
                     <!-- Здесь будут добавляться поля -->
                 </div>                  
                 <div class="modal-content-btn">
-                    <button type="button" id="addMoreButton">Добавить затраты</button>
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer1">Добавить затраты</button>
                     <button type="submit" id="submitButton">Сохранить</button>
                 </div>
             </div>
         </form>    
     </div>
     <div id="modal2" class="modal">
-        <div class="modal-content">
-          <h4>Modal 2</h4>
-          {{  form.nameexpense  }}
-        </div>
-    </div>      
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="2"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на проживание!</h6>
+                </div>               
+                <div id="fieldsContainer2">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer2">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal3" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="3"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на питание!</h6>
+                </div>               
+                <div id="fieldsContainer3">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer3">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal4" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="4"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на развлечения!</h6>
+                </div>               
+                <div id="fieldsContainer4">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer4">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal5" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="5"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на сувениры</h6>
+                </div>               
+                <div id="fieldsContainer5">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer5">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal6" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="6"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на визу!</h6>
+                </div>               
+                <div id="fieldsContainer6">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer6">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal7" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="7"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на медицинскую страховку!</h6>
+                </div>               
+                <div id="fieldsContainer7">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer7">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal8" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="8"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на аренда снаряжения</h6>
+                </div>               
+                <div id="fieldsContainer8">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer8">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal9" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="9"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на экскурсии!</h6>
+                </div>               
+                <div id="fieldsContainer9">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer9">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal10" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="10"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на покупку туров!</h6>
+                </div>               
+                <div id="fieldsContainer10">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer10">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal11" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="11"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на медицину!</h6>
+                </div>               
+                <div id="fieldsContainer11">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer11">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal12" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="12"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите прочие затраты!</h6>
+                </div>               
+                <div id="fieldsContainer12">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer12">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+      
     
 {% endblock %}
 
@@ -51,9 +254,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Инициализация модальных окон
         var modalElems = document.querySelectorAll('.modal');
-        M.Modal.init(modalElems, {});
-        var textNeedCount = document.querySelectorAll('#input_nameexpense');
-        M.CharacterCounter.init(textNeedCount);
+        M.Modal.init(modalElems, {});  
 
         // Инициализация выпадающего списка
         var dropdownElems = document.querySelectorAll('.dropdown-trigger');
@@ -70,25 +271,37 @@
         });
 
         // Обработчики для разных групп в форме модального окна
-        document.getElementById('addMoreButton').addEventListener('click', addNewField);
+        document.querySelectorAll('.add-more-button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var containerId = this.getAttribute('data-target'); // Идентификатор контейнера передается через data-атрибут
+                addNewField(containerId);
+            });
+        });
 
-        function addNewField() {
-            var container = document.getElementById('fieldsContainer');
+        function addNewField(containerId) {
+            var container = document.getElementById(containerId);
         
             // Создаем общий контейнер для nameExpenseDiv и amountDiv
             var groupContainer = document.createElement('div');
             groupContainer.className = 'modal-content-group';
-        
-            // Создаем и добавляем nameExpenseDiv
-            var nameExpenseDiv = document.createElement('div');
-            nameExpenseDiv.className = 'modal-content-nameexpense';
+
+            // Сгенерируем уникальный ID, используя текущее время
+            var uniqueId = 'input-nameexpense-' + Date.now();
+
+            // Создаем элемент input
             var nameExpenseInput = document.createElement('input');
+            nameExpenseInput.id = uniqueId; // Устанавливаем уникальный ID
             nameExpenseInput.type = 'text';
             nameExpenseInput.name = 'nameexpense[]'; // Имя в формате массива
             nameExpenseInput.className = 'input-nameexpense'; // Добавляем класс
-            nameExpenseInput.placeholder = 'Наименование';            
-            nameExpenseDiv.appendChild(nameExpenseInput);
+            nameExpenseInput.placeholder = 'Наименование';
+            nameExpenseInput.setAttribute('data-length', '70'); // Устанавливаем data-length
         
+            /// Создаем и добавляем nameExpenseDiv
+            var nameExpenseDiv = document.createElement('div');
+            nameExpenseDiv.className = 'modal-content-nameexpense';
+            nameExpenseDiv.appendChild(nameExpenseInput); // Добавляем nameExpenseInput в nameExpenseDiv
+
             // Создаем и добавляем amountDiv
             var amountDiv = document.createElement('div');
             amountDiv.className = 'modal-content-amount';
@@ -104,9 +317,16 @@
             // Добавляем nameExpenseDiv и amountDiv в groupContainer
             groupContainer.appendChild(nameExpenseDiv);
             groupContainer.appendChild(amountDiv);
-        
+                    
             // Добавляем groupContainer в основной контейнер
             container.appendChild(groupContainer);
+
+            // Инициализация счетчика символов для нового элемента input
+            console.log("Идентификатор счетчика:", uniqueId);
+            var textNeedCount = document.querySelector('#' + uniqueId);
+            console.log("Инициализация счетчика символов для элемента:", textNeedCount);
+            M.CharacterCounter.init(textNeedCount);
+            console.log("Счетчик символов инициализирован");
         }
     });
 </script>
@@ -118,7 +338,7 @@
         if ("{{ message.tags }}" === 'error') {
           classes += 'custom-error'; // Красный цвет для сообщений об ошибке
         } else if ("{{ message.tags }}" === 'success') {
-          classes += 'green'; // Зеленый цвет для успешных сообщений
+          classes += 'custom-success'; // Зеленый цвет для успешных сообщений
         }
         // Другие условия для разных типов сообщений
         M.toast({html: "{{ message }}", classes: classes});
