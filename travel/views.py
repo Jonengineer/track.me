@@ -518,13 +518,26 @@ def travel_finance(request, travelplan_id):
     # Функция для передачи деталей путешевствия в шаблон
     travel_plan = get_object_or_404(travelplan, pk=travelplan_id)
 
+    # Получаем все связанные записи travelplanexpense для данного travelplan
+    travel_plan_expenses = travelplanexpense.objects.filter(travelplan=travel_plan)
+
+    # Получаем ID расходов из этих связанных записей
+    expense_ids = travel_plan_expenses.values_list('expense', flat=True)
+
+    # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=1
+    expenses = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=1)
+
+
+
     form = TravelFinanceForm()
 
-    # Получение связанных точек путешествия
-    expense_position = travelplanexpense.objects.filter(travelplan=travel_plan).select_related('expense')
-    points = [tp.expense for tp in expense_position]  
-
-    return render(request, 'travel_finance.html', {'travel': travel_plan, 'form': form, 'expense_position': points})
+    content = {
+        'travel': travel_plan,
+          'form': form,
+          'expenses': expenses
+        }
+    print(expenses)
+    return render(request, 'travel_finance.html', content)
 
 @login_required
 @require_POST
