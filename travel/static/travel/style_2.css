@@ -165,7 +165,7 @@
     height: 100%;  
 }
 .content-travel-get-finance {
-    width: 40%;
+    width: 50%;
     margin-left: 10px;
 }
 /* Стили модального окна */
@@ -273,5 +273,30 @@
     color: #000;
     font-size: 20px;
   }
-
+   /* Кнопка удаления*/
+.delete-button {
+    position: relative; /* Для позиционирования tooltip */
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.delete-button img {
+    width: 20px; /* или любой другой размер */
+    height: auto;
+}
+/* Стиль для показа tooltip при наведении */
+.delete-button:hover .tooltip-text {
+    visibility: visible;
+}
+/* Стиль заголовка  collapsible */
+.collapsible-header-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Занимает всю ширину контейнера */
+}
+.text-label, .text-amount {
+    font-weight: bold; /* Жирное начертание */
+    font-size: 20px;
+}
   

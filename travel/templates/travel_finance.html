@@ -252,11 +252,12 @@
                 <div class="collapsible-header">
                     <img class="point-icons" src="/static/travel/img/travel_expense.svg">
                     <div class="collapsible-header-text">
-                        <span> Транспорт </span>                    
+                        <span class="text-label">Транспорт</span>
+                        <span class="text-amount">{{ total_amount }}</span>                     
                     </div>
                 </div>
                 <div class="collapsible-body">
-                    <table>
+                    <table class="highlight">
                         <thead>
                           <tr>
                               <th>№ п\п</th>
@@ -271,6 +272,17 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ expense.nameexpense }}</td>
                                     <td>{{ expense.amount }}</td>
+                                    <td> 
+                                        <td>
+                                            <!-- Форма для удаления -->
+                                            <form action="{% url 'travel:delete_expense' expense.expense_id travel.travelplan_id %}" method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="delete-button">
+                                                    <img src="/static/travel/img/delete_2.svg" alt="Удалить">
+                                                    <span class="tooltip-text">Удалить</span>
+                                                </button>
+                                            </form>
+                                        </td>
                                 </tr>                                
                             {% endfor %}                              
                         </tbody>
