@@ -156,13 +156,17 @@
 .content-travel-finance {
     display: flex;
     position: relative;
-    flex-direction: row; /* Вертикальное расположение */
+    flex-direction: column; /* Вертикальное расположение */
     margin-left: 66px;
     width: calc(100% - 66px);  
     background-color: #ECE7D6;
     overflow: auto;
     min-height: 1040px;  
     height: 100%;  
+}
+.content-travel-get-finance {
+    width: 50%;
+    margin-left: 10px;
 }
 /* Стили модального окна */
 .modal {
@@ -241,9 +245,7 @@
 .dropdown-trigger {
     margin-top: 10px;
     margin-left: 10px;
-    min-width: 210px;
-    
-
+    min-width: 210px; 
 }
 .dropdown-trigger.btn:hover {
     background-color: #6F947F; /* Тот же цвет, что и в обычном состоянии */
@@ -263,7 +265,38 @@
 /* Стили для уведомлений (Тосты) */
 .custom-error {
     background-color: #F44336;
+    color: #000;
+    font-size: 20px;
   }
   .custom-success {
     background-color: #43A047;
+    color: #000;
+    font-size: 20px;
   }
+   /* Кнопка удаления*/
+.delete-button {
+    position: relative; /* Для позиционирования tooltip */
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.delete-button img {
+    width: 20px; /* или любой другой размер */
+    height: auto;
+}
+/* Стиль для показа tooltip при наведении */
+.delete-button:hover .tooltip-text {
+    visibility: visible;
+}
+/* Стиль заголовка  collapsible */
+.collapsible-header-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Занимает всю ширину контейнера */
+}
+.text-label, .text-amount {
+    font-weight: bold; /* Жирное начертание */
+    font-size: 20px;
+}
+  
