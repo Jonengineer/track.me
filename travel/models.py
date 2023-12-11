@@ -79,7 +79,7 @@ class booking(models.Model):
 class expense(models.Model):
     expense_id = models.AutoField(primary_key=True)
     typeexpense = models.ForeignKey('typeexpense', on_delete=models.CASCADE, related_name='expenses')
-    nameexpense = models.CharField(max_length=100, null=False)
+    nameexpense = models.CharField(max_length=70, null=False)
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=False)        
 
     class Meta:

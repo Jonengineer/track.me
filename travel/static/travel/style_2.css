@@ -158,14 +158,26 @@
     position: relative;
     flex-direction: column; /* Вертикальное расположение */
     margin-left: 66px;
+    width: calc(40% - 66px);  
+    background-color: #ECE7D6;
+    overflow: auto;
+    min-height: 1040px;  
+    height: 100%;  
+}
+.content-travel-get-finance-charts {
+    display: flex;
+    position: relative;
+    flex-direction: column; /* Вертикальное расположение */
+    margin-left: 66px;
     width: calc(100% - 66px);  
     background-color: #ECE7D6;
     overflow: auto;
     min-height: 1040px;  
     height: 100%;  
 }
+
 .content-travel-get-finance {
-    width: 50%;
+    width: 100%;
     margin-left: 10px;
 }
 /* Стили модального окна */
@@ -298,5 +310,8 @@
 .text-label, .text-amount {
     font-weight: bold; /* Жирное начертание */
     font-size: 20px;
+}
+.collapsible {
+    max-width: 500px;
 }
   
