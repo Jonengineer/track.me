@@ -80,7 +80,10 @@ class expense(models.Model):
     expense_id = models.AutoField(primary_key=True)
     typeexpense = models.ForeignKey('typeexpense', on_delete=models.CASCADE, related_name='expenses')
     nameexpense = models.CharField(max_length=70, null=False)
-    amount = models.DecimalField(max_digits=10, decimal_places=2, null=False)        
+    amount = models.DecimalField(max_digits=12, decimal_places=2, null=False)
+    quantity_day = models.IntegerField(null=False)
+    quantity_people = models.IntegerField(null=False)
+    full_amount = models.DecimalField(max_digits=14, decimal_places=2, null=False)
 
     class Meta:
         managed = True

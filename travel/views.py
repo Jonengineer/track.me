@@ -581,8 +581,6 @@ def travel_finance(request, travelplan_id):
     expenses_12 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=12)    
     total_amount_12 = expenses_12.aggregate(total=Sum('amount'))['total'] or 0
 
-
-
     form = TravelFinanceForm()
 
     content = {
