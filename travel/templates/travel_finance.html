@@ -1,0 +1,129 @@
+{% extends 'travel_detail_full.html' %}
+{% load static %}
+
+{% block styles %}
+    {{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'travel/style_2.css' %}">
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+{% endblock %}
+
+{% block travel_detail_content %}
+{{ block.super }}
+
+<div class="content-travel-finance">
+    <!-- Dropdown Trigger -->
+    <a class='dropdown-trigger btn' data-target='dropdown1'>+Добавить</a>
+    <ul id='dropdown1' class='dropdown-content'>
+        <li><a data-target="modal1">Затраты на транспорт</a></li>
+        <li><a data-target="modal2">Затраты на проживание</a></li>        
+    </ul>
+    <div id="modal1" class="modal">
+        <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+            {% csrf_token %} <!-- CSRF токен для безопасности -->
+            <input type="hidden" name="typeexpense" value="1"> <!-- Значение для первого типа расходов -->
+            <div class="modal-content">
+                <div id="header">
+                    <h6 class="bold-title">Укажите затраты на транспорт</h6>
+                </div>               
+                <div id="fieldsContainer">
+                    <!-- Здесь будут добавляться поля -->
+                </div>                  
+                <div class="modal-content-btn">
+                    <button type="button" id="addMoreButton">Добавить затраты</button>
+                    <button type="submit" id="submitButton">Сохранить</button>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+          <h4>Modal 2</h4>
+          {{  form.nameexpense  }}
+        </div>
+    </div>      
+    
+{% endblock %}
+
+{% block travel_detail_scripts %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализация модальных окон
+        var modalElems = document.querySelectorAll('.modal');
+        M.Modal.init(modalElems, {});
+        var textNeedCount = document.querySelectorAll('#input_nameexpense');
+        M.CharacterCounter.init(textNeedCount);
+
+        // Инициализация выпадающего списка
+        var dropdownElems = document.querySelectorAll('.dropdown-trigger');
+        M.Dropdown.init(dropdownElems, {}); // Если у вас нет особых опций, можете просто вызвать init()
+
+        // Обработчики для открытия модальных окон
+        document.querySelectorAll('#dropdown1 a').forEach(function(item) {
+            item.addEventListener('click', function() {
+                var modalId = this.getAttribute('data-target');
+                var modal = document.getElementById(modalId);
+                var instance = M.Modal.getInstance(modal);
+                instance.open();
+            });
+        });
+
+        // Обработчики для разных групп в форме модального окна
+        document.getElementById('addMoreButton').addEventListener('click', addNewField);
+
+        function addNewField() {
+            var container = document.getElementById('fieldsContainer');
+        
+            // Создаем общий контейнер для nameExpenseDiv и amountDiv
+            var groupContainer = document.createElement('div');
+            groupContainer.className = 'modal-content-group';
+        
+            // Создаем и добавляем nameExpenseDiv
+            var nameExpenseDiv = document.createElement('div');
+            nameExpenseDiv.className = 'modal-content-nameexpense';
+            var nameExpenseInput = document.createElement('input');
+            nameExpenseInput.type = 'text';
+            nameExpenseInput.name = 'nameexpense[]'; // Имя в формате массива
+            nameExpenseInput.className = 'input-nameexpense'; // Добавляем класс
+            nameExpenseInput.placeholder = 'Наименование';            
+            nameExpenseDiv.appendChild(nameExpenseInput);
+        
+            // Создаем и добавляем amountDiv
+            var amountDiv = document.createElement('div');
+            amountDiv.className = 'modal-content-amount';
+            var amountInput = document.createElement('input');
+            amountInput.type = 'number';
+            amountInput.step = '0.01'; // Шаг ввода для точности до двух знаков после запятой
+            amountInput.min = '0'; // Минимальное значение, чтобы избежать отрицательных чисел
+            amountInput.name = 'amount[]'; // Имя в формате массива
+            amountInput.className = 'input-amount'; // Добавляем класс
+            amountInput.placeholder = 'Сумма';
+            amountDiv.appendChild(amountInput);
+        
+            // Добавляем nameExpenseDiv и amountDiv в groupContainer
+            groupContainer.appendChild(nameExpenseDiv);
+            groupContainer.appendChild(amountDiv);
+        
+            // Добавляем groupContainer в основной контейнер
+            container.appendChild(groupContainer);
+        }
+    });
+</script>
+{% if messages %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      {% for message in messages %}
+        var classes = 'rounded ';
+        if ("{{ message.tags }}" === 'error') {
+          classes += 'custom-error'; // Красный цвет для сообщений об ошибке
+        } else if ("{{ message.tags }}" === 'success') {
+          classes += 'green'; // Зеленый цвет для успешных сообщений
+        }
+        // Другие условия для разных типов сообщений
+        M.toast({html: "{{ message }}", classes: classes});
+      {% endfor %}
+    });
+  </script>
+{% endif %}
+{% endblock %}

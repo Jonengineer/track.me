@@ -4,7 +4,6 @@
 {% block styles %}
     {{ block.super }}
 <meta charset="utf-8">
-<title>Query terrain elevation</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
 {% endblock %}
@@ -14,6 +13,9 @@
   <div class="content-container-3D">
     <div class="container-3Dmap">
       <div id="map"></div>
+      <div id="menu-container">
+        <button id="start-animation">Старт</button>      
+      </div>
     </div>
   </div>
 {% endblock %}
@@ -23,27 +25,33 @@
 <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
 <script type="text/javascript">
+let map; // Глобальное объявление переменной map
 document.addEventListener('DOMContentLoaded', (event) => {
   mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
   // Предполагается, что travelGeoJSON определен в другом месте кода, как JS объект в формате GeoJSON
   const travelGeoJSON = {{ gpx_data|safe }};
+  let start, path, pathDistance;
+  let animationDuration = 170000; // Время анимации
+  let zoom_followTrack = 15;
+  let pitch_followTrack = 70;
+  let isAnimationStarted = false;
 
   if (travelGeoJSON && travelGeoJSON.features && travelGeoJSON.features.length > 0) {
     // Получаем координаты первой точки LineString
-    const firstPointCoordinates = travelGeoJSON.features[0].geometry.coordinates[1];
+    firstPointCoordinates = travelGeoJSON.features[0].geometry.coordinates[1];
     
     // Игнорируем высоту (третье значение), берем только широту и долготу
-    const centerCoordinates = firstPointCoordinates.slice(0, 2);
+    centerCoordinates = firstPointCoordinates.slice(0, 2);
 
-    const map = new mapboxgl.Map({
+    map = new mapboxgl.Map({
       container: 'map',
       zoom: 11,
       center: centerCoordinates,
       pitch: 60,
       bearing: 0,
       style: 'mapbox://styles/mapbox/satellite-streets-v12',
-      interactive: false,
-      hash: false
+      interactive: true,
+      hash: true
     });
 
     map.on('load', () => {
@@ -59,7 +67,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
       const popup = new mapboxgl.Popup({ closeButton: false });
       const marker = new mapboxgl.Marker({
         color: 'red',   // Цвет иконки
-        scale: 0.5,
+        scale: 1,
         draggable: false,
         pitchAlignment: 'auto',
         rotationAlignment: 'auto'
@@ -90,10 +98,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
       });
 
       map.once('idle').then(() => {
-        const animationDuration = 50000;  // Время анимации
-        const path = turf.lineString(pinRoute);
-        const pathDistance = turf.lineDistance(path);
-        let start;
+        
+        const modifiedCoordinates = pinRoute.map(coord => [coord[0], coord[1]]);
+        path = turf.lineString(modifiedCoordinates);  
+        pathDistance = turf.lineDistance(path);        
+
+        let lastCameraUpdate = 0;
+        const cameraUpdateInterval = 1000; // Интервал обновления камеры в миллисекундах        
 
         function frame(time) {
           if (!start) start = time;
@@ -110,7 +121,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
           // Здесь предполагается, что map.queryTerrainElevation - действующая функция
           const elevation = Math.floor(map.queryTerrainElevation(lngLat, { exaggerated: false }));
           
-          popup.setHTML('Altitude: ' + elevation + 'm<br/>');
+          popup.setHTML('Высота: ' + elevation + 'm<br/>');
           marker.setLngLat(lngLat);
 
           map.setPaintProperty('line', 'line-gradient', [
@@ -120,11 +131,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
             animationPhase,
             'rgba(255, 0, 0, 0)'
           ]);
-
-          const rotation = 0-animationPhase * 140.0;
-          map.setBearing(rotation);
-
-          window.requestAnimationFrame(frame);
+          
+           // Удалено вращение карты
+          // const rotation = 0-animationPhase * 140.0;
+          // map.setBearing(rotation);
+          const currentPathPosition = turf.along(path, pathDistance * animationPhase).geometry.coordinates;
+          
+          if (isAnimationStarted) {
+            // Обновление позиции камеры только если прошло достаточно времени
+            if (time - lastCameraUpdate > cameraUpdateInterval) {
+              followTrack(animationPhase);
+              lastCameraUpdate = time;
+            }
+          }  
+          window.requestAnimationFrame(frame);          
         }
 
         window.requestAnimationFrame(frame);
@@ -133,6 +153,34 @@ document.addEventListener('DOMContentLoaded', (event) => {
   } else {
     console.error('GeoJSON data is not valid or does not have any features.');
   }
+  // Функция для обновления позиции камеры
+  function followTrack(animationPhase) {
+    // Определение текущей позиции и немного назад по треку
+    const currentPathPosition = turf.along(path, pathDistance * animationPhase).geometry.coordinates;
+    const backOffset = 0.00000001; // Насколько далеко позади текущей позиции находится камера
+    const backPathPosition = turf.along(path, Math.max(0, pathDistance * animationPhase - backOffset)).geometry.coordinates;
+    let newBearing = turf.bearing(turf.point(backPathPosition), turf.point(currentPathPosition));
+
+    // Ограничение угла вращения
+    const bearingLimit = 0; // Максимальное отклонение от начального направления
+    newBearing = Math.max(-bearingLimit, Math.min(bearingLimit, newBearing));
+  
+    map.easeTo({
+      center: backPathPosition,
+      bearing: turf.bearing(turf.point(backPathPosition), turf.point(currentPathPosition)),
+      zoom: zoom_followTrack, // Установите значение, которое подходит для вашего приложения
+      pitch: pitch_followTrack,
+      essential: true,
+      speed: 0.0000001, // Скорость перемещения камеры. Меньшее значение сделает движение более плавным
+      easing: t => Math.sin(t * Math.PI * (0.2 + 2.5 * t * t * t)) * Math.pow(1 - t, 2.2) + t // Функция плавности. Можно изменить для разных эффектов
+    });
+  }
+
+  // Добавление обработчика клика на кнопку
+  document.getElementById('start-animation').addEventListener('click', () => {
+    isAnimationStarted = true;
+    window.requestAnimationFrame(frame); // Запуск анимации при нажатии на кнопку
+  });
 });
 </script>
 {% endblock %}

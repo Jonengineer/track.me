@@ -16,6 +16,21 @@
       <div id="map_1"></div> <!-- Установите высоту контейнера карты -->
       <div id="menu-container">
         <button id="start-animation">Старт</button>
+        <div id='start-animation-speed'>
+          <select id='style-selector-speed'>        
+            <option value="900000">x1</option>
+            <option value="700000">x2</option>
+            <option value="500000">x3</option>
+            <option value="300000">x4</option>
+            <option value="100000">x5</option>
+            <option value="50000">x6</option>
+            <option value="30000">x7</option>
+            <option value="20000">x8</option>        
+          </select>
+        </div>
+        {% csrf_token %}
+        <button id="start-recording">Записать</button>
+        <button id="stop-recording" style="display:none;">Стоп</button>
         <div id='style-menu'>
           <select id='style-selector'>        
             <option value='mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj'>Природа</option>
@@ -29,7 +44,6 @@
     </div>
     <div id="charts-container">
       <div id="elevation_chart_div"></div>
-      <div id="heart_rate_chart_div"></div>
     </div>
   </div>
   <div class="content-collapsible">
@@ -97,8 +111,7 @@
   var gpxData = JSON.parse('{{ gpx_data|safe }}');
 
   google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(drawElevationDistanceChart);
-  google.charts.setOnLoadCallback(drawHeartRateTimeChart);
+  google.charts.setOnLoadCallback(drawElevationDistanceChart);  
 
   var elevationChart, heartRateChart;
   var elevationData, heartRateData;
@@ -114,21 +127,25 @@
     }
 
     elevationOptions = {
-      title: 'Высота над уровнем моря в зависимости от расстояния',
+      width: '100%',
+      height: '100%',
+      title: 'Профиль высот',
       curveType: 'function',
       legend: { position: 'none' },            
       colors: ['#676418'],
-      hAxis: { title: 'Расстояние, км' },
-      vAxis: { title: 'Высота, м' },
+      hAxis: { title: 'S, км' },
+      vAxis: { title: 'H, м' },
       backgroundColor: '#9CABAE',
+      colors: ['#676418'],
+      areaOpacity: 0.6, // Пример прозрачности заливки (от 0.0 до 1.0)
       chartArea: {
         backgroundColor: {
           stroke: '#3C2C13',
           strokeWidth: 1
         },
-        left: 50,
+        left: 70,
         top: 20,
-        width: '90%',
+        width: '85%',
         height: '60%'
       }
     };
@@ -145,52 +162,24 @@
     elevationOptions.vAxis.viewWindow.min = minElevation - (minElevation * 0.01); // Добавляем 3% отступа, если есть отрицательные значения
 
 
-    elevationChart = new google.visualization.LineChart(document.getElementById('elevation_chart_div'));
+    elevationChart = new google.visualization.AreaChart(document.getElementById('elevation_chart_div'));
     elevationChart.draw(elevationData, elevationOptions);
-
   }
-  function drawHeartRateTimeChart() {
-    heartRateData = new google.visualization.DataTable();
-    heartRateData.addColumn('datetime', 'Время');
-    heartRateData.addColumn('number', 'Пульс');
-
-    for (var i = 0; i < gpxData.time_points.length; i++) {
-      heartRateData.addRow([new Date(gpxData.time_points[i]), gpxData.heart_rate_points[i]]);
-    }
-
-    heartRateOptions = {
-      title: 'Пульс от времени',
-      curveType: 'function',
-      legend: { position: 'none' },      
-      colors: ['red'],
-      hAxis: { title: 'Время', format: 'HH:mm' },
-      vAxis: { title: 'Пульс' },
-      backgroundColor: '#9CABAE',
-      chartArea: {
-        backgroundColor: {
-          stroke: '#3C2C13',
-          strokeWidth: 1
-        },
-        left: 50,
-        top: 20,
-        width: '90%',
-        height: '60%'
-      }
-    };
-
-    heartRateChart = new google.visualization.LineChart(document.getElementById('heart_rate_chart_div'));
-    heartRateChart.draw(heartRateData, heartRateOptions);
-  }
+  
   window.addEventListener('resize', function() {
-    if (elevationChart && heartRateChart) {
+    if (elevationChart) {
       elevationChart.draw(elevationData, elevationOptions);
-      heartRateChart.draw(heartRateData, heartRateOptions);
     }
   }, { passive: true });
 
 </script>
 <!-- Карта-->
 <script>
+  const iconUrlstart = '/static/travel/img/start.png';
+  const iconUrlfinish = '/static/travel/img/finish.png';    
+  let animatedMarker; // Объявление в глобальной области видимости
+  let animationSpeed = 100; // Объявите animationSpeed в глобальной области видимости
+  let travelType = {{ travel.traveltype_id }};
   document.addEventListener('DOMContentLoaded', (event) => {
     mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
   
@@ -211,11 +200,313 @@
         style: 'mapbox://styles/jonengineer/clp1i7gue01c001qyaew4btuj',
         // ... другие параметры карты
       });
+
+        // Шаг 1: Инициализация источника данных и слоя для анимированного маркера
+        map_1.on('load', () => {
+          map_1.addSource('animated-marker-source', {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: []
+            }
+          });
+
+          map_1.addLayer({
+            id: 'animated-marker-layer',
+            type: 'symbol',
+            source: 'animated-marker-source',
+            layout: {
+              'icon-image': 'your-icon', // Идентификатор вашего изображения иконки
+              'icon-size': 0.25
+            }
+          });
+          
+          // Загрузка первой иконки
+          map_1.loadImage(iconUrlstart, (error, image) => {
+            if (error) throw error;
+            map_1.addImage('icon-start', image);
+      
+            // Загрузка второй иконки
+            map_1.loadImage(iconUrlfinish, (error, image) => {
+              if (error) throw error;
+              map_1.addImage('icon-finish', image);
+      
+              let features = [
+                {
+                  type: 'Feature',
+                  properties: {
+                    icon: 'icon-start',
+                    iconSize: 0.3 // Размер для первой иконки
+                  },
+                  geometry: {
+                    type: 'Point',
+                    coordinates: firstPointCoordinates,
+                  },
+                },
+                {
+                  type: 'Feature',
+                  properties: {
+                    icon: 'icon-finish',
+                    iconSize: 0.3 // Размер для второй иконки
+                  },
+                  geometry: {
+                    type: 'Point',
+                    coordinates: lastPointCoordinates,
+                  },
+                },
+              ];
+      
+              map_1.addLayer({
+                id: 'icon-layer',
+                type: 'symbol',
+                source: {
+                  type: 'geojson',
+                  data: {
+                    type: 'FeatureCollection',
+                    features: features,
+                  },
+                },
+                layout: {
+                  'icon-image': ['get', 'icon'],
+                  'icon-size': 0.3                  
+                },
+              });
+            });
+          });
+        });
   
       var selector = document.getElementById('style-selector');
       selector.addEventListener('change', function() {
         map_1.setStyle(this.value);
       });
+
+      // Функция для повторного добавления слоев карты
+      function addCustomLayers() {
+        // Удаление предыдущих слоев и источников данных, если они существуют
+        if (map_1.getLayer('icon-layer')) {
+          map_1.removeLayer('icon-layer');
+        }
+        if (map_1.getSource('icon-source')) {
+          map_1.removeSource('icon-source');
+        }
+        if (map_1.getLayer('animated-marker-layer')) {
+          map_1.removeLayer('animated-marker-layer');
+        }
+        if (map_1.getSource('animated-marker-source')) {
+          map_1.removeSource('animated-marker-source');
+        }        
+
+        function addImageSafe(id, image) {
+          if (!map_1.hasImage(id)) {
+            map_1.addImage(id, image);
+          }
+        }
+
+        // Функция для безопасного добавления источника данных
+        function addSourceSafe(id, data) {
+          if (!map_1.getSource(id)) {
+            map_1.addSource(id, data);
+          }
+        }
+
+        // Загрузка и добавление иконок
+        map_1.loadImage(iconUrlstart, (error, startImage) => {
+          if (error) throw error;
+          addImageSafe('icon-start', startImage);
+      
+          map_1.loadImage(iconUrlfinish, (error, finishImage) => {
+            if (error) throw error;
+            addImageSafe('icon-finish', finishImage);
+      
+            // Определение features для иконок
+            let features = [
+              {
+                type: 'Feature',
+                properties: { icon: 'icon-start', iconSize: 0.3 },
+                geometry: { type: 'Point', coordinates: firstPointCoordinates },
+              },
+              {
+                type: 'Feature',
+                properties: { icon: 'icon-finish', iconSize: 0.3 },
+                geometry: { type: 'Point', coordinates: lastPointCoordinates },
+              },
+            ];
+      
+            // Добавление источника данных для иконок
+            addSourceSafe('icon-source', {
+              type: 'geojson',
+              data: { type: 'FeatureCollection', features: features },
+            });
+      
+            // Добавление слоя с иконками
+            map_1.addLayer({
+              id: 'icon-layer',
+              type: 'symbol',
+              source: 'icon-source',
+              layout: { 'icon-image': ['get', 'icon'], 'icon-size': 0.3 },
+            });
+      
+            // Инициализация источника данных для анимированного маркера
+            addSourceSafe('animated-marker-source', {
+              type: 'geojson',
+              data: { type: 'FeatureCollection', features: [] },
+            });
+      
+            // Добавление слоя для анимированного маркера
+            map_1.addLayer({
+              id: 'animated-marker-layer',
+              type: 'symbol',
+              source: 'animated-marker-source',
+              layout: { 'icon-image': 'your-icon', 'icon-size': 0.25 },
+            });
+          });
+        });
+      }
+
+      // Обработчик события изменения стиля карты
+      map_1.on('style.load', () => {
+      addCustomLayers();
+      });
+
+
+    let startAnimationTime = null;
+    let totalAnimationDuration = 15000; // Продолжительность анимации в миллисекундах
+
+    let isAnimating = false;
+
+    function restartAnimation() {
+      // Остановка текущей анимации
+      isAnimating = false;
+
+      // Задержка для убеждения, что предыдущая анимация остановлена
+      setTimeout(() => {
+        startAnimationTime = null;
+        isAnimating = true;
+        window.requestAnimationFrame(animateTravel);
+      }, 100); // Задержка в 100 мс
+    }        
+    
+    // Обработчик изменения скорости анимации
+    document.getElementById('style-selector-speed').addEventListener('change', function() {
+      totalAnimationDuration = parseFloat(this.value);
+      restartAnimation(); 
+    });
+
+    // Инициализация анимации
+    isAnimating = true;
+    window.requestAnimationFrame(animateTravel);
+     
+
+    
+    // Функция для анимации маркера
+    function animateTravel(timestamp) {
+      // Проверяем, задано ли начальное время анимации
+      if (!startAnimationTime) startAnimationTime = timestamp;
+    
+      // Вычисляем, сколько времени прошло с начала анимации
+      const elapsedTime = timestamp - startAnimationTime;
+      // Вычисляем прогресс анимации от 0 до 1
+      const animationProgress = elapsedTime / totalAnimationDuration;
+    
+      // Если анимация завершена, сбрасываем время и начинаем заново
+      if (animationProgress > 1) {
+        startAnimationTime = null; // Сбросить начальное время
+        window.requestAnimationFrame(animateTravel); // Запустить следующий кадр анимации
+        return;
+      }
+    
+      // Получаем массив координат из GeoJSON
+      const coordinates_animate = travelGeoJSON.features[0].geometry.coordinates;
+      // Вычисляем общее расстояние маршрута
+      const totalDistance = turf.length(travelGeoJSON.features[0]);
+      // Вычисляем расстояние до текущей точки маршрута
+      const currentPointDistance = totalDistance * animationProgress;
+      // Получаем координаты текущей точки на маршруте
+      const currentPoint = turf.along(travelGeoJSON.features[0], currentPointDistance);
+    
+      // Если текущая точка существует, обновляем позицию маркера
+      if (currentPoint && currentPoint.geometry && currentPoint.geometry.coordinates) {
+        updateMarkerPosition(currentPoint.geometry.coordinates);
+    
+        // Обновляем трек до текущего местоположения маркера
+        const pathLengthAtCurrentPoint = turf.distance(
+          turf.point(travelGeoJSON.features[0].geometry.coordinates[0]),
+          turf.point(currentPoint.geometry.coordinates)
+        );
+        const updatedPath = turf.lineSlice(
+          turf.point(travelGeoJSON.features[0].geometry.coordinates[0]),
+          turf.point(currentPoint.geometry.coordinates),
+          travelGeoJSON.features[0]
+        );
+        
+        if (updatedPath.geometry.coordinates.length >= 2) {
+          map_1.getSource('route').setData(updatedPath);
+        }
+      }
+
+      // Запрашиваем следующий кадр анимации
+      window.requestAnimationFrame(animateTravel);
+    }
+    
+    // Функция для обновления позиции маркера
+    function updateMarkerPosition(newCoordinates) {
+      // Убедитесь, что передаются только двухмерные координаты
+      const twoDimensionalCoords = [newCoordinates[0], newCoordinates[1]];
+      console.log(`twoDimensionalCoords ${twoDimensionalCoords}`);
+
+
+      const source = map_1.getSource('animated-marker-source');
+      source.setData({
+        type: 'FeatureCollection',
+        features: [{
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: twoDimensionalCoords
+          }
+        }]
+      });
+    }  
+
+    // Подключение функции анимации к кнопке
+    document.getElementById('start-animation').addEventListener('click', () => {
+      startAnimationTime = null; // Сброс времени анимации
+      // Установка начального положения маркера и добавление его на карту
+      // Определение пути к изображению в зависимости от travelType
+      let iconPath;
+      if (travelType === 1) {
+        iconPath = '/static/travel/img/hiking_treking.png';
+      } else if (travelType === 2) {
+        iconPath = '/static/travel/img/hiking_mountains.png';
+      } else if (travelType === 3) {
+        iconPath = '/static/travel/img/bicycle.png';
+      } else if (travelType === 4) {
+        iconPath = '/static/travel/img/skiing_man.png';
+      } else if (travelType === 5) {
+        iconPath = '/static/travel/img/river_rafting.png';
+      } else if (travelType === 6) {
+        iconPath = '/static/travel/img/motorcycle_traveller.png';
+      } else if (travelType === 7) {
+        iconPath = '/static/travel/img/car.png';
+      }
+
+      // Загрузка и добавление изображения
+      map_1.loadImage(iconPath, (error, image) => {
+        if (error) throw error;
+
+        // Добавление или обновление изображения маркера на карте
+        if (map_1.hasImage('your-icon')) {
+          map_1.updateImage('your-icon', image);
+        } else {
+          map_1.addImage('your-icon', image);
+        }
+
+        // Установка начального положения маркера и добавление его на карту
+        updateMarkerPosition(firstPointCoordinates);
+
+        window.requestAnimationFrame(animateTravel); // Начало анимации
+      });
+    });
 
     // Предполагается, что 'map' - это ваша карта Mapbox
     map_1.on('click', function(e) {
@@ -248,57 +539,32 @@
           },
           paint: {
             'line-color': '#D32F2F',
-            'line-width': 6
+            'line-width': 8
           }
         });
-      }  
-         
+      }
+      
       new mapboxgl.Marker({
-        element: createCustomMarkerElement('/static/travel/img/start-icon.svg')
+        element: createStaticMarkerElement('/static/travel/img/start-icon.svg', 25, 25)
       })
       .setLngLat(firstPointCoordinates)
       .addTo(map_1);
 
       new mapboxgl.Marker({
-        element: createCustomMarkerElement('/static/travel/img/end-icon.svg')
+        element: createStaticMarkerElement('/static/travel/img/end-icon.svg', 25, 25)
       })
       .setLngLat(lastPointCoordinates)
       .addTo(map_1);
     });
 
-    // Создание маркера для анимации
-    const animatedMarker = new mapboxgl.Marker({
-      element: createCustomMarkerElement('/static/travel/img/hiking_moving.svg')
-    })       
-
-    // Функция для создания анимации
-    let counter = 0;
-    const animationSpeed = 10;
-    function animateTravel() {
-      const coordinates_animate = travelGeoJSON.features[0].geometry.coordinates;
-      if (counter < coordinates_animate.length) {
-        // Анимация маркера
-        animatedMarker.setLngLat(coordinates_animate[counter]);
-    
-        // Создание геометрии трека на основе пройденного пути
-        if (counter > 0) { // Изменение условия
-          const path = coordinates_animate.slice(0, counter + 1);
-          if (path.length >= 2) { // Добавление проверки на количество координат
-            lineString = turf.lineString(path);
-            map_1.getSource('route').setData(lineString);
-          }
-        }
-        counter++;
-        setTimeout(() => requestAnimationFrame(animateTravel), animationSpeed);
-      }
-    }    
-    // Подключение функции анимации к кнопке
-    document.getElementById('start-animation').addEventListener('click', () => {
-      counter = 0; // Сброс счетчика для повторного запуска
-      // Установка начального положения маркера и добавление его на карту
-      animatedMarker.setLngLat(firstPointCoordinates).addTo(map_1);
-      animateTravel(); // Используйте animateTravel
-    });
+    function createStaticMarkerElement(iconUrl, width, height) {
+      var el = document.createElement('div');
+      el.style.backgroundImage = `url(${iconUrl})`;
+      el.style.width = width + 'px';
+      el.style.height = height + 'px';
+      el.style.backgroundSize = 'contain'; // Используйте 'contain' для сохранения пропорций
+      return el;
+    }
 
     var pointGeoJSON = {{ gpx_data_point|safe }};    
     // Добавление иконок точек на карту
@@ -306,7 +572,7 @@
       Object.values(pointGeoJSON).forEach(function(point) {
           // Создание иконки
           var marker = new mapboxgl.Marker({
-              element: createCustomMarkerElement('/static/travel/img/location_point.svg') // Путь к вашей иконке
+              element: createStaticMarkerElement('/static/travel/img/location_point.svg', 35, 35) // Путь к вашей иконке
           })
               .setLngLat(point.geometry.coordinates) // Установка координат точки
               .addTo(map_1);
@@ -323,16 +589,8 @@
       console.error('Ошибка: Нет данных о точках в GeoJSON.');
     }
   }
-});  
-function createCustomMarkerElement(iconUrl) {
-  var container = document.createElement('div');  
-  var el = document.createElement('div');
-  el.style.backgroundImage = `url(${iconUrl})`;
-  el.style.width = '25px';
-  el.style.height = '25px';
-  el.style.backgroundSize = '100%';    
-  return el;
-}
+  });
+  
 </script>
 <!-- Выпадающий список-->
 <script>
@@ -352,6 +610,71 @@ function createCustomMarkerElement(iconUrl) {
   document.addEventListener('DOMContentLoaded', function() {
     var textNeedCount = document.querySelectorAll('#input_text, #textarea2');
     M.CharacterCounter.init(textNeedCount);
-});
+  });
 </script>
+<!-- Видеозахват -->
+<script>
+  let mediaRecorder;
+  let recordedChunks = [];
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.getElementById('start-recording').addEventListener('click', function() {
+        let canvas = document.querySelector('#map_1 canvas');
+        let stream = canvas.captureStream(30); // Захват видеопотока с частотой 30 кадров
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+        mediaRecorder.ondataavailable = function(e) {
+            if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = sendVideoToServer;
+        mediaRecorder.start();
+
+        this.style.display = 'none';
+        document.getElementById('stop-recording').style.display = 'block';
+    });
+
+    document.getElementById('stop-recording').addEventListener('click', function() {
+        mediaRecorder.stop();
+
+        this.style.display = 'none';
+        document.getElementById('start-recording').style.display = 'block';
+    });
+
+    function sendVideoToServer() {
+        let videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+        let formData = new FormData();
+        formData.append('video', videoBlob, 'animation.webm');
+
+        fetch('/travel/upload-video', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-CSRFToken': csrfToken
+            }
+        }).then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error('Error:', error));
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+  
+    const csrfToken = getCookie('csrftoken');
+  });  
+</script>
+
+
+
 {% endblock %}

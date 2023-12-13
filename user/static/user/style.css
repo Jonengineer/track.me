@@ -58,20 +58,31 @@
   white-space: normal; /* Если вы хотите, чтобы текст переносился на новую строку при необходимости */  
 }
 .login-container {
-  position: fixed; /* Фиксируем контейнер карты на странице */
+  position: absolute; /* Фиксируем контейнер карты на странице */
   top: 50%; /* Устанавливаем верхнюю позицию на 0, чтобы карта была прикреплена к верху страницы */
   left: 50%; /* Устанавливаем левую позицию на 0, чтобы карта была прикреплена к левой стороне страницы */
-  right: 20px;
-  width: 500px;  /* Это будет занимать 100% ширины экрана */
-  height: 20px; /* Это будет занимать 100% высоты экрана */
+  width: 50%;  /* Это будет занимать 100% ширины экрана */
+  height: 50%; /* Это будет занимать 100% высоты экрана */
+  flex-direction: column; /* Ориентация дочерних элементов вертикально */
+  justify-content: center; /* Центрирование дочерних элементов по вертикали */
+  align-items: center;
   transform: translate(-50%, -50%);
+  display: flex;
 }
+
+@media (max-width: 768px) {
+  .login-container {
+    width: 80%; /* Ширина изменяется на 80% от ширины экрана */
+    height: 70%;
+  }
+}
+
 .login-container-base {
-  background-image: url(img/DSC_1443.jpg);
-  height: 900px;
+  background-image: url(../user/img/DSC_1443.jpg);
+  height: 100vh;
   background-position: center;
-  background-position: cover;
-  background-position: no-repeat;
+  background-size: cover;
+  background-repeat: no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,26 +91,59 @@
 }
 .login-container-baseblock {
   width: 620px;
-  height: 330px;
-  background: linear-gradient(45deg, rgb(111, 98, 83, 0.8) 27%, rgb(236, 231, 214, 0.8) 54%, rgb(111, 148, 127, 0.8) 77%);
 
+  background: linear-gradient(45deg, rgb(111, 98, 83, 0.8) 27%, rgb(236, 231, 214, 0.8) 54%, rgb(111, 148, 127, 0.8) 77%);
 border-radius: 15px;
-position:fixed
+position: absolute;
+top: 50%; /* Устанавливаем верхнюю позицию на 0, чтобы карта была прикреплена к верху страницы */
+  left: 50%; /* Устанавливаем левую позицию на 0, чтобы карта была прикреплена к левой стороне страницы */
+  width: 40%;  /* Это будет занимать 100% ширины экрана */
+  height: 50%; /* Это будет занимать 100% высоты экрана */
+  transform: translate(-50%, -50%);
 
 }
+/* Медиа-запрос для экранов с шириной менее 768px, например */
+@media (max-width: 768px) {
+  .login-container-baseblock {
+    width: 80%; /* Ширина изменяется на 80% от ширины экрана */
+    height: 70%;
+  }
+}
+.input-field {
+  width: 100%; /* Ширина input-field на 100% ширины родителя */
+  display: flex; /* Применение Flexbox для центрирования содержимого */
+  flex-direction: column; /* Вертикальное расположение дочерних элементов */
+  align-items: center; /* Центрирование дочерних элементов по горизонтали */
+  margin-top: 30px; /* Отступ сверху для разделения элементов */
+  
+}
+
+
 .input-field>label {
   color: whitesmoke;
   margin-top: -40px;
   font-size: 18px;
  
 } 
+.materialize-form {
+  width: 50%; /* Ширина input-field на 100% ширины родителя */
+  
+  
+}
+@media (max-width: 768px) {
+  .materialize-form {
+    width: 90%; /* Увеличиваем ширину до 80% на меньших экранах */
+  }
+}
+
+
 .input-container {
   border: 1px solid #ccc; /* Линия границы */
   padding: 2px; /* Поля вокруг содержимого внутри контейнера */
-  width: 450px; /* Ширина контейнера */
+  width: 100%; /* Ширина контейнера */
   border-radius: 5px; /* Закругленные углы */
   height: 47px;
-  margin-top: 30px;
+  margin-top: 5px;
   background-color: white;
 
 }
