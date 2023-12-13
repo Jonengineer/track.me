@@ -156,29 +156,41 @@
 .content-travel-finance {
     display: flex;
     position: relative;
-    flex-direction: column; /* Вертикальное расположение */
-    margin-left: 66px;
-    width: calc(40% - 66px);  
-    background-color: #ECE7D6;
-    overflow: auto;
-    min-height: 1040px;  
-    height: 100%;  
-}
-.content-travel-get-finance-charts {
-    display: flex;
-    position: relative;
-    flex-direction: column; /* Вертикальное расположение */
+    flex-direction: row; /* Вертикальное расположение */
     margin-left: 66px;
     width: calc(100% - 66px);  
     background-color: #ECE7D6;
+    
+    min-height: 600px;  
+    height: 100vh;  
+}
+.content-travel-finance-description {
+    background-color: #ECE7D6;
+    width: 40%;
+}
+.content-travel-get-finance-charts {
+    margin-top: 30px;
+    width: 30%;  
+    background-color: #ECE7D6;
     overflow: auto;
-    min-height: 1040px;  
+    height: 100%;  
+}
+.content-travel-get-finance-charts_2 {
+    margin-top: 30px;
+    width: 30%;  
+    background-color: #ECE7D6;
+    overflow: auto;
     height: 100%;  
 }
 
 .content-travel-get-finance {
     width: 100%;
     margin-left: 10px;
+}
+.content-travel-add-finance-total {
+  font-size: 40px;
+  width: 80%;
+  margin-left: 60px;
 }
 /* Стили модального окна */
 .modal {
@@ -313,5 +325,12 @@
 }
 .collapsible {
     max-width: 500px;
+}
+/* Стиль подсказки графика */
+.arc-text {
+    background-color: #6F947F;
+    font-size: 18px;
+    
+    
 }
   
