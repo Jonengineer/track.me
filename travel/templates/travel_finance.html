@@ -15,7 +15,7 @@
     <div class="content-travel-finance-description">
         <!-- Dropdown Trigger -->
         <div class="content-travel-add-finance">
-            <a class='dropdown-trigger btn' data-target='dropdown1'> + Добавить затраты</a>
+            <a class='dropdown-trigger btn' data-target='dropdown1'> + Добавить затраты</a>             
             <ul id='dropdown1' class='dropdown-content'>
                 <li><a data-target="modal1">Транспорт</a></li>
                 <li><a data-target="modal2">Проживание</a></li>
@@ -23,8 +23,8 @@
                 <li><a data-target="modal4">Развлечения</a></li>
                 <li><a data-target="modal5">Сувениры</a></li> 
                 <li><a data-target="modal6">Виза</a></li>
-                <li><a data-target="modal7">Медицинская страховка</a></li>
-                <li><a data-target="modal8">Аренда снаряжения</a></li>
+                <li><a data-target="modal7">Связь</a></li>
+                <li><a data-target="modal8">Снаряжение</a></li>
                 <li><a data-target="modal9">Экскурсии</a></li>
                 <li><a data-target="modal10">Тур</a></li>
                 <li><a data-target="modal11">Медицина</a></li>
@@ -216,7 +216,7 @@
                     <input type="hidden" name="typeexpense" value="11"> <!-- Значение для первого типа расходов -->
                     <div class="modal-content">
                         <div id="header">
-                            <h6 class="bold-title">Укажите затраты на медицину!</h6>
+                            <h6 class="bold-title">Укажите затраты на связь!</h6>
                         </div>               
                         <div id="fieldsContainer11">
                             <!-- Здесь будут добавляться поля -->
@@ -493,7 +493,7 @@
                     <div class="collapsible-header">
                         <img class="point-icons" src="/static/travel/img/medicine_expense.svg">
                         <div class="collapsible-header-text">
-                            <span class="text-label">Медицинская страховка</span>
+                            <span class="text-label">Связь</span>
                             <span class="text-amount">{{ total_amount_7 }}&nbsp;{{ travel.currency }}  </span>                     
                         </div>
                     </div> 
@@ -735,6 +735,9 @@
     <div class="content-travel-get-finance-charts_2">
     </div>
     <div class="content-travel-get-finance-charts">
+        <div class="content-travel-add-finance-total">
+            <span> Всего: {{ total_expenses }} {{ travel.currency }} </span>
+        </div>        
     </div>
 </div>      
             
@@ -850,6 +853,21 @@
     document.addEventListener('DOMContentLoaded', function() {
         var data = JSON.parse('{{ expenses_data_json|safe }}');
         console.log(data)
+
+        var colorMap = {
+            'Транспорт': '#DC836F',
+            'Проживание': '#5F9EA0',
+            'Питание': '#FFF5BA',            
+            'Развлечение': '#FFBCAD',
+            'Сувениры': '#798073',            
+            'Виза': '#9FE2BF',
+            'Связь': '#DCD0FF',           
+            'Снаряжение': '#CAA488',
+            'Экскурсии': '#B76B44',
+            'Туры': '#A7B180',                        
+            'Медицина': '#FFBD88',
+            'Прочее': '#524B48',            
+        };
         
         var width = 500,
             height = 500,
@@ -878,7 +896,9 @@
                 
         g.append("path")
         .attr("d", arc)
-        .style("fill", function(d) { return color(d.data.typeexpense); })
+        .style("fill", function(d) { 
+            return colorMap[d.data.typeexpense] || 'grey'; // Использование цвета из словаря или серый по умолчанию
+        })
         .on("mouseover", function(event, d) {
             // Выдвижение сегмента
             d3.select(this)
@@ -899,7 +919,7 @@
                 .attr("class", "arc-text")
                 .attr("transform", "translate(" + xTextPosition + "," + yTextPosition + ")")
                 .attr("text-anchor", "middle")
-                .text(d.data.typeexpense + ": " + d.data.total_amount + " ₽");
+                .text(d.data.typeexpense + ": " + d.data.percentage + " %");
 
             d3.select(this).style("stroke", "white").style("opacity", 0.5);
         })
@@ -928,7 +948,7 @@
         });
 
         // Настройки SVG
-        var width = 600;
+        var width = 520;
         var height = 630;
         var margin = {top: 20, right: 60, bottom: 10, left: 140};
 
@@ -974,7 +994,7 @@
         .attr('class', 'label')
         .attr('y', function(d) { return y(d.typeexpense) + y.bandwidth() / 2 + 4; })
         .attr('x', function(d) { return x(d.total_amount) + 3; })
-        .text(function(d) { return d.total_amount; });
+        .text(function(d) { return d.percentage + '%'; });
     })
 </script>
 
