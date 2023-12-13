@@ -1,7 +1,8 @@
 from pathlib import Path
 import os
-from osgeo import gdal
 
+
+# -*- coding: utf-8 -*-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,6 +19,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
+
+# Указываем путь к данным GDAL
+GDAL_LIBRARY_PATH = r"C:\Users\tatia\AppData\Local\Programs\Python\Python311\Lib\site-packages\osgeo\gdal304.dll"
+
+GEOS_LIBRARY_PATH = 'C:\\Users\\tatia\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\osgeo\\geos_c.dll'
 
 # Application definition
 
@@ -76,15 +83,18 @@ WSGI_APPLICATION = 'trek.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'trek.my',
+        'NAME': 'trek',
         'USER': 'postgres',
-        'PASSWORD': 'TdutybQ84',
+        'PASSWORD': '7141',
         'HOST': 'localhost',
-        'PORT': '5432',  # Порт PostgreSQL, по умолчанию 5432
+        'PORT': '5432',
+        'OPTIONS': {
+            'options': '-c search_path=public',
+            'client_encoding': 'UTF8',  # Используйте 'client_encoding' вместо 'charset'
+        },
     }
 }
 
-#GDAL_LIBRARY_PATH = 'C:\\Users\\Евгений\\AppData\\Local\\Programs\\Python\\Python310\\Lib\\site-packages\\osgeo\\gdalXXX.dll'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -140,10 +150,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'travel', 'media')
-
-
-FFMPEG_PATH = 'F:\\Trek.me\\Project\\ffmpeg-2023-11-22-git-0008e1c5d5-full_build\\bin\\ffmpeg.exe'
-
 
 AUTH_USER_MODEL = 'user.User'
 
