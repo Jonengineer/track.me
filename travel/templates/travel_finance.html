@@ -36,7 +36,7 @@
                     <input type="hidden" name="typeexpense" value="1"> <!-- Значение для первого типа расходов -->
                     <div class="modal-content">
                         <div id="header">
-                            <h6 class="bold-title">Укажите затраты на транспорт!</h6>
+                            <h6 class="bold-title">Укажите затраты на транспорт!</h6>                            
                         </div>               
                         <div id="fieldsContainer1">
                             <!-- Здесь будут добавляться поля -->
@@ -813,6 +813,42 @@
             // Добавляем nameExpenseDiv и amountDiv в groupContainer
             groupContainer.appendChild(nameExpenseDiv);
             groupContainer.appendChild(amountDiv);
+
+            // Создаем и добавляем quantity_dayDiv
+            var quantity_dayDiv = document.createElement('div');
+            quantity_dayDiv.className = 'modal-content-amount';
+            var quantity_dayInput = document.createElement('input');
+            quantity_dayInput.type = 'number';
+            quantity_dayInput.step = '1'; // Шаг ввода для точности 
+            quantity_dayInput.min = '1'; // Минимальное значение, чтобы избежать отрицательных чисел
+            quantity_dayInput.name = 'quantity_day[]'; // Имя в формате массива
+            quantity_dayInput.className = 'input-amount'; // Добавляем класс
+            quantity_dayInput.value = '1'; // Значение по умолчанию для quantity_day
+            quantity_dayDiv.appendChild(quantity_dayInput);
+        
+            // Добавляем nameExpenseDiv и amountDiv и quantity_dayDiv в groupContainer
+            groupContainer.appendChild(nameExpenseDiv);
+            groupContainer.appendChild(amountDiv);
+            groupContainer.appendChild(quantity_dayDiv); 
+
+            // Создаем и добавляем quantity_peopleDiv
+            var quantity_peopleDiv = document.createElement('div');
+            quantity_peopleDiv.className = 'modal-content-amount';
+            var quantity_peopleInput = document.createElement('input');
+            quantity_peopleInput.type = 'number';
+            quantity_peopleInput.step = '1'; // Шаг ввода для точности 
+            quantity_peopleInput.min = '1'; // Минимальное значение, чтобы избежать отрицательных чисел
+            quantity_peopleInput.name = 'quantity_people[]'; // Имя в формате массива
+            quantity_peopleInput.className = 'input-amount'; // Добавляем класс
+            quantity_peopleInput.value = '1'; // Значение по умолчанию для quantity_people
+            quantity_peopleDiv.appendChild(quantity_peopleInput);
+        
+            // Добавляем nameExpenseDiv и amountDiv и quantity_dayDiv в groupContainer
+            groupContainer.appendChild(nameExpenseDiv);
+            groupContainer.appendChild(amountDiv);
+            groupContainer.appendChild(quantity_dayDiv);
+            groupContainer.appendChild(quantity_peopleDiv);
+
                     
             // Добавляем groupContainer в основной контейнер
             container.appendChild(groupContainer);

@@ -198,7 +198,7 @@
     left: 50% !important;
     top: 50% !important;
     transform: translate(-50%, -50%) !important;
-    width: 400px; /* или любая другая ширина по вашему усмотрению */
+    width: 600px; /* или любая другая ширина по вашему усмотрению */
     min-height: 200px; /* минимальная высота */
     height: 600px;
     background: #ECE7D6;
@@ -238,6 +238,9 @@
 .modal-content-amount {
     flex: 1; /* Больше места для этого контейнера */
 }
+
+
+
 /* Стили для кнопки модального окна */
 .modal-content-btn {
     display: flex;
