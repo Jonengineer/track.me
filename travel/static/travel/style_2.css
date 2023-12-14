@@ -44,7 +44,6 @@
     align-items: center; /* Центрируем элементы по вертикали */
     
 }
-
 /* Стили контейнера с ззаголовком */
 .input-field>label {
     color: rgb(0, 0, 0);
@@ -166,23 +165,18 @@
 }
 .content-travel-finance-description {
     background-color: #ECE7D6;
-    width: 40%;
+    width: 45%;
+    margin-left: 15px;
 }
 .content-travel-get-finance-charts {
-    margin-top: 30px;
-    width: 30%;  
+    margin-top: 0px;
+    margin-left: 200px;
+    width: 55%;  
     background-color: #ECE7D6;
     overflow: auto;
-    height: 100%;  
+    height: 750px;      
+    padding: 5px;
 }
-.content-travel-get-finance-charts_2 {
-    margin-top: 30px;
-    width: 30%;  
-    background-color: #ECE7D6;
-    overflow: auto;
-    height: 100%;  
-}
-
 .content-travel-get-finance {
     width: 100%;
     margin-left: 10px;
@@ -190,7 +184,7 @@
 .content-travel-add-finance-total {
   font-size: 40px;
   width: 80%;
-  margin-left: 60px;
+  margin-left: 150px;
 }
 /* Стили модального окна */
 .modal {
@@ -211,7 +205,7 @@
     background: #ECE7D6;
     padding: 0 !important; /* Убирает внутренние отступы */
     margin: 0; /* Убирает внешние отступы */
-    max-height: 600px;
+    max-height: 700px;
     overflow-y: auto;
 }
 /* Стили модального окна */
@@ -227,7 +221,7 @@
 .modal-content-group {
     display: flex;    
     justify-content: space-between; /* Распределение элементов в строке с пространством между ними */
-    margin-bottom: 10px; /* Отступ снизу для каждой группы */
+    margin-bottom: 0px; /* Отступ снизу для каждой группы */
 }
 /* Стили модального окна */
 .modal-content-nameexpense {
@@ -238,15 +232,12 @@
 .modal-content-amount {
     flex: 1; /* Больше места для этого контейнера */
 }
-
-
-
 /* Стили для кнопки модального окна */
 .modal-content-btn {
     display: flex;
-    justify-content: flex-end; /* Выравнивает кнопку по правому краю */
+    justify-content: space-between; 
 }
-#submitButton, #addMoreButton {  
+#addMoreButton {  
     background-color: #6F947F;
     color: #ECE7D6;
     border: none;
@@ -254,6 +245,25 @@
     border-radius: 4px;
     cursor: pointer;
     margin-right: 10px;
+}
+#submitButton {  
+    background-color: #6F947F;
+    color: #ECE7D6;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+
+}
+#submitButton_delete {  
+    background-color: #F44336;
+    color: #ECE7D6;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 200px;
 }
  #addMoreButton {
     margin-right: 10px;
@@ -327,13 +337,7 @@
     font-size: 20px;
 }
 .collapsible {
-    max-width: 500px;
+    width: 98%;
 }
-/* Стиль подсказки графика */
-.arc-text {
-    background-color: #6F947F;
-    font-size: 18px;
-    
-    
-}
+
   

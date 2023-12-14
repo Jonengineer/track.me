@@ -528,24 +528,25 @@ def travel_finance(request, travelplan_id):
     expenses_type = expense.objects.filter(expense_id__in=expense_ids)
 
     # Группировка и подсчет суммы расходов по типам
-    expenses_grouped = expenses_type.values('typeexpense_id__nametypeexpense').annotate(total_amount=Sum('amount'))
+    expenses_grouped = expenses_type.values('typeexpense_id__nametypeexpense').annotate(full_amount=Sum('full_amount'))
 
     # Подсчет общей стоимости всех расходов
-    total_expenses = expenses_type.aggregate(total=Sum('amount'))['total']
+    total_expenses = expenses_type.aggregate(total=Sum('full_amount'))['total']
     
     # Преобразование Decimal в float и формирование списка словарей
     expenses_data = [
     {
         'typeexpense': e['typeexpense_id__nametypeexpense'],
-        'total_amount': float(e['total_amount']),
-        'percentage': round(float(e['total_amount'] / total_expenses * 100), 2) if total_expenses > 0 else 0
+        'full_amount': float(e['full_amount']),
+        'percentage': round(float(e['full_amount'] / total_expenses * 100), 2) if total_expenses > 0 else 0
     }
+    
     for e in expenses_grouped
 ]
     
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=1
     expenses_1 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=1)    
-    total_amount_1 = expenses_1.aggregate(total=Sum('amount'))['total'] or 0    
+    total_amount_1 = expenses_1.aggregate(total=Sum('full_amount'))['total'] or 0    
     # Расчет процентного соотношения
     try:
         percentage_1 = round((total_amount_1 / total_expenses * 100),2) if total_expenses > 0 else 0
@@ -554,7 +555,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=2
     expenses_2 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=2)    
-    total_amount_2 = expenses_2.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_2 = expenses_2.aggregate(total=Sum('full_amount'))['total'] or 0
     try:
         percentage_2 = round((total_amount_2 / total_expenses * 100),2) if total_expenses > 0 else 0
     except TypeError:
@@ -562,7 +563,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=3
     expenses_3 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=3)    
-    total_amount_3 = expenses_3.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_3 = expenses_3.aggregate(total=Sum('full_amount'))['total'] or 0
 
     try:
         percentage_3 = round((total_amount_3 / total_expenses * 100),2) if total_expenses > 0 else 0
@@ -571,7 +572,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=4
     expenses_4 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=4)    
-    total_amount_4 = expenses_4.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_4 = expenses_4.aggregate(total=Sum('full_amount'))['total'] or 0
     
     try:
         percentage_4 = round((total_amount_4 / total_expenses * 100),2) if total_expenses > 0 else 0
@@ -580,7 +581,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=5
     expenses_5 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=5)    
-    total_amount_5 = expenses_5.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_5 = expenses_5.aggregate(total=Sum('full_amount'))['total'] or 0
 
     try:
         percentage_5 = round((total_amount_5 / total_expenses * 100),2) if total_expenses > 0 else 0
@@ -589,7 +590,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=6
     expenses_6 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=6)    
-    total_amount_6 = expenses_6.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_6 = expenses_6.aggregate(total=Sum('full_amount'))['total'] or 0
 
     try:
         percentage_6 = round((total_amount_6 / total_expenses * 100),2) if total_expenses > 0 else 0
@@ -598,7 +599,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=7
     expenses_7 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=7)    
-    total_amount_7 = expenses_7.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_7 = expenses_7.aggregate(total=Sum('full_amount'))['total'] or 0
 
     try:
         percentage_7 = round((total_amount_7 / total_expenses * 100),2) if total_expenses > 0 else 0
@@ -607,7 +608,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=8
     expenses_8 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=8)    
-    total_amount_8 = expenses_8.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_8 = expenses_8.aggregate(total=Sum('full_amount'))['total'] or 0
 
     try:
         percentage_8 = round((total_amount_8 / total_expenses * 100),2) if total_expenses > 0 else 0
@@ -616,7 +617,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=9
     expenses_9 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=9)    
-    total_amount_9 = expenses_9.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_9 = expenses_9.aggregate(total=Sum('full_amount'))['total'] or 0
 
     try:
         percentage_9 = round((total_amount_9 / total_expenses * 100),2) if total_expenses > 0 else 0
@@ -625,7 +626,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=10
     expenses_10 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=10)    
-    total_amount_10 = expenses_10.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_10 = expenses_10.aggregate(total=Sum('full_amount'))['total'] or 0
 
     try:
         percentage_10 = round((total_amount_10 / total_expenses * 100),2) if total_expenses > 0 else 0
@@ -634,7 +635,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=11
     expenses_11 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=11)    
-    total_amount_11 = expenses_11.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_11 = expenses_11.aggregate(total=Sum('full_amount'))['total'] or 0
 
     try:
         percentage_11 = round((total_amount_11 / total_expenses * 100),2) if total_expenses > 0 else 0
@@ -643,7 +644,7 @@ def travel_finance(request, travelplan_id):
 
     # Получаем все расходы, которые связаны с этим планом путешествия и имеют typeexpense_id=12
     expenses_12 = expense.objects.filter(expense_id__in=expense_ids, typeexpense__typeexpense_id=12)    
-    total_amount_12 = expenses_12.aggregate(total=Sum('amount'))['total'] or 0
+    total_amount_12 = expenses_12.aggregate(total=Sum('full_amount'))['total'] or 0
 
     try:
         percentage_12 = round((total_amount_12 / total_expenses * 100),2) if total_expenses > 0 else 0
