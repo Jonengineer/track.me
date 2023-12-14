@@ -707,6 +707,8 @@ def add_travel_finance(request, travelplan_id):
     nameexpenses = request.POST.getlist('nameexpense[]')
     amounts = request.POST.getlist('amount[]')
     typeexpense_id = int(request.POST.get('typeexpense'))
+    quantity_days = request.POST.getlist('quantity_day[]')
+    quantity_peoples = request.POST.getlist('quantity_people[]')
 
     # Получение объекта typeexpense
     typeexpense_instance = typeexpense.objects.get(typeexpense_id=typeexpense_id)
@@ -714,11 +716,29 @@ def add_travel_finance(request, travelplan_id):
     is_valid = True
     expenses_to_save = []
 
-    for nameexpense_valid, amount_valid in zip(nameexpenses, amounts):
+    for nameexpense_valid, amount_valid, quantity_days_valid, quantity_peoples_valid in zip(nameexpenses, amounts, quantity_days, quantity_peoples):
+        # Преобразование данных в соответствующие числовые типы
+        amount = float(amount_valid)
+        quantity_day = int(quantity_days_valid)
+        quantity_people = int(quantity_peoples_valid)
+
+        # Вычисление full_amount
+        full_amount = amount * quantity_day * quantity_people
+        
         # Создание временного объекта expense
-        temp_expense = expense(nameexpense=nameexpense_valid, amount=amount_valid)
+        temp_expense = expense(nameexpense=nameexpense_valid, 
+                               amount=amount, 
+                               quantity_day=quantity_day, 
+                               quantity_people=quantity_people,
+                               full_amount=full_amount
+                            )
         # Проверка данных с помощью формы
-        form = TravelFinanceForm({'nameexpense': nameexpense_valid, 'amount': amount_valid})
+        form = TravelFinanceForm({'nameexpense': nameexpense_valid,
+                                   'amount': amount,  # Используйте преобразованное значение
+                                   'quantity_day': quantity_day,  # Используйте преобразованное значение
+                                   'quantity_people': quantity_people,  # Используйте преобразованное значение
+                                })
+
         if form.is_valid():
             temp_expense.typeexpense = typeexpense_instance
             expenses_to_save.append(temp_expense)
