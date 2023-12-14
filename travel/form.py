@@ -62,7 +62,7 @@ class TravelFinanceForm(forms.ModelForm):
     
     class Meta:
         model = expense
-        fields = ['amount', 'nameexpense' ]  # Обновляем список полей
+        fields = ['amount', 'nameexpense', 'quantity_day', 'quantity_people']  # Обновите список полей
         widgets = {            
             'amount': forms.NumberInput(attrs={
                 'class': 'input-point', 
@@ -74,4 +74,15 @@ class TravelFinanceForm(forms.ModelForm):
                 'id': 'input_nameexpense', 
                 'data-length': '100'
             }),
-        }
+            'quantity_day': forms.NumberInput(attrs={
+            'class': 'input-point', 
+            'id': 'input_quantity_day', 
+            'step': '1',               
+            }),
+            'quantity_people': forms.NumberInput(attrs={
+                'class': 'input-point', 
+                'id': 'input_quantity_people', 
+                'step': '1',              
+            }),
+        }    
+    
