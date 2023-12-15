@@ -22,9 +22,9 @@ ALLOWED_HOSTS = []
 
 
 # Указываем путь к данным GDAL
-GDAL_LIBRARY_PATH = r"C:\\Users\\Евгений\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\osgeo\\gdal304.dll"
+GDAL_LIBRARY_PATH = r"C:\Users\tatia\AppData\Local\Programs\Python\Python311\Lib\site-packages\osgeo\gdal304.dll"
 
-GEOS_LIBRARY_PATH = 'C:\\Users\\Евгений\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\osgeo\\geos_c.dll'
+GEOS_LIBRARY_PATH = 'C:\\Users\\tatia\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\osgeo\\geos_c.dll'
 
 # Application definition
 
@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'trek.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'track',
+        'NAME': 'trek',
         'USER': 'postgres',
         'PASSWORD': '7141',
         'HOST': 'localhost',
