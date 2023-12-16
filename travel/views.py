@@ -763,3 +763,7 @@ def delete_expense(request, expense_id, travelplan_id):
     exp.delete()
     return redirect('travel:travel_finance', travelplan_id=travelplan_id)
 
+@login_required
+def map_navigation(request):
+   
+    return render(request, 'create_travel_plan.html')

@@ -19,4 +19,5 @@ urlpatterns = [
     path('TravelFinance/<int:travelplan_id>/', views.travel_finance, name='travel_finance'),
     path('AddTravelFinance/<int:travelplan_id>/', views.add_travel_finance, name='add_travel_finance'),
     path('Expense/delete/<int:expense_id>/<int:travelplan_id>/', views.delete_expense, name='delete_expense'),
+    path('MapNavigation/', views.map_navigation, name='map_navigation'),
 ]

@@ -1,18 +1,42 @@
 {% extends 'user_profile.html' %}
+{% load static %}
 
 {% block styles %}
     {{ block.super }}
-
+    <link rel="stylesheet" type="text/css" href="{% static 'travel/style.css' %}">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
 {% endblock %}  
 
 {% block user_content %}
+
+<div id="map_navigation"></div>
 
 {% endblock %}
 
 
 {% block user_scripts %}
-{{ block.super }}      
+{{ block.super }}
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
 
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
+    const map = new mapboxgl.Map({
+    container: 'map_navigation',
+    // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [-79.4512, 43.6568],
+    zoom: 13
+    });
+    
+    map.addControl(
+    new MapboxDirections({
+    accessToken: mapboxgl.accessToken
+    }),
+    'top-left'
+    );
+</script>      
 
 {% endblock %}   
 

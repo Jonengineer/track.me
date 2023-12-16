@@ -88,7 +88,7 @@
       </div>
 
       <label for="datestart">Дата начала путешевствия:</label>
-      <input type="datetime-local" id="datestart" name="datestart" class="materialize-input" required><br>
+      <input type="text" class="datepicker" required><br>
   
       <label for="datefinish">Дата конца путешевствия:</label>
       <input type="datetime-local" id="datefinish" name="datefinish" class="materialize-input" required><br>       
@@ -163,5 +163,11 @@
       });  
     });    
   });      
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.datepicker');
+    var instances = M.Datepicker.init(elems);
+  });  
 </script>
 {% endblock %}

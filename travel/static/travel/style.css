@@ -239,7 +239,6 @@
 .custom-style-1 .file-path.validate::placeholder {
   color: #000000; /* Цвет текста подсказки, измените на нужный вам */
 }
-
 .container-select2 {
   margin-right: 20px; /* Добавляет отступ снизу к первому внутреннему контейнеру */
 }
@@ -252,6 +251,14 @@
 .dropdown-content label {
   color: #000000; /* Пример изменения цвета текста */
 }
+.modal.datepicker-modal {
+  width: 450px; /* ширина */
+  height: 450px; /* высота */
+}
+
+
+
+
 
 /* Стиль для страницы travel_detail_chart.html */
 /* 3D карта */
@@ -472,3 +479,15 @@ body .delete-button-point{
   font-size: 14px;
 }
 
+
+#map_navigation {
+  position: relative;
+  top: 50px;
+  left: 66px;
+  width: calc(100% - 66px);
+  height: calc(100vh - 50px);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background-color: #ECE7D6;
+}
