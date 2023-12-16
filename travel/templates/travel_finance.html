@@ -866,21 +866,23 @@
             });
         });
 
-        // Обработчик событий для кнопки удаления
-        document.getElementById('submitButton_delete').addEventListener('click', function() {
-            var containerId = this.getAttribute('data-target');
-            var container = document.getElementById(containerId);
+        // Добавление обработчиков для всех кнопок удаления
+        document.querySelectorAll('.delete-more-button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var containerId = this.getAttribute('data-target');
+                var container = document.getElementById(containerId);
 
-            if (container) {
-                var lastGroup = container.querySelector('.modal-content-group:last-child');
-                if (lastGroup) {
-                    container.removeChild(lastGroup);
+                if (container) {
+                    var lastGroup = container.querySelector('.modal-content-group:last-child');
+                    if (lastGroup) {
+                        container.removeChild(lastGroup);
+                    } else {
+                        console.log('Нет элементов для удаления');
+                    }
                 } else {
-                    console.log('Нет элементов для удаления');
+                    console.error('Контейнер не найден:', containerId);
                 }
-            } else {
-                console.error('Контейнер не найден:', containerId);
-            }
+            });
         });
 
         function addNewField(containerId, isInitial = false) {
@@ -1040,8 +1042,8 @@
     
         var color = d3.scaleOrdinal(d3.schemeCategory10);
         var pie = d3.pie().value(function(d) { return d.full_amount; });
-        var arc = d3.arc().innerRadius(radius - 210).outerRadius(radius - 10);
-        var arcHover = d3.arc().innerRadius(radius - 240).outerRadius(radius);        
+        var arc = d3.arc().innerRadius(radius - 240).outerRadius(radius - 10);
+        var arcHover = d3.arc().innerRadius(radius - 270).outerRadius(radius);        
     
         var g = svg.selectAll(".arc")
             .data(pie(data))

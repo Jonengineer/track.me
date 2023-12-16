@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .form import TravelPlanformTrue, PointTrekForm, TravelDescriptionForm, TravelFinanceForm
-from .models import travelplan, traveltype, Friendship, travelplan_geo, plpoint_trek, point_trek, description, travelplandescription, travelplanexpense, expense, typeexpense
+from .models import (
+    travelplan, traveltype, Friendship, travelplan_geo,
+    plpoint_trek, point_trek, description, travelplandescription,
+    travelplanexpense, expense, typeexpense, country
+)
 import os
 from django.conf import settings
 from django.http import HttpResponse
@@ -28,114 +32,103 @@ from django.db import transaction
 logger = logging.getLogger(__name__)
 
 @login_required
+@require_POST
 def create_travel_plan(request):
-    # Создание путешевствия по треку существующему
-    form = TravelPlanformTrue()
-    # Если форма отправлена методом POST, то мы создаем экземпляр формы  с данными
-    if request.method == 'POST':
+    form = TravelPlanformTrue(request.POST, request.FILES)
 
-        form = TravelPlanformTrue(request.POST, request.FILES)
+    # Если форма валидна, сохраняем данные в базу данных
+    if form.is_valid():
+        # Создаем экземпляр модели travelplan с данными из формы
+        travel_plan = form.save(commit=False)
 
-        # Если форма валидна, сохраняем данные в базу данных
-        if form.is_valid():
-            # Создаем экземпляр модели travelplan с данными из формы
-            travel_plan = form.save(commit=False)
+        # Обрабатываем файл GPX, считываем его содержимое
+        gpx_file = request.FILES.get('gpxtrek')
+        if gpx_file:
+            if not gpx_file.name.endswith('.gpx'):
+                messages.error(
+                    request, "Неверный формат файла. Пожалуйста, загрузите GPX файл.")
+                return render(request, 'get_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
+            try:
+                # Обработка gpx_file
+                gpxtrek = gpx_file.read().decode('utf-8')
+                gpx_statistics = parse_gpx_data(gpxtrek)
+                # Дальнейшая обработка
+            except Exception as e:
+                # Обработка исключения
+                messages.error(
+                    request, "Произошла ошибка при обработке GPX файла: {}".format(e))
+                return render(request, 'get_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
+        
+        # Вызываем gpx_data_travel_static для анализа данных GPX
+        gpx_statistics = parse_gpx_data(gpxtrek)
 
-            # Обрабатываем файл GPX, считываем его содержимое
-            gpx_file = request.FILES.get('gpxtrek')
-            if gpx_file:
-                if not gpx_file.name.endswith('.gpx'):
-                    messages.error(
-                        request, "Неверный формат файла. Пожалуйста, загрузите GPX файл.")
-                    return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
-                try:
-                    # Обработка gpx_file
-                    gpxtrek = gpx_file.read().decode('utf-8')
-                    gpx_statistics = parse_gpx_data(gpxtrek)
-                    # Дальнейшая обработка
-                except Exception as e:
-                    # Обработка исключения
-                    messages.error(
-                        request, "Произошла ошибка при обработке GPX файла: {}".format(e))
-                    return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
+        # Конвертируем time_points в строки, если они являются объектами datetime
+        time_points_str = [tp.strftime('%Y-%m-%dT%H:%M:%S')
+                            for tp in gpx_statistics['time_points']]
+
+        # Записываем статистические данные в соответствующие поля модели
+        travel_plan.total_distance_travelled = gpx_statistics['total_distance_travelled']
+        travel_plan.total_time_seconds = gpx_statistics['total_time_seconds']
+        travel_plan.moving_time_seconds = gpx_statistics['moving_time_seconds']
+        travel_plan.speed_midle = gpx_statistics['speed_middle']
+        travel_plan.speed_moving = gpx_statistics['speed_moving']
+        travel_plan.total_ascent = gpx_statistics['total_ascent']
+        travel_plan.total_descent = gpx_statistics['total_descent']
+
+        # Сохраняем содержимое файла GPX в модели  travel_plan_geo
+
+        travel_plan_geo = travelplan_geo()
+        travel_plan_geo.gpxtrek = gpxtrek
+        travel_plan_geo.graph_data = {
+            'time_points': time_points_str,
+            'elevation_points': gpx_statistics['elevation_points'],
+            'heart_rate_points': gpx_statistics['heart_rate_points'],
+            'distances': gpx_statistics['distances'],
+        }
+        travel_plan_geo.geojson = gpx_statistics['geojson']
+        travel_plan_geo.save()
+
+        # Связываем travel_plan с travel_plan_geo
+        travel_plan.travelplan_geo = travel_plan_geo
+
+        # Получаем дату и время из формы и парсим их в объект datetime
+        travel_plan.datestart = form.cleaned_data['datestart']
+        travel_plan.datefinish = form.cleaned_data['datefinish']
+
+        # Вычисляе общее количество дней путешевствия
+        difference_data = travel_plan.datefinish - travel_plan.datestart
+        travel_plan.quantitydays = difference_data.days
+
+        # Связываем текущего пользователя с планом путешествия
+        travel_plan.user = request.user
+
+        # Сохраняем экземпляр модели в базе данных
+        travel_plan.save()
+
+        # Получаем файл JPG из формы
+        image_file = request.FILES.get('image')
+        if image_file:
+            if not image_file.name.endswith('.jpg'):
+                messages.error(
+                    request, "Неверный формат файла. Пожалуйста, загрузите jpg файл.")
+                # Удаляем только что созданный travel_plan, так как процесс создания не завершен
+                travel_plan.delete()
+                return render(request, 'get_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
+            try:
+                # Сохраняем изображение в папку
+                image_path = import_imge(image_file, travel_plan.travelplan_id)
+                travel_plan.image = image_path
+                travel_plan.save()  # Обновляем объект с изображением
+                # Дальнейшая обработка
+            except Exception as e:
+                # Обработка исключения
+                messages.error(request, "Произошла ошибка при обработке jpg файла: {}".format(e))
+                travel_plan.delete()  # Удаляем только что созданный travel_plan
+                return render(request, 'get_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
             
-            # Вызываем gpx_data_travel_static для анализа данных GPX
-            gpx_statistics = parse_gpx_data(gpxtrek)
-
-            # Конвертируем time_points в строки, если они являются объектами datetime
-            time_points_str = [tp.strftime('%Y-%m-%dT%H:%M:%S')
-                               for tp in gpx_statistics['time_points']]
-
-            # Записываем статистические данные в соответствующие поля модели
-            travel_plan.total_distance_travelled = gpx_statistics['total_distance_travelled']
-            travel_plan.total_time_seconds = gpx_statistics['total_time_seconds']
-            travel_plan.moving_time_seconds = gpx_statistics['moving_time_seconds']
-            travel_plan.speed_midle = gpx_statistics['speed_middle']
-            travel_plan.speed_moving = gpx_statistics['speed_moving']
-            travel_plan.total_ascent = gpx_statistics['total_ascent']
-            travel_plan.total_descent = gpx_statistics['total_descent']
-
-            # Сохраняем содержимое файла GPX в модели  travel_plan_geo
-
-            travel_plan_geo = travelplan_geo()
-            travel_plan_geo.gpxtrek = gpxtrek
-            travel_plan_geo.graph_data = {
-                'time_points': time_points_str,
-                'elevation_points': gpx_statistics['elevation_points'],
-                'heart_rate_points': gpx_statistics['heart_rate_points'],
-                'distances': gpx_statistics['distances'],
-            }
-            travel_plan_geo.geojson = gpx_statistics['geojson']
-            travel_plan_geo.save()
-
-            # Связываем travel_plan с travel_plan_geo
-            travel_plan.travelplan_geo = travel_plan_geo
-
-           # Получаем дату и время из формы и парсим их в объект datetime
-            travel_plan.datestart = form.cleaned_data['datestart']
-            travel_plan.datefinish = form.cleaned_data['datefinish']
-
-            # Вычисляе общее количество дней путешевствия
-            difference_data = travel_plan.datefinish - travel_plan.datestart
-            travel_plan.quantitydays = difference_data.days
-
-            # Связываем текущего пользователя с планом путешествия
-            travel_plan.user = request.user
-
-            # Сохраняем экземпляр модели в базе данных
-            travel_plan.save()
-
-            # Получаем файл JPG из формы
-            image_file = request.FILES.get('image')
-            if image_file:
-                if not image_file.name.endswith('.jpg'):
-                    messages.error(
-                        request, "Неверный формат файла. Пожалуйста, загрузите jpg файл.")
-                    # Удаляем только что созданный travel_plan, так как процесс создания не завершен
-                    travel_plan.delete()
-                    return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
-                try:
-                    # Сохраняем изображение в папку
-                    image_path = import_imge(image_file, travel_plan.travelplan_id)
-                    travel_plan.image = image_path
-                    travel_plan.save()  # Обновляем объект с изображением
-                    # Дальнейшая обработка
-                except Exception as e:
-                    # Обработка исключения
-                    messages.error(request, "Произошла ошибка при обработке jpg файла: {}".format(e))
-                    travel_plan.delete()  # Удаляем только что созданный travel_plan
-                    return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
-                
-            messages.success(request, "Путешевствие создано успешно!")
-            return redirect('travel:get_travel_plan')
-
-    else:
-        # Если форма не отправлена методом POST, создаем пустую форму
-        print(form.errors)
-        form = TravelPlanformTrue()
-    # Отображаем шаблон с формой, передавая форму в контексте
-    return render(request, 'create_travel_plan.html', {'form': form, 'traveltypes': traveltype.objects.all()})
-
+        messages.success(request, "Путешевствие создано успешно!")
+        return redirect('travel:get_travel_plan')
+        
 def import_imge(file, travelplan_id, output_size=(400, 267)):
     # Импорт изображений для карточки путешевствия
     if file is None:
@@ -181,7 +174,12 @@ def get_travel_plan(request):
     # Получение данных только для текущего пользователя
     travel = travelplan.objects.filter(user=current_user)
 
-    return render(request, 'get_travel_plan.html', {'travel': travel})
+    # Получение данных только для текущего пользователя
+    countrys = country.objects.all()  
+
+    # Допустим, у вас есть модель TravelType, которая содержит типы путешествий
+    traveltypes = traveltype.objects.all()    
+    return render(request, 'get_travel_plan.html', {'travel': travel, 'traveltypes': traveltypes, 'countrys': countrys })
 
 @login_required
 def travel_detail_chart(request, travelplan_id):

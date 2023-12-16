@@ -71,6 +71,7 @@
   font-size: 19px;
   margin: 2px 2px 1px 2px; /* Объединенный отступ */
 }
+
 /* Стили страницы get_travel_plan.html */
 /* Стили контейнера карточек */
 .row_travel {
@@ -185,17 +186,6 @@
   font-size: 20px; /* размер шрифта для текста */
   color: #333; /* цвет текста, выберите нужный вам цвет */
 }
-/* Модальное окно */
-.modal-content {
-  position: fixed;  /* или absolute, в зависимости от ваших нужд */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;  /* или другой размер, который вы хотите */
-  height: 80%;
-  background-color: rgb(255, 255, 255); /* чтобы убедиться, что окно видно */
-  z-index: 1000;  /* чтобы окно было поверх других элементов */
-}
 /* Фон для пустой странице с планами */
 .cards-container-empty {
   display: flex;
@@ -206,7 +196,62 @@
   background-color: #ECE7D6;
   font-size: 30px;
 }
+/* Форма Модальное окно */
+#travelForm {
+  width: 90%;
+  margin-left: 15px;
+}
+/* Модальное окно */
+#modal1 {
+  position: fixed; /* Используйте fixed вместо absolute для позиционирования относительно окна браузера */
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 500px; /* или любая другая ширина по вашему усмотрению */
+  min-height: 480px; /* минимальная высота */  
+  background: #ECE7D6;
+  padding: 0 !important; /* Убирает внутренние отступы */
+  margin: 0; /* Убирает внешние отступы */
+  overflow-y: auto;
+}
+  /* Стили для первой кнопки */
+.custom-style-1, .container-select {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 5px;
+}
+  /* Стили для кнопки */
+.custom-style-1 .waves-light.btn {
+  width: 120px;  
+  height: 34px;
+  line-height: 0rem;
+}  
+/* Стили для текстового поля */
+.custom-style-1 .file-path.validate {
+  margin-left: 10px;
+  width: 90%;  
+}
+.custom-style-btm {
+  margin-top: 15px;
+}
+.custom-style-1 .file-path.validate::placeholder {
+  color: #000000; /* Цвет текста подсказки, измените на нужный вам */
+}
 
+.container-select2 {
+  margin-right: 20px; /* Добавляет отступ снизу к первому внутреннему контейнеру */
+}
+/* Размер выпадающего списка */
+.dropdown-content.select-dropdown.multiple-select-dropdown {
+  height: 500px; /* Задайте желаемую высоту */
+  overflow-y: scroll; /* Добавляет прокрутку, если содержимое превышает высоту */
+}
+  /* Ваши стили для label здесь цвет выпадающего списка */
+.dropdown-content label {
+  color: #000000; /* Пример изменения цвета текста */
+}
 
 /* Стиль для страницы travel_detail_chart.html */
 /* 3D карта */
@@ -310,12 +355,13 @@
   clear: both;
   min-height: 20px;
   width: 100%;
-  text-align: center;
+  text-align: left;
   background-color: #ECE7D6; /* Цвет фона */
-  color: #000000; /* Изменение цвета текста */
+  color: #000000 !important;  /* Изменение цвета текста */
 }
 .dropdown-content li>span:hover {
   background-color: #6F947F; /* Замените #цвет_фона на нужный цвет */
+  color: #000000; /* Изменение цвета текста */
 }
 /* Контейнер для описания  */
 .content-collapsible {
@@ -425,3 +471,4 @@ body .delete-button-point{
   color: #000000;
   font-size: 14px;
 }
+

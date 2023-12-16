@@ -92,6 +92,28 @@ class expense(models.Model):
     def __str__(self):
         return f"Expense {self.expense_id}"
     
+class currency(models.Model):
+    currency_id = models.AutoField(primary_key=True)
+    namecurrency = models.CharField(max_length=10, null=False)
+
+    class Meta:
+        managed = True
+        db_table = 'currency' 
+    
+    def __str__(self):
+        return f"Currency {self.currency_id}"
+    
+class country(models.Model):
+    country_id = models.AutoField(primary_key=True)
+    namecountry = models.CharField(max_length=210, null=False)
+
+    class Meta:
+        managed = True
+        db_table = 'country' 
+    
+    def __str__(self):
+        return f"Country {self.country_id}"
+    
 class typeexpense(models.Model):
     typeexpense_id = models.AutoField(primary_key=True)    
     nametypeexpense = models.CharField(max_length=100, null=False)    

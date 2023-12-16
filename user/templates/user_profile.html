@@ -69,29 +69,31 @@
             </nav>
         </div>
     </div>        
+    
     {% block user_content %}
-    {% block user_scripts %}{% endblock %}    
     {% endblock %}
+
+    {% block user_scripts %}
+    {% endblock %}
+    
 {% endblock %}
     
 
 {% block scripts %}
-{{ block.super }}  
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>   
-    <script src="https://unpkg.com/material-components-web@14.0.0/dist/material-components-web.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/js/jquery.tooltipster.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Инициализация Tooltipster для элементов с классом .material-icons
-            $('.material-icons').each(function() {
-                var tooltipText = $(this).attr('data-tooltip');  // Получение текста подсказки из атрибута data-tooltip
-                $(this).tooltipster({
-                    content: tooltipText
-                    // theme: 'tooltipster-light' // Изменение темы
-                });
+{{ block.super }}
+
+<script>
+    $(document).ready(function() {
+        // Инициализация Tooltipster для элементов с классом .material-icons
+        $('.material-icons').each(function() {
+            var tooltipText = $(this).attr('data-tooltip');  // Получение текста подсказки из атрибута data-tooltip
+            $(this).tooltipster({
+                content: tooltipText
+                // theme: 'tooltipster-light' // Изменение темы
             });
         });
-    </script>
+    });
+</script>  
+    
+
 {% endblock %}
