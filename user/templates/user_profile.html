@@ -2,24 +2,24 @@
 {% load static %}
 
 {% block styles %}
-    {{ block.super }}
-    <title>Личный кабинет</title>
+{{ block.super }}
+
     <!-- Стили специфичные для профиля пользователя -->
-    <link rel="stylesheet" type="text/css" href="{% static 'user/style.css' %}">    
-    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'user/css/user_profile_login_create.css' %}">
+
 {% endblock %}
 
 {% block content %}
+{{ block.super }}
         
     <div class="mdc-drawer mdc-drawer--dismissible">
         <!-- Боковое меню -->
-        <div class="mdc-drawer__content">
-            <!-- Содержимое бокового меню -->
+        <div class="mdc-drawer__content">            
             <nav class="mdc-list">
                 <a class="mdc-list-item" href="">
                     <span class="mdc-list-item__ripple"></span>
                     <div class="icon-text-container">
-                        <img class="material-icons" src="/static/user/img/profile.svg" data-tooltip="Профиль"> <!-- Иконка для перехода -->
+                        <img class="material-icons" src="/static/user/img/profile.svg" data-tooltip="Профиль"> 
                     </div>
                 </a>
             </nav>
@@ -27,44 +27,44 @@
                 <a class="mdc-list-item" href="{% url 'Travel:map_navigation' %}">
                     <span class="mdc-list-item__ripple"></span>
                     <div class="icon-text-container">
-                        <img class="material-icons" src="/static/user/img/new_travel.svg" data-tooltip="Новое путешевствие"> <!-- Иконка для перехода -->
+                        <img class="material-icons" src="/static/user/img/new_travel.svg" data-tooltip="Новое путешевствие"> 
                     </div>
                 </a>
             </nav>               
             <nav class="mdc-list">
                 <a class="mdc-list-item" href = "{% url 'Travel:get_travel_plan' %}">
                     <span class="mdc-list-item__ripple"></span>
-                    <img class="material-icons" src="/static/user/img/my_travel.svg" data-tooltip="Мои путешевствия"> <!-- Иконка для перехода -->
+                    <img class="material-icons" src="/static/user/img/my_travel.svg" data-tooltip="Мои путешевствия"> 
                 </a>
             </nav>
             <nav class="mdc-list">
                 <a class="mdc-list-item" href = "">
                     <span class="mdc-list-item__ripple"></span>
-                    <img class="material-icons" src="/static/user/img/map.svg" data-tooltip="Карта путешевствий"> <!-- Иконка для перехода -->
+                    <img class="material-icons" src="/static/user/img/map.svg" data-tooltip="Карта путешевствий"> 
                 </a>
             </nav>
             <nav class="mdc-list">
                 <a class="mdc-list-item" href = "">
                     <span class="mdc-list-item__ripple"></span>
-                    <img class="material-icons" src="/static/user/img/new_workout.svg" data-tooltip="Новая тренироввка"> <!-- Иконка для перехода -->
+                    <img class="material-icons" src="/static/user/img/new_workout.svg" data-tooltip="Новая тренироввка"> 
                 </a>
             </nav> 
             <nav class="mdc-list">
                 <a class="mdc-list-item" href = "">
                     <span class="mdc-list-item__ripple"></span>
-                    <img class="material-icons" src="/static/user/img/workout.svg" data-tooltip="Мои тренировки"> <!-- Иконка для перехода -->
+                    <img class="material-icons" src="/static/user/img/workout.svg" data-tooltip="Мои тренировки"> 
                 </a>       
             </nav>
             <nav class="mdc-list">
                 <a class="mdc-list-item" href = "">
                     <span class="mdc-list-item__ripple"></span>
-                    <img class="material-icons" src="/static/user/img/static.svg" data-tooltip="Статистика"> <!-- Иконка для перехода -->
+                    <img class="material-icons" src="/static/user/img/static.svg" data-tooltip="Статистика"> 
                 </a>       
             </nav>
             <nav class="mdc-list">
                 <a class="mdc-list-item" href = "">
                     <span class="mdc-list-item__ripple"></span>
-                    <img class="material-icons" src="/static/user/img/setting.svg" data-tooltip="Настройки"> <!-- Иконка для перехода -->
+                    <img class="material-icons" src="/static/user/img/setting.svg" data-tooltip="Настройки"> 
                 </a>       
             </nav>
         </div>
@@ -89,11 +89,9 @@
             var tooltipText = $(this).attr('data-tooltip');  // Получение текста подсказки из атрибута data-tooltip
             $(this).tooltipster({
                 content: tooltipText
-                // theme: 'tooltipster-light' // Изменение темы
             });
         });
     });
-</script>  
-    
+</script>      
 
 {% endblock %}

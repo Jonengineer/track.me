@@ -29,7 +29,7 @@
 }
 /* Текст в шапке страницы base.html */
 .username-text {  
-  color: #ffffff; 
+  color: var(--background-color);
   font-size: 25px;
   font-family: 'Times New Roman';
   margin-right: 10px;  
@@ -77,17 +77,6 @@
   .mdс-top-app-bar__action-items .mds-button:not(:last-child) {  
     margin-right: 10px; /* Ещё более уменьшенный отступ справа между кнопками */
   }
-}
-/* Кнопки аавторизации */
-.mdс-top-app-bar__action-items .mds-button {  
-  display: flex;
-  align-items: center; /* Выравнивает кнопки по вертикали */
-  color: #3C2C13;  
-}
-/* Кнопки аавторизации */
-.waves-light.btn {
-  background-color: #6F947F; /* Цвет фона кнопки */
-  border-radius: 15px;
 }
 
 @media screen and (max-width: 768px) {
@@ -145,27 +134,26 @@ max-width: 100%;
 }
 
 .carousel-item[href="#one!"] {
-  background-image: url(img/mon.jpg);
+  background-image: url(../img/mon.jpg);
 }
 .carousel-item[href="#two!"] {
-  background-image: url(img/pic2.jpg);
+  background-image: url(../img/pic2.jpg);
 }
 .carousel-item[href="#three!"] {
-  background-image: url(img/pic5.jpg);
+  background-image: url(../img/pic5.jpg);
 }
 .carousel-item[href="#four!"] {
-  background-image: url(img/pic6.jpg);
+  background-image: url(../img/pic6.jpg);
   
 }
 .carousel-item[href="#five!"] {
-  background-image: url(img/sea2.jpg);
+  background-image: url(../img/sea2.jpg);
   
 }
 .carousel {
   height: 800px;
   overflow: hidden;
-  margin: auto;
-  
+  margin: auto;  
  
 }
 .carousel-container {
@@ -185,7 +173,7 @@ max-width: 100%;
   bottom: 38%;
 }
 .content h2 {
-  color: white;
+  color: var(--background-color);
   text-align: left;
   font-size: 50px;
 }

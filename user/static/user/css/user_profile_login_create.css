@@ -1,14 +1,12 @@
-.mdc-top-app-bar__row {
-  background-color: rgb(106, 85, 62);
-}
-/* Боковая панель контейнер */
+/* СТИЛИ СТРАНИЦЫ ЛИЧНОГО КАБИНЕТА  */
+/* Боковая панель c  иконками контейнер */
 .mdc-drawer__content  { 
   position: fixed;
   top: 50px;
   left: 0;
   bottom: 0;
   width: 66px;
-  background-color: #6F947F;
+  background-color: var(--green-color);
   overflow: auto; 
   z-index: 1000;
 }
@@ -19,7 +17,7 @@
     align-items: center;
   margin: 8px;  /* отступы со всех сторон */
   padding: 8px; /* внутренние отступы, если нужны */
-  background-color: #3C2C13;
+  background-color: var(--braun-color);
   border-radius: 15px;
   width: 50px;
   height: 50px;  
@@ -30,33 +28,13 @@
     justify-content: center;
     align-items: center;
     margin: 0;
-  color: white;
+    color: var(--background-color);
   height: 30px;  
   width: 30px;
 }
 
-/* Боковая панель иконки. Всплывающий текст (Стиль не удалось настроить, нужно подбирать другие) */
-.tooltipster-base {
-  background-color: #fbeaea;
-  color: #060606;
-  font-family: 'Times New Roman';
-  font-size: 10px;
-}
-#log {
-  font-size: 25px;
-  position: fixed; /* Фиксируем контейнер карты на странице */
-  top: 40%; /* Устанавливаем верхнюю позицию на 0, чтобы карта была прикреплена к верху страницы */
-  left: 36.5%; /* Устанавливаем левую позицию на 0, чтобы карта была прикреплена к левой стороне страницы */
-  width: 300px;  /* Это будет занимать 100% ширины экрана */
-  height: 200px; /* Это будет занимать 100% высоты экрана */
-}
-.select-wrapper + label {
-  position: relative;  /* Измените на 'relative' или другое значение, если 'absolute' приводит к проблемам */
-  top: 0;              /* Установите значение 'top' на 0, чтобы переместить метку обратно в ее исходное положение */
-  font-size: 1rem;     /* Измените размер шрифта по вашему усмотрению */
-  overflow: visible;   /* Убедитесь, что текст не обрезается */
-  white-space: normal; /* Если вы хотите, чтобы текст переносился на новую строку при необходимости */  
-}
+/* СТИЛИ СТРАНИЦЫ АВТОРИЗАЦИИИ  */
+/* Стили контейнера с полями (не ореол)  */
 .login-container {
   position: absolute; /* Фиксируем контейнер карты на странице */
   top: 50%; /* Устанавливаем верхнюю позицию на 0, чтобы карта была прикреплена к верху страницы */
@@ -69,16 +47,15 @@
   transform: translate(-50%, -50%);
   display: flex;
 }
-
 @media (max-width: 768px) {
   .login-container {
     width: 80%; /* Ширина изменяется на 80% от ширины экрана */
     height: 70%;
   }
 }
-
+/* Стили контейнера с фоновой картинкой  */
 .login-container-base {
-  background-image: url(../user/img/DSC_1443.jpg);
+  background-image: url(../img/DSC_1443.jpg);
   height: 100vh;
   background-position: center;
   background-size: cover;
@@ -86,21 +63,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-  
+  position: relative;  
 }
+/* Стили контейнера ореола для полей пароля и почты  */
 .login-container-baseblock {
   width: 620px;
-
   background: linear-gradient(45deg, rgb(111, 98, 83, 0.8) 27%, rgb(236, 231, 214, 0.8) 54%, rgb(111, 148, 127, 0.8) 77%);
-border-radius: 15px;
-position: absolute;
-top: 50%; /* Устанавливаем верхнюю позицию на 0, чтобы карта была прикреплена к верху страницы */
+  border-radius: 15px;
+  position: absolute;
+  top: 50%; /* Устанавливаем верхнюю позицию на 0, чтобы карта была прикреплена к верху страницы */
   left: 50%; /* Устанавливаем левую позицию на 0, чтобы карта была прикреплена к левой стороне страницы */
   width: 40%;  /* Это будет занимать 100% ширины экрана */
   height: 50%; /* Это будет занимать 100% высоты экрана */
   transform: translate(-50%, -50%);
-
 }
 /* Медиа-запрос для экранов с шириной менее 768px, например */
 @media (max-width: 768px) {
@@ -109,34 +84,30 @@ top: 50%; /* Устанавливаем верхнюю позицию на 0, ч
     height: 70%;
   }
 }
+/* Стили контейнера почты и пароля  */
 .input-field {
   width: 100%; /* Ширина input-field на 100% ширины родителя */
   display: flex; /* Применение Flexbox для центрирования содержимого */
   flex-direction: column; /* Вертикальное расположение дочерних элементов */
   align-items: center; /* Центрирование дочерних элементов по горизонтали */
-  margin-top: 30px; /* Отступ сверху для разделения элементов */
-  
+  margin-top: 30px; /* Отступ сверху для разделения элементов */  
 }
-
-
+/* Стили текста Эл. почта\пароль  */
 .input-field>label {
   color: whitesmoke;
   margin-top: -40px;
-  font-size: 18px;
- 
+  font-size: 18px; 
 } 
+/* Стили формы  */
 .materialize-form {
-  width: 50%; /* Ширина input-field на 100% ширины родителя */
-  
-  
+  width: 50%; /* Ширина input-field на 100% ширины родителя */    
 }
 @media (max-width: 768px) {
   .materialize-form {
     width: 90%; /* Увеличиваем ширину до 80% на меньших экранах */
   }
 }
-
-
+/* Стили поля для ввода пароля */
 .input-container {
   border: 1px solid #ccc; /* Линия границы */
   padding: 2px; /* Поля вокруг содержимого внутри контейнера */
@@ -144,21 +115,9 @@ top: 50%; /* Устанавливаем верхнюю позицию на 0, ч
   border-radius: 5px; /* Закругленные углы */
   height: 47px;
   margin-top: 5px;
-  background-color: white;
+  background-color: var(--background-color);
+}
 
-}
-.btn {
-  background-color: #6F947F;
-  border-radius: 5px;
-  
-}
-.container h2 {
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: semi-bold;
-  color: green;
-  font-size: 40px;
-  padding-top: 30px;
-}
 
 
 

@@ -8,6 +8,7 @@ from django.contrib.auth import password_validation
 from django.contrib.auth import logout
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 # Представление для создания формы регистрации пользователей
 def create_user(request):
@@ -50,7 +51,13 @@ def create_user(request):
             profile.user = user
             profile.save()  
 
-            return JsonResponse({"success": True})
+            # Если все успешно, отправляем URL для перенаправления
+            return JsonResponse({
+                'success': True, 
+                'redirect_url': reverse('AppBase:main_skrin_page'),
+                'message': 'Аккаунт успешно создан!'
+            })
+        
         else:
             # Соберите ошибки из форм и верните их в ответе
             errors = {}
@@ -76,33 +83,37 @@ def create_user(request):
 
 def user_login(request):
     if request.user.is_authenticated:
-            return redirect('User:user_profile')
+        # Для не-AJAX запросов
+        return redirect('User:user_profile')
     
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
             login(request, user)
-            return redirect('User:user_profile')
+            # Для AJAX запросов
+            return JsonResponse({
+                'success': True,
+                'redirect_url': reverse('User:user_profile')
+            })
         else:
-            error_message = 'Неверный пароль или email.Проверьте данные и попробуйте еще раз.'
-            messages.error(request, error_message)
-
-            # Возвращаем JSON-ответ с сообщением об ошибке
-            response_data = {
+            errors = 'Неверный пароль или email. Проверьте данные и попробуйте еще раз.'
+            # Для AJAX запросов
+            print(errors)
+            return JsonResponse({
                 'success': False,
-                'error_message': error_message
-            }
-            return JsonResponse(response_data)
+                "errors": errors
+            })
+
+    # Для не-AJAX запросов
     return render(request, 'user_login.html', {'user': request.user})
     
 @login_required
 def user_log_out(request):
     logout(request)
-    return redirect('AppBase:base_page')
+    return redirect('AppBase:main_skrin_page')
 
 
 # Профиль пользователя

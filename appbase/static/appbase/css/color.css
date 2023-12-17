@@ -1,0 +1,9 @@
+/* Основные цвета */
+:root {
+    --green-color: #6F947F; 
+    --background-color: #ECE7D6; 
+    --grey-color: #9CABAE; 
+    --braun-color: #3C2C13; 
+    --red-color: rgb(244, 67, 54, 0.85); 
+    
+  }

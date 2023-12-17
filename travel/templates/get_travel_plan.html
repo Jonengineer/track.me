@@ -6,6 +6,8 @@
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static 'travel/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'travel/style_2.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_green.css">
 {% endblock %}
 
 {% block user_content %}
@@ -14,9 +16,9 @@
     <div class="title-container-card">
       <h1>Мои путешествия</h1>
       <div class="title-container-card-modal">
-        <a class='dropdown-trigger btn' data-target='dropdown-content'> + Создать путешевствие</a>             
+        <a class='dropdown-trigger btn' data-target='dropdown-content'> + Создать путешествие</a>             
         <ul id='dropdown-content' class='dropdown-content'>
-            <li><a data-target="modal1">Путешевствие по треку GPX</a></li>
+            <li><a data-target="modal1">Путешествие по треку GPX</a></li>
             <li><a data-target="modal2">Транспорт</a></li>                        
         </ul>
       </div> 
@@ -50,14 +52,14 @@
   <div class="cards-container-empty">
     <p>Нет планов путешествий!</p>
     <a href="{% url 'travel:create_travel_plan'  %}" class="waves-light btn">
-      <span class="mdc-button__label">Создать путешевствие!</span>
+      <span class="mdc-button__label">Создать путешествие!</span>
   </div>
 {% endif %}
 
 <div id="modal1" class="modal">
   <div class="container">
     <div id="header">
-      <h5 class="bold-title">Создание плана путешевствия!</h5>
+      <h5 class="bold-title">Создание плана путешествия!</h5>
     </div>       
     <form  id="travelForm" class="materialize-form" method="post" action="{% url 'travel:create_travel_plan' %}" enctype="multipart/form-data">
       {% csrf_token %}
@@ -87,12 +89,17 @@
         <input type="text" id="territory" name="territory" class="materialize-input" data-length="50" required><br>
       </div>
 
-      <label for="datestart">Дата начала путешевствия:</label>
-      <input type="text" class="datepicker" required><br>
-  
-      <label for="datefinish">Дата конца путешевствия:</label>
-      <input type="datetime-local" id="datefinish" name="datefinish" class="materialize-input" required><br>       
-      
+      <div class="container-date">
+        <div class="container-date-2">
+            <label for="datestart">Дата начала путешествия:</label>
+            <input type="text" id="datestart" name="datestart" class="datetimepicker" placeholder="calendar 1" required><br> 
+        </div>
+        <div class="container-date-3">
+            <label for="datefinish">Дата конца путешествия:</label>
+            <input type="text" id="datefinish" name="datefinish" class="datetimepicker" placeholder="calendar 1" required><br>
+        </div>       
+      </div>
+
       <div class="file-field input-field custom-style-1">
           <button class="waves-light btn">
               <span>GPX трек</span>
@@ -119,6 +126,14 @@
 
 {% block user_scripts %}
 {{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  // Initialize flatpickr
+  flatpickr(".datetimepicker", {
+      enableTime: true,
+      dateFormat: "Y-m-d H:i",
+  });
+</script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('select');

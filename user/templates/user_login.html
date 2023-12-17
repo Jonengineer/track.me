@@ -2,10 +2,11 @@
 {% load static %}
 
 {% block styles %}
-    {{ block.super }}
+{{ block.super }}
+
     <!-- Стили специфичные для профиля пользователя -->
-    <link rel="stylesheet" type="text/css" href="{% static 'user/style.css' %}">    
-    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'user/css/user_profile_login_create.css' %}"> 
+
 {% endblock %}
 
 
@@ -13,34 +14,83 @@
 <!--  <h2 id= log>Вход в личный кабинет:</h2> -->
 
 <div class="login-container-base">
-<div class="login-container-baseblock"> </div>
-<div class="login-container">
-    <form  class="materialize-form" method="post" action="{% url 'User:user_login' %}"> 
-        {% csrf_token %}
-        <div class="input-field">
-            <label for="email">Электронная почта:</label>
-            <div class="input-container">
-            <input type="email" name="email" required>
-        </div> 
-        </div>
-        <div class="input-field">
-          <label for="password">Пароль:</label>        
-            <div class="input-container">
-                <input type="password" name="password" required>
+    <div class="login-container-baseblock"> </div>
+    <div class="login-container">
+        <form id="UserLogin"  class="materialize-form" method="post" action="{% url 'User:user_login' %}"> 
+            {% csrf_token %}
+            <input type="hidden" id="createUserUrl" value="{% url 'User:user_login' %}">
+            <div class="input-field">
+                <label for="email">Электронная почта:</label>
+                <div class="input-container">
+                    <input type="email" name="email" required>
+                </div> 
             </div>
-        </div>
-        <div class="actions">
-            <button type="submit" class="waves-light btn">Войти</button>
-        </div>
-    </form>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+            <div class="input-field">
+            <label for="password">Пароль:</label>        
+                <div class="input-container">
+                    <input type="password" name="password" required>
+                </div>
+            </div>
+            <div class="actions">
+                <button type="submit" class="waves-light btn">Войти</button>
+            </div>
+        </form>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
 
+    </div>
 </div>
-</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+
+<script>
+    document.getElementById('UserLogin').addEventListener('submit', function(e) {
+        e.preventDefault(); // Предотвращаем стандартное поведение отправки формы
+    
+        var createUserUrl = document.getElementById('createUserUrl').value; // Получение URL
+    
+        // Получение CSRF токена из cookie или скрытого поля
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+        fetch(createUserUrl, {
+            method: 'POST',
+            body: new FormData(this),
+            headers: {
+                'X-CSRFToken': csrftoken, // Передача CSRF токена в заголовке
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                showToast('success', data.message);
+                window.location.href = data.redirect_url; // Перенаправление пользователя                
+            } else {
+                let errorMessage = typeof data.errors === 'string' ? data.errors : Object.values(data.errors).join(', ');
+                showToast('error', errorMessage);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    
+        function showToast(type, message) {
+            let toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+        
+            document.body.appendChild(toast);
+        
+            setTimeout(() => {
+                toast.remove();
+            }, 3000); // Уведомление исчезнет через 3 секунды
+        }    
+    });
+</script>
 {% endblock %}

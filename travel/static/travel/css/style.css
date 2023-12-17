@@ -209,6 +209,7 @@
   transform: translate(-50%, -50%) !important;
   width: 500px; /* или любая другая ширина по вашему усмотрению */
   min-height: 480px; /* минимальная высота */  
+  height: 400px;
   background: #ECE7D6;
   padding: 0 !important; /* Убирает внутренние отступы */
   margin: 0; /* Убирает внешние отступы */
@@ -216,7 +217,7 @@
 }
   /* Стили для первой кнопки */
 .custom-style-1, .container-select {
-  width: 80%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -235,6 +236,7 @@
 }
 .custom-style-btm {
   margin-top: 15px;
+  margin-left: 220px;
 }
 .custom-style-1 .file-path.validate::placeholder {
   color: #000000; /* Цвет текста подсказки, измените на нужный вам */
@@ -251,11 +253,20 @@
 .dropdown-content label {
   color: #000000; /* Пример изменения цвета текста */
 }
-.modal.datepicker-modal {
-  width: 450px; /* ширина */
-  height: 450px; /* высота */
+.container-date {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 5px;
 }
-
+.container-date-2 {
+  margin-right: 20px; /* Добавляет отступ снизу к первому внутреннему контейнеру */
+}
+/* Цвет фона основной части календаря */
+.datepicker-calendar-container {
+  background-color: #ECE7D6 /* Замените #yourColor на желаемый цвет */
+}
 
 
 
