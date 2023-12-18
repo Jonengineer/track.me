@@ -94,7 +94,7 @@
 }
 /* Стили текста Эл. почта\пароль  */
 .input-field>label {
-  color: whitesmoke;
+  color: var(--background-color);
   margin-top: -40px;
   font-size: 18px; 
 } 
@@ -109,7 +109,7 @@
 }
 /* Стили поля для ввода пароля */
 .input-container {
-  border: 1px solid #ccc; /* Линия границы */
+  border: 1px solid var(--background-color); /* Линия границы */
   padding: 2px; /* Поля вокруг содержимого внутри контейнера */
   width: 100%; /* Ширина контейнера */
   border-radius: 5px; /* Закругленные углы */

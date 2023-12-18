@@ -1,0 +1,114 @@
+/* Стиль для страницы travel_detail_chart.html */
+/* 3D карта */
+.content-container-3D {
+    display: flex;
+    flex-direction: column; /* Вертикальное расположение */
+    margin-left: 66px;
+    width: 100%;  
+  }
+.container-3Dmap {
+  height: 100vh; /* Задаём высоту для контейнера карты */
+  position: relative; /* Position relative, чтобы карта размещалась внутри этого контейнера */
+}
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%; /* Карта будет растягиваться на всю ширину .container-3Dmap */
+  height: 100%; /* и на всю его высоту */
+}
+/* Контейнер для карты и графиков маршрута */
+.content-travel-full {
+  display: flex;
+  flex-direction: row; /* Вертикальное расположение */
+  margin-left: 66px;
+  width: calc(100% - 66px);  
+  background: var(--background-color); /* Цвет фона */
+  overflow: auto;
+  min-height: 1040px;  
+  height: 100vh;  
+}
+.content-container {
+  display: flex;
+  flex-direction: column; /* Вертикальное расположение */
+  width: 70%;
+  background: var(--background-color); /* Цвет фона */
+}
+/* Контейнер для карты  */
+.map-container_2, #map_1 {
+  position: relative;
+  height: 800px; /* Высота карты */
+  display: flex;
+  flex-direction: column; /* Вертикальное расположение */
+  width: 100%; /* или любая другая ширина в процентах для адаптивности */
+}
+/* Установка одинаковой ширины для карты и графиков */
+#charts-container{
+  width: 100%; /* или любая другая ширина в процентах для адаптивности */
+  height: 300px; /* Высота каждого графика */
+  overflow: hidden; /* Скрывает любое содержимое, выходящее за пределы контейнера */  
+}
+/* Установка стилей для меню карты */
+#menu-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  background: var(--background-color); /* Цвет фона */
+  border-radius: 8px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Расстояние между элементами */ 
+  width: 28%;
+  max-width: 100px;
+  min-width: 95px;
+}
+#style-menu {
+  /* Добавьте здесь стили для контейнера селектора */
+  border-radius: 4px; /* Скругление углов */
+  background: var(--background-color); /* Цвет фона */
+  height: 50px;  
+}
+
+/* Контейнер для описания  */
+.content-collapsible {
+  display: flex;
+  background: var(--background-color);
+  flex-direction: column; /* Вертикальное расположение */
+  width: 30%;  
+  align-items: center; /* Выравнивание содержимого к началу контейнера */
+  top: 50px;   
+}
+/* Контейнер для складной вкладки  */
+.collapsible {  
+  width: 90%;
+}
+/* Стили точки маршрута */
+body .mapboxgl-popup-content {
+  background: var(--background-color);
+  border-radius: 15px;
+  padding: 5px 5px 5px;
+  pointer-events: auto;
+  position: relative;
+  max-height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Текст выкакивающего меню */
+body .mapboxgl-popup-content h3{
+  font-size: 18px;
+}
+/* Кнопка выкакивающего меню */
+body .mapboxgl-popup-close-button {
+  background-color: var(--green-color);
+}
+/* Кнопка удаления */
+.collapsible-header-delete-button{
+  width: 22px;
+  height: 22px;
+  margin-left: auto; /* Выравнивание по правому краю */
+}
+  
+

@@ -1,23 +1,147 @@
-/* Кнопки */
-/* Кнопки большие */
+/* КНОПКИ */
+/* Кнопка добавления */
 .btn {
     text-decoration: none;
     color: var(--background-color);
     background-color: var(--green-color);
-    border-radius: 12px;
+    border-radius: 10px;
     text-align: center;
     letter-spacing: .5px;
-    -webkit-transition: background-color .2s ease-out;
     transition: background-color .2s ease-out;
     cursor: pointer;
+    border: none; /* Удаление стандартной границы */
+    outline: none; /* Убираем контур при фокусе */
+    font-size: 16px; /* Уменьшите размер шрифта */
 }
 /* Убираем изменение цвета при наведении */
 .btn:hover {
     background-color: var(--green-color); /* Тот же цвет, что и в обычном состоянии */
 }
+.btn-min {
+    text-decoration: none;
+    color: var(--background-color);
+    background-color: var(--green-color);
+    border-radius: 10px;
+    text-align: center;
+    letter-spacing: .5px;
+    transition: background-color .2s ease-out;
+    cursor: pointer;
+    padding: 5px 10px; /* Уменьшите внутренние отступы */
+    font-size: 14px; /* Уменьшите размер шрифта */
+    border: none; /* Удаление стандартной границы */
+    outline: none; /* Убираем контур при фокусе */
+}
+/* Кнопка удаления */
+.btn_delete {  
+    background-color: var(--red-color_delete);
+    color: var(--background-color);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color .2s ease-out;
+    outline: none; /* Убираем контур при фокусе */
+}
+.btn_delete_min {  
+    text-decoration: none;
+    color: var(--background-color);
+    background-color: var(--red-color_delete);
+    border-radius: 10px;
+    text-align: center;
+    letter-spacing: .5px;
+    transition: background-color .2s ease-out;
+    cursor: pointer;
+    padding: 5px 10px; /* Уменьшите внутренние отступы */
+    font-size: 14px; /* Уменьшите размер шрифта */
+    border: none; /* Удаление стандартной границы */
+    outline: none; /* Убираем контур при фокусе */
+}
+.btn_delete:hover {
+    background-color: var(--red-color_delete); /* Тот же цвет, что и в обычном состоянии */
+}
+/* Стиль для показа tooltip при наведении */
+.delete-button:hover .tooltip-text {
+    visibility: visible;
+}
+
+/* Кнопка удаления с корзиной */
+.delete-button {
+    position: relative; /* Для позиционирования tooltip */
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.delete-button img {
+    width: 20px; /* или любой другой размер */
+    height: auto;
+}
+/* Всплывающий текст кнопки удаления */
+.tooltip-text {
+    visibility: hidden;
+    width: 120px;
+    background-color: var(--green-color);
+    color: var(--background-color);
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 50%; /* Выравнивание по вертикали относительно кнопки */
+    right: 100%; /* Позиционирование слева от кнопки */
+    transform: translateY(-50%); /* Дополнительное выравнивание по вертикали */
+    margin-right: 5px; /* Отступ от кнопки */
+  }
+
+/* Кнопка удаления с корзиной для точек на карте*/
+/* Удаление ореола кнопки*/
+body .delete-button-point{
+position: relative;
+left: 0%;
+border: none;
+background: transparent;
+cursor: pointer;
+outline: none;
+}
+/* Стили рисунка для кнопки с корзиной у точек контейнера*/
+#delete-button-icons-point {
+vertical-align: middle;
+width: 20px;
+height: 20px;
+margin-right: 5px;
+border: none; /* Убираем рамку вокруг иконки */
+background-color: transparent; /* Используйте transparent вместо none */
+}  
+/* Кнопка из иконки без оформления */
+.edit-button-point:active,
+.edit-button-point:focus {
+    background-color: transparent; /* Устанавливаем прозрачный фон */
+    outline: none; /* Убираем контур при фокусе */
+}
 
 
-/* Уведомления тосты */
+/* КНОПКА_ТРИГГЕР */
+.dropdown-trigger {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.dropdown-trigger.btn:hover {
+    background-color: var(--green-color); /* Тот же цвет, что и в обычном состоянии */
+}
+.dropdown-content li>a, .dropdown-content li>span {
+    color: #000000;
+}
+.dropdown-content a {
+    background: var(--background-color);
+}
+.dropdown-content a {
+    background: var(--background-color);   
+}
+.dropdown-content a:hover {
+    background: var(--green-color); /* Замените на желаемый цвет */
+}
+
+
+/* УВЕДОМЛЕНИЯ ТОСТЫ */
 .toast {
     position: fixed;
     right: 20px;
@@ -50,7 +174,127 @@
 }
 
 
+/* МОДАЛЬНОЕ ОКНО */
+.modal {
+    position: fixed; /* Используйте fixed вместо absolute для позиционирования относительно окна браузера */
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 500px; /* или любая другая ширина по вашему усмотрению */
+    min-height: 480px; /* минимальная высота */  
+    height: auto;
+    background: var(--background-color);
+    padding: 0 !important; /* Убирает внутренние отступы */
+    margin: 0; /* Убирает внешние отступы */
+    overflow-y: auto;
+}
+/* СКЛАДНОЙ ЗАГОЛОВОК */
+/* Контейнер для складной вкладки  */
+.collapsible {
+    border-radius: 15px;
+    border: 1px solid var(--grey-color);
+    overflow: hidden;
+}
+  /* Стили заголовка меню для точек */
+.collapsible-header {
+    background-color: var(--grey-color);
+    color: var(--color-text-card);
+    display: flex; /* Используем flexbox для управления распределением элементов внутри .collapsible-header */
+    align-items: center; /* Выравниваем элементы по вертикали */ 
+    border-radius: 0px;
+    height: 50px;
+}
+  /* Стили описания меню для точек */
+.collapsible-body {
+    background-color: var(--background-color);
+    white-space: normal; /* Это заставит текст переноситься, а не оставаться в одной строке */
+    word-wrap: break-word; /* Это позволяет переносить длинные слова, которые не помещаются в строке */ 
+    padding: 4px; /* По умолчанию для всех сторон */
+}
+/* Размеры иконки для складного заголовка */
+.point-icons {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+  }
+
+
+/* ПОЛЯ ДЛЯ ВВОДА */
+/* Текст для полей ввода для файловых полей */
+.input-point::placeholder, .materialize-textarea::placeholder {
+    color: #000000;
+    font-size: 14px;
+}
+
+/* Стили контейнера с ззаголовком */
+.input-field>label {
+    color: rgb(0, 0, 0);
+    margin-top: 0px;
+    font-size: 18px;
+    margin-bottom: 0rem;
+}
+.input-field {
+    margin-bottom: 0rem;
+}
+
+
+/* Стили для кнопок с поля ввода */
+.custom-style-1 .waves-light.btn {
+    width: 120px;  
+    height: 34px;
+    line-height: 0rem;
+}  
+/* Стили для текстового поля выбора файла */
+.custom-style-1 .file-path.validate {
+    margin-left: 10px;
+    width: 90%;  
+}
+/* Стили для первой кнопки */
+.custom-style-1, .container-select {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+
+/* ВЫПАДАЮЩИЕ СПИСКИ */
 
 
 
 
+
+
+
+
+
+
+
+/* Ваши стили для label здесь цвет выпадающего списка */
+.dropdown-content label {
+    color: #000000; /* Пример изменения цвета текста */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Цвет текста подсказки, для полей с экспортом файлов */
+.file-path.validate::placeholder {
+    color: #000000; 
+}
