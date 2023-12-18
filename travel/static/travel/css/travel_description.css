@@ -1,0 +1,115 @@
+/* Стили страницы travel_description.html */
+/* Стили контейнера общего */
+.content-travel-description {
+    display: flex;
+    position: relative;
+    flex-direction: row; /* Вертикальное расположение */
+    margin-left: 66px;
+    width: calc(100% - 66px);  
+    background-color: var(--background-color);
+    overflow: auto;
+    min-height: 1040px;  
+    height: 100%;  
+}
+/* Стили контейнера c текстом */
+.content-travel-description-text {    
+    width: 40%;  
+    color: var(--background-color);
+    overflow: auto;
+    min-height: 940px;
+    flex-direction: column; /* Вертикальное расположение */
+    margin-left: 0px;  
+}
+/* Стили контейнера для картинок */
+.content-travel-description-media {          
+    width: 60%;    
+    color: var(--background-color);
+    overflow: auto;
+    margin-top: 10px;
+    margin-right: 20px;    
+    min-height: 1140px;  
+    height: 100%;  
+}
+/* Стили контейнера для с формой */
+.content-travel-description-text2 {    
+    width: 98%;  
+    color: var(--background-color);
+    overflow: auto;
+    min-height: 940px;
+    margin-left: 10px;  
+}
+.collapsible {
+    width: 60%;
+}
+/* Стили контейнера для текста описания и заголовка*/
+.content-travel-description-text2-title {
+    display: flex; /* Используем flexbox */
+    align-items: center; /* Центрируем элементы по вертикали */    
+}
+/* Стили  для размещения кнопки и текста рядом*/
+.input-field {
+    flex-direction: row;
+}
+/* Стили  для кноаки добавить*/
+#submitButton {
+    margin-left: 65%;
+}
+/* Стили контейнера для текста описания и заголовка*/
+.media-input  {
+    position: relative;
+    width: 98%;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+/* Слайдер */
+.slides img {
+    width: 100%; /* Установка ширины изображения на 100% от ширины контейнера */
+    height: auto; ; /* Высота устанавливается автоматически для сохранения пропорций изображения */
+    object-fit: cover; /* Изображение заполняет весь слайдер, сохраняя пропорции */
+    object-position: center;
+}
+.slider, .slides {
+    width: 100%; /* Установка ширины изображения на 100% от ширины контейнера */
+    height: 700px !important;
+    border-radius: 15px; /* Закругление углов. Можно настроить в соответствии с желаемым эффектом */
+    overflow: hidden; /* Это гарантирует, что содержимое слайда также будет закруглено и не выходит за пределы границ */     
+}
+.slider .indicators {
+    position: relative;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.slider .slides li .caption {
+    position: absolute;
+    right: 20px;   /* Правый отступ */
+    bottom: 20px;  /* Нижний отступ */
+    top: 85%;
+    left: auto;    /* Аннулировать стандартное горизонтальное позиционирование */
+    text-align: right; /* Выравнивание текста по правому краю */
+}
+/* иконка редактирования */
+.edit-button-point {
+    position: relative;
+    left: 0%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+    margin-left: 0px; /* Добавляем немного пространства между текстом и кнопкой */
+    margin-top: 0px; /* Добавляем немного пространства между текстом и кнопкой */
+}
+/* Убираем подчеркивание полей инпут */
+#title-field {
+    border-bottom: none; /* Убираем подчеркивание */
+    /* Другие стили, которые нужно скрыть */
+}
+#description-field {
+    border-bottom: none; /* Убираем подчеркивание */
+    /* Другие стили, которые нужно скрыть */
+}
+/* Кнопка отправки формы */
+#submitButton-description-name, #submitButton-description-title {
+    display: none; /* Изначально скрыта */
+}
+

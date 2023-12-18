@@ -7,7 +7,7 @@ from .import views
 app_name = 'AppBase'
 
 urlpatterns = [
-    path('base_page/', views.base_page, name='base_page'),
+    path('BasePage/', views.base_page, name='base_page'),
     path('', views.main_skrin_page, name='main_skrin_page'),
 ]
 

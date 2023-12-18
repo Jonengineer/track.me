@@ -3,9 +3,8 @@
 
 {% block styles %}
     {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'travel/style_2.css' %}">
-<meta charset="utf-8">
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="stylesheet" type="text/css" href="{% static 'travel/css/travel_finance.css' %}">
+
 {% endblock %}
 
 {% block travel_detail_content %}
@@ -31,7 +30,7 @@
                 <li><a data-target="modal12" data-container="fieldsContainer12">Прочие</a></li>                    
             </ul>
             <div id="modal1" class="modal">
-                <form method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
+                <form  method="POST" action="{% url 'travel:add_travel_finance' travel.travelplan_id %}"> <!-- Замените 'your_submit_url' на URL, куда должна отправляться форма -->
                     {% csrf_token %} <!-- CSRF токен для безопасности -->
                     <input type="hidden" name="typeexpense" value="1"> <!-- Значение для первого типа расходов -->
                     <div class="modal-content">
@@ -41,9 +40,9 @@
                         <div id="fieldsContainer1">
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer1">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer1">-</button>
-                            <button type="submit" id="submitButton">Добавить затраты</button>
+                            <button type="button" class="btn add-expense-btn" data-target="fieldsContainer1">+</button>
+                            <button type="button" class="btn_delete" data-target="fieldsContainer1">-</button>
+                            <button type="submit" class="btn">Добавить затраты</button>
                         </div>
                     </div>
                 </form>    
@@ -60,8 +59,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer2">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer2">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer2">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer2">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -79,8 +78,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer3">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer3">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer3">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer3">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -98,8 +97,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer4">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer4">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer4">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer4">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -117,8 +116,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer5">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer5">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer5">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer5">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -136,8 +135,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer6">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer6">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer6">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer6">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -155,8 +154,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer7">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer7">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer7">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer7">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -174,8 +173,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer8">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer8">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer8">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer8">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -193,8 +192,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer9">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer9">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer9">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer9">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -212,8 +211,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer10">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer10">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer10">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer10">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -231,8 +230,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer11">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer11">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer11">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer11">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -250,8 +249,8 @@
                             <!-- Здесь будут добавляться поля -->
                         </div>                  
                         <div class="modal-content-btn">
-                            <button type="button"  id="submitButton" class="add-more-button" data-target="fieldsContainer12">+</button>
-                            <button type="button"  id="submitButton_delete" class="delete-more-button" data-target="fieldsContainer12">-</button>
+                            <button type="button"  id="submitButton" class="btn add-expense-btn" data-target="fieldsContainer12">+</button>
+                            <button type="button"  id="submitButton_delete" class="btn_delete" data-target="fieldsContainer12">-</button>
                             <button type="submit" id="submitButton">Добавить затраты</button>
                         </div>
                     </div>
@@ -859,28 +858,30 @@
         });
 
         // Обработчики для разных групп в форме модального окна
-        document.querySelectorAll('.add-more-button').forEach(function(button) {
+        document.querySelectorAll('.add-expense-btn').forEach(function(button) {
             button.addEventListener('click', function() {
                 var containerId = this.getAttribute('data-target'); // Идентификатор контейнера передается через data-атрибут
                 addNewField(containerId);
             });
         });
 
-        // Обработчик событий для кнопки удаления
-        document.getElementById('submitButton_delete').addEventListener('click', function() {
-            var containerId = this.getAttribute('data-target');
-            var container = document.getElementById(containerId);
+        // Добавление обработчиков для всех кнопок удаления
+        document.querySelectorAll('.btn_delete').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var containerId = this.getAttribute('data-target');
+                var container = document.getElementById(containerId);
 
-            if (container) {
-                var lastGroup = container.querySelector('.modal-content-group:last-child');
-                if (lastGroup) {
-                    container.removeChild(lastGroup);
+                if (container) {
+                    var lastGroup = container.querySelector('.modal-content-group:last-child');
+                    if (lastGroup) {
+                        container.removeChild(lastGroup);
+                    } else {
+                        console.log('Нет элементов для удаления');
+                    }
                 } else {
-                    console.log('Нет элементов для удаления');
+                    console.error('Контейнер не найден:', containerId);
                 }
-            } else {
-                console.error('Контейнер не найден:', containerId);
-            }
+            });
         });
 
         function addNewField(containerId, isInitial = false) {
@@ -1040,8 +1041,8 @@
     
         var color = d3.scaleOrdinal(d3.schemeCategory10);
         var pie = d3.pie().value(function(d) { return d.full_amount; });
-        var arc = d3.arc().innerRadius(radius - 210).outerRadius(radius - 10);
-        var arcHover = d3.arc().innerRadius(radius - 240).outerRadius(radius);        
+        var arc = d3.arc().innerRadius(radius - 240).outerRadius(radius - 10);
+        var arcHover = d3.arc().innerRadius(radius - 270).outerRadius(radius);        
     
         var g = svg.selectAll(".arc")
             .data(pie(data))

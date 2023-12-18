@@ -1,0 +1,12 @@
+
+#map_navigation {
+    position: relative;
+    top: 50px;
+    left: 66px;
+    width: calc(100% - 66px);
+    height: calc(100vh - 50px);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    background: var(--background-color);
+  }

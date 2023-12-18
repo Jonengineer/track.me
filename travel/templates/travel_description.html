@@ -3,9 +3,9 @@
 
 {% block styles %}
     {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'travel/style_2.css' %}">
-<meta charset="utf-8">
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<link rel="stylesheet" type="text/css" href="{% static 'travel/css/travel_description.css' %}">
+
 {% endblock %}
 
 {% block travel_detail_content %}
@@ -16,7 +16,7 @@
         <ul class="collapsible">
           <li id="li">
             <div class="collapsible-header">
-              <img class="point-icons" src="/static/travel/img/photograph.svg">Добавить фотографии и описание                 
+              <img class="point-icons" src="/static/travel/img/photograph.svg">Добавить фотографии                 
             </div>
             <div class="collapsible-body">
               <!-- Форма для добавления новой точки -->
@@ -26,17 +26,15 @@
                   <input id="title-text" type="text" class="input-point" name="namepoint" placeholder="Укажите название для фотографии" data-length="150">
                 </div>                            
                 <div class="collapsible-input_file">
-                  <div class="file-field input-field">
-                    <button  id="submitButton">
-                        <span>Выбрать фото:</span>
+                  <div class="file-field input-field custom-style-1">
+                    <button class="btn-min">
+                        <span>Фото:</span>
                         <input type="file"  id="image" name="image" accept=".jpg">
-                    </button>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" type="text" placeholder="Выберите файл в формате JPG">
-                    </div>
+                    </button>              
+                    <input class="file-path validate" type="text" placeholder="Выберите файл в формате JPG">
                   </div>
                 </div>  
-                <button id="submitButton">Добавить</button>
+                <button id="submitButton" class="btn-min">Добавить</button>
               </form>
             </div>
           </li>          
@@ -47,20 +45,18 @@
           {% csrf_token %}
           <div class="content-travel-description-text2-title">
             <button type="button" id="edit-title-button" class="edit-button-point">                
-              <img id="delete-button-icons-point" src="/static/travel/img/edit.svg">
-              <span class="tooltip-text-description">Редактировать</span>
+              <img id="delete-button-icons-point" src="/static/travel/img/edit.svg">              
             </button>
             <input type="text" id="title-field" class="input-point" value="{{ title }}" name="title_descriptiond" placeholder="Добавьте заголовок" data-length="150" readonly>  
           </div>
-          <button type="submit" id="submitButton-description-title">Сохранить</button>
+          <button type="submit" id="submitButton-description-title" class="btn-min">Сохранить</button>
           <div class="content-travel-description-text2-title">
             <button type="button" id="edit-description-button" class="edit-button-point">                
-              <img id="delete-button-icons-point" src="/static/travel/img/edit.svg">
-              <span class="tooltip-text-description">Редактировать</span>
+              <img id="delete-button-icons-point" src="/static/travel/img/edit.svg">              
             </button>
             <textarea  id="description-field" class="materialize-textarea" name="name_descriptiond" placeholder="Добавьте описание" data-length="6000" readonly>{{ name }}</textarea>
           </div>
-          <button type="submit" id="submitButton-description-name">Сохранить</button>                         
+          <button type="submit" id="submitButton-description-name" class="btn-min">Сохранить</button>                         
         </form>          
       </div>
     </div>

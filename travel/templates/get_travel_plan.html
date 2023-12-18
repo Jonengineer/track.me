@@ -4,17 +4,31 @@
 
 {% block styles %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'travel/style.css' %}">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_green.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'travel/css/get_travel_plan.css' %}">
+
 {% endblock %}
 
 {% block user_content %}
 {% if travel %}
+
   <div class="row_travel">
     <div class="title-container-card">
       <h1>Мои путешествия</h1>
+      <div class="title-container-card-modal">
+        <a class='dropdown-trigger btn' data-target='dropdown-content'> + Создать путешествие</a>             
+        <ul id='dropdown-content' class='dropdown-content'>
+            <li><a data-target="modal1">Путешествие по треку GPX</a></li>
+            <li><a data-target="modal2">Транспорт</a></li>                        
+        </ul>
+      </div> 
     </div>
     <div class="cards-container">
+
     {% for travel_plan in travel %}
+
       <div class="card-wrapper">
         <div class="card">
           <div class="card-image">
@@ -36,68 +50,151 @@
           </div>
         </div>
       </div>
+
     {% endfor %}
+
   </div>
+
 {% else %}
+
   <div class="cards-container-empty">
     <p>Нет планов путешествий!</p>
     <a href="{% url 'travel:create_travel_plan'  %}" class="waves-light btn">
-      <span class="mdc-button__label">Создать путешевствие!</span>
+      <span class="mdc-button__label">Создать путешествие!</span>
   </div>
+
 {% endif %}
 
-<!-- Модальное окно путешевствие успешно -->
+<div id="modal1" class="modal">
+  <div class="container">
+    <div id="header">
+      <h5 class="bold-title">Создание плана путешествия!</h5>
+    </div>       
+    <form  id="travelForm" class="materialize-form" method="post" action="{% url 'travel:create_travel_plan' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+      <div class="container-select">
+        <div class="container-select2">
+          <label for="country">Страна:</label>
+          <select multiple id="country" name="country[]" class="materialize-input select-scrollable" required>
 
-{% if messages %}
-<ul>
-{% for message in messages %}
-    <li>{{ message }}</li>
-{% endfor %}
-</ul>
-{% endif %}
+            {% for country in countrys %}
 
-{% if messages %}
-<div id="messageModal" class="modal">
-    <div class="modal-content">
-        <h4>Системное уведомление</h4>
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
-    </div>
+                <option value="{{ country.country_id }}">{{ country.namecountry }}</option>
+
+            {% endfor %}
+
+          </select>
+        </div>
+        <div class="container-select3">
+          <label for="traveltype">Вид путешевствия:</label>
+          <select id="traveltype" name="traveltype"  required>
+
+              {% for traveltype in traveltypes %}
+
+                  <option value="{{ traveltype.traveltype_id }}"> {{traveltype.traveltypedescription }} </option>
+
+              {% endfor %} 
+ 
+          </select>
+        </div>
+      </div>  
+      <div class="container-territory">
+        <label for="territory">Место расположение:</label>
+        <input type="text" id="territory" name="territory" class="materialize-input" data-length="50" required><br>
+      </div>
+      <div class="container-date">
+        <div class="container-date-2">
+            <label for="datestart">Дата начала путешествия:</label>
+            <input type="text" id="datestart" name="datestart" class="datetimepicker" placeholder="calendar 1" required><br> 
+        </div>
+        <div class="container-date-3">
+            <label for="datefinish">Дата конца путешествия:</label>
+            <input type="text" id="datefinish" name="datefinish" class="datetimepicker" placeholder="calendar 1" required><br>
+        </div>       
+      </div>
+      <div class="file-field input-field custom-style-1">
+          <button class="waves-light btn">
+              <span>GPX трек</span>
+              <input type="file" id="gpxtrek" name="gpxtrek" accept=".gpx">
+          </button>
+          <input class="file-path validate" type="text" placeholder="Выберите файл в формате GPX">            
+      </div>  
+      <div class="file-field input-field custom-style-1">
+        <button class="waves-light btn">
+          <span>Фото:</span>
+          <input type="file" d="image" name="image" accept=".jpg">
+        </button>
+        <input class="file-path validate" type="text" placeholder="Выберите файл в формате JPG">
+      </div>  
+      <button class="waves-light btn">
+          <span class="waves-light">Создать путешевствие</span>
+      </button>
+    </form>
+  </div>
 </div>
-{% endif %}
 
 {% endblock %}
 
 {% block user_scripts %}
-    {{ block.super }}
-<script src="path_to_materialize_js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>   
-<script src="https://unpkg.com/material-components-web@14.0.0/dist/material-components-web.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/js/jquery.tooltipster.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+{{ block.super }}
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.modal');
-      var instances = M.Modal.init(elems, {});
-      var instance = M.Modal.getInstance(document.getElementById('messageModal'));
-      console.log('Opening modal');
-      instance.open();
+  // Initialize flatpickr
+  flatpickr(".datetimepicker", {
+      enableTime: true,
+      dateFormat: "Y-m-d H:i",
   });
 </script>
 <script>
-  $(document).ready(function() {
-      // Инициализация Tooltipster для элементов с классом .material-icons
-      $('.material-icons').each(function() {
-          var tooltipText = $(this).attr('data-tooltip');  // Получение текста подсказки из атрибута data-tooltip
-          $(this).tooltipster({
-            content: tooltipText
-          });
-      });
-  });
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);    
+});
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var textInputs = document.querySelectorAll('#territory');
+    M.CharacterCounter.init(textInputs);
+});
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // Инициализация модальных окон
+    var elems = document.querySelectorAll('.modal');
+    M.Modal.init(elems);
+
+    // Инициализация выпадающих списков
+    var dropdowns = document.querySelectorAll('.dropdown-trigger');
+    M.Dropdown.init(dropdowns);
+
+    // Добавление обработчиков событий на элементы для открытия модального окна
+    document.querySelectorAll('.dropdown-content a').forEach(function(item) {
+
+      item.addEventListener('click', function() {
+
+        var modalId = this.getAttribute('data-target');
+        var modal = document.getElementById(modalId);
+
+        if (!modal) {
+          return;
+        }
+
+        var instance = M.Modal.getInstance(modal);
+        if (!instance) {
+          return;
+        }
+        instance.open();
+      });  
+    });    
+  });      
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.datepicker');
+    var instances = M.Datepicker.init(elems);
+  });  
 </script>
 
-  {% endblock %}
+{% endblock %}

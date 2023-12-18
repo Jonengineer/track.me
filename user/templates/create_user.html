@@ -2,18 +2,22 @@
 {% load static %}
 
 {% block styles %}
-    {{ block.super }}
+{{ block.super }}
+
     <!-- Стили специфичные для профиля пользователя -->
-    <link rel="stylesheet" type="text/css" href="{% static 'user/style.css' %}">    
-    <link rel="icon" href="{% static 'favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'user/css/user_profile_login_create.css' %}">
+
 {% endblock %}
 
 {% block content %}
+{{ block.super }}
+
 <div class="container">
     <h2>Создание нового аккаунта</h2>
     
     <form  id="UserProfile" class="materialize-form" method="post" action="{% url 'User:create_user' %}" enctype="multipart/form-data">
         {% csrf_token %}
+        <input type="hidden" id="createUserUrl" value="{% url 'User:create_user' %}">
         
         <label for="email">Электронная почта:</label>
         <input type="email" id="email" name="email" required><br>
@@ -25,15 +29,7 @@
         <input type="text" id="username" name="username" class="materialize-input" required><br>
 
         <label for="usersurname">Фамилия:</label>
-        <input type="text" id="usersurname" name="usersurname" class="materialize-input" required><br>
-
-        <label for="userage">Возраст:</label>
-        <select id="userage" name="userage" class="materialize-select" required>
-            <option value="" disabled selected>Выберите возраст</option>
-            {% for year in age_people %}
-                <option value="{{ year }}">{{ year }}</option>
-            {% endfor %}
-        </select>
+        <input type="text" id="usersurname" name="usersurname" class="materialize-input" required><br>        
         
         <label for="usertype">Тип пользователя:</label>
         <select id="usertype" name="usertype" class="materialize-select" required>
@@ -44,19 +40,12 @@
         <input type="submit" value="Регистрация" class="btn btn-primary">
     </form>         
 </div>
-<!-- Modal Structure -->
-<div id="modalSuccess" class="modal">
-    <div class="modal-content">
-        <h4 id="modalTitle"></h4>
-        <p id="modalDescription"></p>
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">ОК</a>
-    </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('select');
@@ -64,55 +53,47 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <script>
-    function updateAndShowModal(title, description) {
-        var instance = M.Modal.getInstance(document.getElementById('modalSuccess'));
-        document.getElementById('modalTitle').textContent = title;
-        document.getElementById('modalDescription').textContent = description;
-        instance.open();
-    }
-
-    function showAlertForError(errorData) {
-        if (errorData.errors.email) {
-            updateAndShowModal("Ошибка регистрации", errorData.errors.email);
-        } else if (errorData.errors.password) {
-            updateAndShowModal("Ошибка регистрации", errorData.errors.password[0]);
-        }
-    }
-
-    $("#UserProfile").submit(function(e) {
-        e.preventDefault();
-
-        $.ajax({
-            type: "POST",
-            url: $(this).attr('action'),
-            data: $(this).serialize(),
-            dataType: 'json',
-            beforeSend: function(xhr, settings) {
-                if (!this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
-                }
-            },
-            success: function(data) {
-                if (data.success) {
-                    updateAndShowModal("Успешная регистрация", "Вы зарегистрировались! Для входа в аккаунт перейдите к авторизации");
-                    resetForm();
-                } else {
-                    showAlertForError(data);
-                    resetForm();
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status === 400) {
-                    var errorData = JSON.parse(jqXHR.responseText);
-                    showAlertForError(errorData);
-                } else {
-                    // Обработка других ошибок (например, проблем с сетью или сервером)
-                    alert("Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз.");
-
-                }
+    document.getElementById('UserProfile').addEventListener('submit', function(e) {
+        e.preventDefault(); // Предотвращаем стандартное поведение отправки формы
+    
+        var createUserUrl = document.getElementById('createUserUrl').value; // Получение URL
+    
+        // Получение CSRF токена из cookie или скрытого поля
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+        fetch(createUserUrl, {
+            method: 'POST',
+            body: new FormData(this),
+            headers: {
+                'X-CSRFToken': csrftoken, // Передача CSRF токена в заголовке
             }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                showToast('success', data.message);
+                setTimeout(() => {
+                    window.location.href = data.redirect_url; // Перенаправление пользователя
+                }, 1000); // Задержка перед перенаправлением, чтобы пользователь успел увидеть сообщение
+            } else {
+                showToast('error', Object.values(data.errors).join(', '));
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
         });
+    
+        function showToast(type, message) {
+            let toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+        
+            document.body.appendChild(toast);
+        
+            setTimeout(() => {
+                toast.remove();
+            }, 3000); // Уведомление исчезнет через 3 секунды
+        }    
     });
 </script>
-
 {% endblock %}

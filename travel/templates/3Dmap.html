@@ -3,9 +3,11 @@
 
 {% block styles %}
     {{ block.super }}
-<meta charset="utf-8">
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
+
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'travel/css/travel_detail_chart.css' %}">
+
 {% endblock %}
 
 {% block travel_detail_content %}
@@ -14,7 +16,7 @@
     <div class="container-3Dmap">
       <div id="map"></div>
       <div id="menu-container">
-        <button id="start-animation">Старт</button>      
+        <button id="start-animation" class="btn">Старт</button>      
       </div>
     </div>
   </div>

@@ -1,0 +1,108 @@
+/* Стили страницы с расходами */
+/* Стили контейнера с ззаголовком */
+.content-travel-finance {
+    display: flex;
+    position: relative;
+    flex-direction: row; /* Вертикальное расположение */
+    margin-left: 66px;
+    width: calc(100% - 66px);  
+    background-color: var(--background-color);
+    min-height: 600px;  
+    height: 100vh;  
+}
+.content-travel-finance-description {
+    background-color: var(--background-color);
+    width: 45%;
+    margin-left: 15px;
+}
+.content-travel-get-finance-charts {
+    margin-top: 0px;
+    margin-left: 200px;
+    width: 55%;  
+    background-color: var(--background-color);
+    overflow: auto;
+    height: 750px;      
+    padding: 5px;
+}
+.content-travel-get-finance {
+    width: 100%;
+    margin-left: 10px;
+}
+.content-travel-add-finance-total {
+  font-size: 40px;
+  width: 80%;
+  margin-left: 150px;
+}
+/* Стили модального окна */
+.modal-content {
+    background-color: var(--background-color);
+    padding: 0 !important; /* Убирает внутренние отступы */
+    margin-left: 10px; /* Убирает внешние отступы */
+    margin-right: 10px; /* Убирает внешние отступы */
+    max-height: 700px;
+    overflow-y: auto;
+}
+
+/* Стили модального окна */
+#fieldsContainer1, #fieldsContainer2  {
+    display: flex;    
+    flex-direction: column; /* Изменение оси на вертикальную */
+    overflow-y: auto;
+}
+.modal-content-nameexpense, .modal-content-amount {
+    margin-bottom: 10px; /* Отступ между элементами */
+}
+/* Стили контейнера общего для имени и суммы затрат */
+.modal-content-group {
+    display: flex;    
+    justify-content: space-between; /* Распределение элементов в строке с пространством между ними */
+    margin-bottom: 0px; /* Отступ снизу для каждой группы */
+}
+/* Стили модального окна */
+.modal-content-nameexpense {
+    flex: 3; /* Больше места для этого контейнера */
+    margin-right: 10px;    
+}
+/* Стили модального окна */
+.modal-content-amount {
+    flex: 1; /* Больше места для этого контейнера */
+}
+/* Стили для кнопки модального окна */
+.modal-content-btn {
+    display: flex;
+    justify-content: space-between; 
+}
+/* Дополнительные стили для кнопок */
+.btn {  
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+.btn_delete {    
+    margin-right: 200px;
+    margin-bottom: 10px;
+}
+/* Стили текста в полях формы модального окна */
+.input-nameexpense::placeholder {
+    color: var(--color-text-card); /* Цвет текста плейсхолдера */
+}
+.input-amount::placeholder {
+    color: var(--color-text-card); /* Цвет текста плейсхолдера */
+}
+.bold-title {
+    font-weight: bold;
+}
+
+/* Стиль заголовка  collapsible */
+.collapsible-header-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Занимает всю ширину контейнера */
+}
+.text-label, .text-amount {
+    font-weight: bold; /* Жирное начертание */
+    font-size: 20px;
+}
+.collapsible {
+    width: 98%;
+}

@@ -1,0 +1,63 @@
+/* Стили страницы travel_detail_full.html */
+/* Стили вкладок */
+.nav-content {
+    position: relative;
+    width: calc(100% - 66px); /* Вычтем ширину левой панели */
+    background: var(--green-color);
+    margin-left: 66px; /* Отступ для левой панели */
+  }
+  /* Стили вкладок */
+  .tabs a.active {
+    background-color: var(--braun-color) !important;
+  }
+  /* Контейнер с общим описанием */
+  .container-travel-detail {
+    display: flex; 
+    flex-direction: column;
+    align-items: flex-start; /* Выравнивание содержимого к началу контейнера */
+    width: calc(100% - 66px); /* Вычтем ширину левой панели */
+    height: calc(100% - 66px); /* Вычтем ширину левой панели */
+    background-color: var(--background-color);
+    margin-left: 66px; /* Отступ для левой панели */
+    margin-top: 50px;
+  }
+  /* Контейнер заголовка */
+  .container-travel-detail-0 {
+    flex: 1; /* Элемент растянется, чтобы занять все доступное пространство */
+    width: 100%; /* Элемент займет всю доступную ширину */
+    /* Задайте высоту, если необходимо */
+  }
+  /* Линия под контейнером заголовка */
+  .container-travel-detail-0::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background-color: var(--color-text-card);  
+  }
+  /* Контейнер заголовка */
+  .container-travel-detail-0 h1 {
+    font-size: 22px;
+    margin: 0; /* Уберем внешний отступ у заголовка */
+    padding: 0; /* Уберем внутренний отступ у заголовка */
+    font-weight: 500;
+  }
+  /* Контейнер для flex элементов */
+  .container-travel-detail-flex {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+  /* Блоки с текстом */
+  .container-travel-detail-1,
+  .container-travel-detail-2,
+  .container-travel-detail-3,
+  .container-travel-detail-3 {
+    flex-grow: 1; /* Или используйте 'flex-basis: 33.3333%;', если не хотите использовать 'flex-grow' */  
+  }
+  /* Стили параграфов */
+  .container-travel-detail-1 p,
+  .container-travel-detail-2 p,
+  .container-travel-detail-3 p {
+    font-size: 19px;
+    margin: 2px 2px 1px 2px; /* Объединенный отступ */
+  }

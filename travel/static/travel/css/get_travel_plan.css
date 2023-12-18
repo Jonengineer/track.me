@@ -1,0 +1,158 @@
+/* Стили страницы get_travel_plan.html */
+/* Стили контейнера карточек */
+.row_travel {
+    position: relative; /* используем относительное позиционирование */
+    top: 50px;
+    left: 66px;  
+    width: calc(100% - 66px); /* вычитаем left, чтобы контейнер не выходил за пределы экрана */
+    height: calc(100vh - 50px); /* вычитаем top, чтобы контейнер не выходил за пределы экрана */  
+    display: flex;
+    flex-direction: column; /* чтобы заголовок и карточки шли друг за другом */  
+    box-sizing: border-box; /* padding и border включены в ширину и высоту */
+    background-color: var(--background-color);
+  }
+  /* Контейнер заголовка с карточками */
+  .title-container-card {  
+    width: 100%; /* Элемент займет всю доступную ширину */
+    margin-bottom: 2px; /* или больше, в зависимости от дизайна */
+  }
+    /* Линия перед карточками */
+  .title-container-card::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background-color: #000;  
+  }
+  /* Текст заголовка с карточками */
+  .title-container-card h1 {
+    font-size: 22px;
+    margin: 0; /* Уберем внешний отступ у заголовка */
+    padding: 0; /* Уберем внутренний отступ у заголовка */
+    font-weight: 500;
+  }
+  /* Контейнер карточки */
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;  
+    overflow-x: hidden; /* запретим горизонтальную прокрутку */
+    overflow-y: auto; /* Добавляем вертикальную прокрутку */
+    height: 100%;
+    margin-top: 10px;  /* отступ после заголовка */
+    gap: 20px; /* Это задаст расстояние между карточками */
+    padding-left: 20px; /* Это добавит отступ слева ко всему контейнеру карточек */    
+  }
+  /* Контейнер для распределения карточек в общем контейнере */
+  .card-wrapper {
+    flex: 0 1 calc(20% - 20px); /* Пример для 3 карточек в ряд, 16px - это gap */
+    max-width: 350px;
+    min-width: 200px;
+    max-height: 350px;
+    min-height: 200px;
+    margin-bottom: 0px;
+  } 
+  /* Контейнер карточки */
+  .card {
+    background-color: var(--grey-color);
+    display: flex; /* Делаем родительский элемент флекс-контейнером */
+    flex-direction: column; /* Вертикальное расположение дочерних элементов */
+    justify-content: flex-start; /* Прижимаем содержимое к верхней части карточки */
+    align-items: stretch; /* Растягиваем дочерние элементы на всю ширину карточки */
+    height: 100%; /* Растягиваем карточку на всю высоту родительского элемента */
+    width: 100%; /* Растягиваем карточку на всю ширину родительского элемента */
+    border-radius: 20px; /* Такое же закругление, как у .card */
+    overflow: hidden; /* Обрезаем всё, что выходит за границы радиуса */  
+  }
+  /* Картинка */
+  .card-image {
+    height: 80%; 
+    border-radius: 20px; /* Такое же закругление, как у .card */
+    flex: 0 1 80%; /* Занимает 80% высоты карточки */
+  }
+  .card-image img {
+    width: 100%;
+    height: 100%; /* Высота будет пропорциональна ширине */
+    object-fit: cover; /* Изображение будет покрывать всю область */  
+  }
+  /* Кнопка удаления */
+  #delete-button {
+    position: absolute;
+    bottom: -50px; /* Adjust as needed */
+    right: 15px; /* Adjust as needed */
+    border: none; /* Removes the border from the button */
+    background: transparent; /* Ensures the background is transparent */
+    padding: 0; /* Remove padding around the icon */
+    cursor: pointer; /* Changes the mouse cursor when hovering over the button */
+    outline: none; /* Removes the outline to prevent focus styles */
+  }
+  /* Иконка удаления */
+  #delete-button-icons {
+    vertical-align: middle;  
+    /* Set the size of the icon if necessary */
+    font-size: 28px;
+    color: var(--braun-color);
+    top: 70px;
+    width: 30px;
+    height: 30px;
+  }
+  /* Содержимое карточки */
+  .card-content {    
+    display: flex; /* используйте flexbox для организации содержимого */
+    flex-direction: column; /* элементы будут расположены вертикально */
+    align-items: flex-start; /* выравнивание элементов по началу (слева) */
+    height: auto;
+    background-color: var(--grey-color); 
+  }
+  /* Содержимое карточки ссылка*/
+  .card-content a {
+    text-decoration: none; /* убирает подчеркивание ссылок */  
+  }
+  /* Содержимое карточки параграф*/
+  .card-content p {
+    font-size: 20px; /* размер шрифта для текста */
+    color: var(--color-text-card); /* цвет текста, выберите нужный вам цвет */
+  }    
+  /* Фон для пустой странице с планами */
+  .cards-container-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh; /* Adjust the height as needed */
+    background-color: var(--background-color);
+    font-size: 30px;
+  }
+  /* Стили формы модального окна */
+  #travelForm {
+    width: 90%;
+    margin-left: 20px;
+  }
+  .custom-style-1, .container-select {
+    flex-direction: row;
+}
+
+  /* Добавляет отступ снизу к первому внутреннему контейнеру выбора страны,типа путешевствия*/
+  .container-select2 {
+    margin-right: 20px; 
+  }
+  /* Размер выпадающего списка */
+  .dropdown-content.select-dropdown.multiple-select-dropdown {
+    height: 400px; /* Задайте желаемую высоту */
+    overflow-y: scroll; /* Добавляет прокрутку, если содержимое превышает высоту */
+  }
+  /* Календарь контейнер с календарем */
+  .container-date {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 5px;
+  }
+  .container-date-2 {
+    margin-right: 20px; /* Добавляет отступ снизу к первому внутреннему контейнеру */
+  }
+  /* Цвет фона основной части календаря */
+  .datepicker-calendar-container {
+    background-color: var(--background-color) /* Замените #yourColor на желаемый цвет */
+  }

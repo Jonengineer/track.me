@@ -1,80 +1,44 @@
 {% extends 'user_profile.html' %}
+{% load static %}
 
 {% block styles %}
     {{ block.super }}
-    <title>Создание плана путешевствия</title>
-    <style>
-        #traveltype, #traveltype option {
-            display: block !important;
-            visibility: visible !important;
-        }
-    </style>
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{% static 'travel/css/create_travel_plan.css' %}">
+
 {% endblock %}  
 
 {% block user_content %}
 
-<div class="container">
-<h2>Создание плана путешевствия</h2>
+<div id="map_navigation"></div>
 
-<form  id="travelForm" class="materialize-form" method="post" action="{% url 'travel:create_travel_plan' %}" enctype="multipart/form-data">
-    {% csrf_token %}
-    
-    <label for="country">Страна:</label>
-    <input type="text" id="country" name="country" class="materialize-input" required><br>
-
-    <label for="territory">Место расположение:</label>
-    <input type="text" id="territory" name="territory" class="materialize-input" required><br>
-
-    <label for="datestart">Дата начала путешевствия:</label>
-    <input type="datetime-local" id="datestart" name="datestart" class="materialize-input" required><br>
-
-    <label for="datefinish">Дата конца путешевствия:</label>
-    <input type="datetime-local" id="datefinish" name="datefinish" class="materialize-input" required><br>
-
-    <label for="traveltype">Вид путешевствия:</label>
-    <select id="traveltype" name="traveltype"  required>
-        {% for traveltype in traveltypes %}
-            <option value="{{ traveltype.traveltype_id }}"> {{traveltype.traveltypedescription }} </option>
-        {% endfor %} 
-        {{ traveltypes }}   
-    </select>  
-    
-    <div class="file-field input-field">
-        <button class="waves-light btn">
-            <span>Трек путешевствия</span>
-            <input type="file" id="gpxtrek" name="gpxtrek" accept=".gpx">
-        </button>
-        <div class="file-path-wrapper">
-            <input class="file-path validate" type="text" placeholder="Выберите файл в формате GPX">
-        </div>
-    </div>
-
-    <div class="file-field input-field">
-        <button class="waves-light btn">
-            <span>Фото для карточки путешевствия:</span>
-            <input type="file"  id="image" name="image" accept=".jpg">
-        </button>
-        <div class="file-path-wrapper">
-            <input class="file-path validate" type="text" placeholder="Выберите файл в формате JPG">
-        </div>
-    </div>
-
-    <button class="waves-light btn">
-        <span class="waves-light btn__label">Создать путешевствие</span>
-    </button>
-</form>
-</div>
 {% endblock %}
 
 
 {% block user_scripts %}
-{{ block.super }}      
+{{ block.super }}
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
 
 <script>
-    $(document).ready(function(){
-        $('select').formSelect();
+	mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
+    const map = new mapboxgl.Map({
+    container: 'map_navigation',
+    // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [-79.4512, 43.6568],
+    zoom: 13
     });
-</script>
+    
+    map.addControl(
+    new MapboxDirections({
+    accessToken: mapboxgl.accessToken
+    }),
+    'top-left'
+    );
+</script>      
 
 {% endblock %}   
 
