@@ -42,7 +42,11 @@
     max-height: 700px;
     overflow-y: auto;
 }
-
+/* Кнопка выбора модальных окон */
+.dropdown-trigger {
+    margin-top: 10px;
+    margin-left: 10px;
+}
 /* Стили модального окна */
 #fieldsContainer1, #fieldsContainer2  {
     display: flex;    

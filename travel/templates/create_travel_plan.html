@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block styles %}
-    {{ block.super }}
+{{ block.super }}
 
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
@@ -13,7 +13,62 @@
 
 {% block user_content %}
 
-<div id="map_navigation"></div>
+
+<div id="map_navigation">
+    <div id="map_navigation_collapsible">
+        <ul class="collapsible">
+            <li id="li" data-container="fieldsContainer1">
+                <div class="collapsible-header">
+                    <img class="point-icons" src="/static/travel/img/point.svg">Построить маршрут               
+                </div>
+                <div class="collapsible-body">
+                    <!-- Форма для добавления новой точки -->
+                    <form id="addPointForm" method="post" action="{% url 'travel:created_track_map' %}">
+                    {% csrf_token %}
+                    <input type="text" class="input-point" name="point_сoordinates" placeholder="Выберите точки маршрута на карте" maxlength="25" readonly>
+                    <div id="fieldsContainer1">
+                    </div>                  
+                        <div class="modal-content-btn">
+                            <button type="button" class="btn-min add-expense-btn" data-target="fieldsContainer1">+</button>
+                            <button type="button" class="btn_delete_min" data-target="fieldsContainer1">-</button>                        
+                        </div>
+                        <div class="modal-content-radio">
+                            <div class="modal-content-radio-icons">
+                                <p>
+                                    <label>
+                                    <input name="group1" type="radio" checked />
+                                    <img class="point-icons-radio" src="/static/travel/img/hiking_treking.svg">          
+                                    </label>
+                                </p>
+                            </div>
+                            <div class="modal-content-radio-icons">    
+                                <p>
+                                    <label>
+                                    <input name="group1" type="radio" />
+                                    <img class="point-icons-radio" src="/static/travel/img/bicycle.svg">          
+                                    </label>
+                                </p>
+                            </div>
+                            <div class="modal-content-radio-icons">    
+                                <p>
+                                    <label>
+                                    <input class="with-gap" name="group1" type="radio"  />
+                                    <img class="point-icons-radio" src="/static/travel/img/car.svg">         
+                                    </label>
+                                </p>
+                            </div>   
+                        </div>
+                        <div class="modal-content-btn"> 
+                            <button type="submit" class="btn-min">Проложить маршрут</button>
+                            <button type="submit" class="btn-min">Сохранить маршрут</button>
+                        </div>
+                    </form>
+                </div>
+            </li>          
+        </ul>
+    </div>
+</div>
+
 
 {% endblock %}
 
@@ -23,21 +78,145 @@
 <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
 
 <script>
-	mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
-    const map = new mapboxgl.Map({
-    container: 'map_navigation',
-    // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-    style: 'mapbox://styles/mapbox/streets-v12',
-    center: [-79.4512, 43.6568],
-    zoom: 13
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализация карты Mapbox
+        mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ';
+        const map = new mapboxgl.Map({
+            container: 'map_navigation',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [-79.4512, 43.6568],
+            zoom: 2
+        });
     
-    map.addControl(
-    new MapboxDirections({
-    accessToken: mapboxgl.accessToken
-    }),
-    'top-left'
-    );
+        var markers = []; // Массив для хранения маркеров
+        var fieldContainer = document.getElementById('fieldsContainer1');
+    
+        // Обработчик клика по карте
+        map.on('click', function(e) {
+            var coords = e.lngLat;
+            var formattedCoords = coords.lat.toFixed(4) + ", " + coords.lng.toFixed(4);
+    
+            var availableField = findNextAvailableField();
+            if (availableField) {
+                availableField.value = formattedCoords;
+    
+                if (markers.length < 10) {
+                    // Создание элемента для маркера
+                    var el = document.createElement('div');
+                    el.style.backgroundImage = 'url(/static/travel/img/location_point.svg)';
+                    el.style.width = '45px';
+                    el.style.height = '45px';
+                    el.style.backgroundSize = '100%';
+        
+                    // Добавление маркера на карту
+                    var marker = new mapboxgl.Marker(el)
+                        .setLngLat(coords)
+                        .addTo(map);
+        
+                    markers.push(marker);
+                }
+            }
+        });
+    
+        function findNextAvailableField() {
+            var fields = fieldContainer.getElementsByTagName('input');
+            for (var i = 0; i < fields.length; i++) {
+                if (fields[i].value === '') {
+                    return fields[i];
+                }
+            }
+            return null;
+        }
+    
+        // Инициализация collapsible элементов
+        var collapsibleElements = document.querySelectorAll('.collapsible');
+        var collapsibleInstances = M.Collapsible.init(collapsibleElements, {
+            onOpenStart: function(el) {
+                var containerId = el.getAttribute('data-container');
+                if (containerId && fieldContainer.children.length === 0) {
+                    addNewField(containerId);
+                }
+            }
+        });
+    
+        // Обработчики для кнопок добавления и удаления полей
+        document.querySelectorAll('.add-expense-btn, .btn_delete_min').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var isAddButton = this.classList.contains('add-expense-btn');
+                manageFields(isAddButton, this.getAttribute('data-target'));
+            });
+        });
+    
+        function manageFields(isAdd, containerId) {
+            if (isAdd) {
+                addNewField(containerId);
+            } else {
+                removeLastField(containerId);
+            }
+        }
+    
+        function addNewField(containerId) {
+            var container = document.getElementById(containerId);
+            if (!container) {
+                showToast('error', 'Контейнер не найден: ' + containerId);
+                return;
+            }
+    
+            var existingFields = container.getElementsByClassName('group-container');
+            if (existingFields.length >= 10) {
+                showToast('error', 'Можно выбрать только 10 точек.');
+                return;
+            }
+    
+            var groupContainer = document.createElement('div');
+            groupContainer.className = 'group-container';
+    
+            var numberingField = document.createElement('input');
+            numberingField.type = 'text';
+            numberingField.className = 'input-numbering';
+            numberingField.value = (existingFields.length + 1);
+            numberingField.readOnly = true;
+    
+            var coordinatesInput = document.createElement('input');
+            coordinatesInput.type = 'text';
+            coordinatesInput.className = 'input-point';
+            coordinatesInput.name = 'point_coordinates[]';
+            coordinatesInput.placeholder = 'Укажите координаты на карте';
+            coordinatesInput.maxLength = '25';
+            coordinatesInput.readOnly = true;
+    
+            groupContainer.appendChild(numberingField);
+            groupContainer.appendChild(coordinatesInput);
+            container.appendChild(groupContainer);
+        }
+    
+        function removeLastField(containerId) {
+            var container = document.getElementById(containerId);
+            if (!container) {
+                showToast('error', 'Контейнер не найден: ' + containerId);
+                return;
+            }
+    
+            if (container.lastElementChild) {
+                container.removeChild(container.lastElementChild);
+            }
+    
+            if (markers.length > 0) {
+                markers[markers.length - 1].remove();
+                markers.pop();
+            }
+        }
+    
+        function showToast(type, message) {
+            let toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    });
 </script>      
 
 {% endblock %}   

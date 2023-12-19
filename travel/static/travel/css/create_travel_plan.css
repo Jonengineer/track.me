@@ -1,12 +1,58 @@
-
+/* Стили контейнера с картой */
 #map_navigation {
-    position: relative;
-    top: 50px;
-    left: 66px;
-    width: calc(100% - 66px);
-    height: calc(100vh - 50px);
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    background: var(--background-color);
+  position: relative;
+  top: 50px;
+  left: 66px;
+  width: calc(100% - 66px);
+  height: calc(100vh - 50px);
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  background: var(--background-color);
   }
+/* Стили контейнера с выбором точек для постороения трека */
+#map_navigation_collapsible {
+  position: absolute;
+  top: 5px; /* Расстояние от верхнего края контейнера карты */
+  left: 10px; /* Расстояние от левого края контейнера карты */
+  z-index: 10; /* Убедитесь, что collapsible будет поверх карты */
+  width: 35%;
+
+}
+/* Стили полоса прокрутки */
+.collapsible {
+  overflow: auto; /* Полосы прокрутки появятся автоматически, если содержимое больше размера контейнера */
+  min-width: 200px;
+  max-width: 350px;
+  max-height: 700px;
+}
+/* Стили контейнера с полями выбора точек */
+.group-container {
+  display: flex;           /* Включаем Flexbox */
+  align-items: center;     /* Выравниваем элементы по центру по вертикали */
+  gap: 10px;               /* Расстояние между элементами в контейнере */
+  margin-bottom: 10px;     /* Отступ снизу для отделения от следующего контейнера */
+}
+.input-numbering, .input-point {
+  flex-grow: 1;            /* Элементы растягиваются, чтобы занять доступное пространство */
+  padding: 5px;            /* Отступы внутри полей для улучшения внешнего вида */
+}
+.input-numbering {
+  max-width: 20px;         /* Ограничиваем ширину поля нумерации */
+}
+.input-point {
+  flex-grow: 4;            /* Даем больше места полю координат */
+}
+/* Стили контейнера с кнопками */
+.modal-content-btn {
+  display: flex;        /* Включаем Flexbox */
+  align-items: center;  /* Выравниваем элементы по центру по вертикали */
+  gap: 10px;            /* Устанавливаем расстояние между элементами */
+}
+/* Стили контейнера с радио кнопками */
+.modal-content-radio {
+  display: flex;        /* Включаем Flexbox */
+  flex-direction: row; /* Элементы в колонке */
+  align-items: center;  /* Выравниваем элементы по центру по вертикали */
+  gap: 30px;            /* Расстояние между радиокнопкой и иконкой */  
+}

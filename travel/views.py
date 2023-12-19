@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .form import TravelPlanformTrue, PointTrekForm, TravelDescriptionForm, TravelFinanceForm
+from .form import TravelPlanformTrue, PointTrekForm, TravelDescriptionForm, TravelFinanceForm, TrekForm
 from .models import (
     travelplan, traveltype, Friendship, travelplan_geo,
     plpoint_trek, point_trek, description, travelplandescription,
-    travelplanexpense, expense, typeexpense, country
+    travelplanexpense, expense, typeexpense, country, track_map
 )
 import os
 from django.conf import settings
@@ -24,9 +24,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-import subprocess
 import shutil
-from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 
 logger = logging.getLogger(__name__)
@@ -765,5 +763,13 @@ def delete_expense(request, expense_id, travelplan_id):
 
 @login_required
 def map_navigation(request):
+   
+    return render(request, 'create_travel_plan.html')
+
+
+@login_required
+@require_POST
+def created_track_map(request):
+    form = TrekForm()
    
     return render(request, 'create_travel_plan.html')
