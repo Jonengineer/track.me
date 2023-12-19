@@ -16,7 +16,9 @@
 
   <div class="row_travel">
     <div class="title-container-card">
-      <h1>Мои путешествия</h1>
+      <div class="title-container-card-text">
+        <h1>Мои путешествия</h1>
+    </div>
       <div class="title-container-card-modal">
         <a class='dropdown-trigger btn' data-target='dropdown-content'> + Создать путешествие</a>             
         <ul id='dropdown-content' class='dropdown-content'>
@@ -25,34 +27,36 @@
         </ul>
       </div> 
     </div>
+
     <div class="cards-container">
 
-    {% for travel_plan in travel %}
+      {% for travel_plan in travel %}
 
-      <div class="card-wrapper">
-        <div class="card">
-          <div class="card-image">
-            <a href="{% url 'travel:travel_detail_full' travel_plan.travelplan_id %}">
-            <img src="{{ travel_plan.image }}" alt="{{ travel_plan.territory }}">
-            <form action="{% url 'travel:delete_travel_plan' travel_plan.travelplan_id %}" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить этот план путешествия?');">
-              {% csrf_token %}
-              <button id="delete-button" type="submit" class="delete-button">                
-                <img id="delete-button-icons" src="/static/travel/img/delete.svg" data-tooltip="Удалить путешевствие">
-              </button>
-            </form>
-          </div>
-          <div class="card-content">
-            <a href="{% url 'travel:travel_detail_full' travel_plan.travelplan_id %}">
-              <p>{{ travel_plan.territory }}</p>
-              <p>{{ travel_plan.datestart|custom_date_format }}</p>              
-              <p>{{ travel_plan.traveltype.traveltypedescription }}</p>
-            </a>
+        <div class="card-wrapper">
+          <div class="card">
+            <div class="card-image">
+              <a href="{% url 'travel:travel_detail_full' travel_plan.travelplan_id %}">
+              <img src="{{ travel_plan.image }}" alt="{{ travel_plan.territory }}">
+              <form action="{% url 'travel:delete_travel_plan' travel_plan.travelplan_id %}" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить этот план путешествия?');">
+                {% csrf_token %}
+                <button id="delete-button" type="submit" class="delete-button">                
+                  <img id="delete-button-icons" src="/static/travel/img/delete.svg" data-tooltip="Удалить путешевствие">
+                </button>
+              </form>
+            </div>
+            <div class="card-content">
+              <a href="{% url 'travel:travel_detail_full' travel_plan.travelplan_id %}">
+                <p>{{ travel_plan.territory }}</p>
+                <p>{{ travel_plan.datestart|custom_date_format }}</p>              
+                <p>{{ travel_plan.traveltype.traveltypedescription }}</p>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
 
-    {% endfor %}
+      {% endfor %} 
 
+    </div>
   </div>
 
 {% else %}

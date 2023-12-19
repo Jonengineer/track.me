@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
@@ -164,7 +164,19 @@ class point_trek(models.Model):
         db_table = 'point_trek' 
     
     def __str__(self):
-        return f"Point {self.point_trek_id}"
+        return f"Point {self.point_trek_id}"    
+
+class track_map(models.Model):
+    track_map_id = models.AutoField(primary_key=True)
+    track_coordinat = JSONField()  # Поле для хранения списка координат
+    gpxtrek = models.FileField(upload_to='gpx_tracks/')  # Поле для хранения файла GPX
+
+    class Meta:
+        managed = True
+        db_table = 'track_map' 
+    
+    def __str__(self):
+        return f"Track Map {self.track_map_id}"
 
 class Friendship(models.Model):
     user1 = models.ForeignKey('user.user', on_delete=models.CASCADE, related_name="friendships1")

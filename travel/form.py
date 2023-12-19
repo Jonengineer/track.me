@@ -1,9 +1,15 @@
 from django import forms
-from .models import travelplan, traveltype, point_trek, description, travelplandescription, expense, typeexpense
+from .models import (travelplan, 
+                     traveltype, 
+                     point_trek, 
+                     description, 
+                     expense, 
+                     track_map)
 import json
 from PIL import Image
 from django.conf import settings
 import os
+from django.core.exceptions import ValidationError
 
 
 class TravelPlanformTrue(forms.ModelForm):
@@ -86,3 +92,37 @@ class TravelFinanceForm(forms.ModelForm):
             }),
         }    
     
+class TrekForm(forms.ModelForm):
+    # Добавляем кастомные поля для 10 координат точек
+    for i in range(1, 11):
+        locals()[f'point_{i}_coordinates'] = forms.CharField(
+            label=f'Point {i} Coordinates', 
+            required=False
+        )
+
+    class Meta:
+        model = track_map
+        fields = ['track_coordinat', 'gpxtrek']  # Включаем основные поля модели
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Создаем список для хранения координат
+        coordinates_list = []
+
+        for i in range(1, 11):
+            coordinates_str = cleaned_data.get(f'point_{i}_coordinates')
+            if coordinates_str:
+                try:
+                    lat, lng = map(float, coordinates_str.split(', '))
+                    coordinates_list.append({'lat': lat, 'lng': lng})
+                except ValueError:
+                    self.add_error(f'point_{i}_coordinates', 'Invalid coordinates format. Please use "latitude, longitude".')
+
+        # Проверяем, что хотя бы одна точка заполнена
+        if not coordinates_list:
+            raise ValidationError("At least one point is required.")
+
+        # Добавляем список координат в очищенные данные
+        cleaned_data['coordinates_list'] = coordinates_list
+        return cleaned_data
