@@ -91,6 +91,8 @@
         var markers = []; // Массив для хранения маркеров
         var fieldContainer = document.getElementById('fieldsContainer1');
         var routePoints = []; // Массив для хранения выбранных точек
+        // Массив для связи между полями ввода и маркерами
+        var fieldToMarkerMap = [];
     
         map.on('load', () => {
             // Инициализация начальной точки маршрута и маркера, если это необходимо
@@ -125,6 +127,9 @@
                 var travelMode = getCurrentTravelMode();
 
                 getRoute(routePoints, travelMode);
+
+                // Сохраняем связь между полем ввода и маркером
+                fieldToMarkerMap.push({ field: availableField, marker: marker });
             }                    
         }
     
@@ -233,29 +238,55 @@
         }
     
         function manageFields(isAdd, containerId) {
+            var container = document.getElementById(containerId);
+        
             if (isAdd) {
                 addNewField(containerId);
             } else {
-                removeLastField(containerId);
-                if (routePoints.length > 0) {
-                    routePoints.pop(); // Удаление последней точки маршрута
+                var fields = Array.from(container.getElementsByClassName('input-point'));
+                var indexToRemove = fields.length - 1; // Индекс последнего поля
         
-                    if (routePoints.length >= 2) {
-                        getRoute(routePoints); // Перестроение маршрута
-                    } else {
-                        // Очищаем существующий маршрут на карте, если осталась 0 или 1 точка
-                        if (map.getSource('route')) {
-                            map.getSource('route').setData({
-                                type: 'Feature',
-                                properties: {},
-                                geometry: {
-                                    type: 'LineString',
-                                    coordinates: []
-                                }
-                            });
-                        }
-                    }
+                if (indexToRemove !== -1 && fields[indexToRemove].value !== '') {
+                    var markerToDelete = fieldToMarkerMap[indexToRemove].marker;
+                    markerToDelete.remove();
+                    fieldToMarkerMap.splice(indexToRemove, 1);
+                    routePoints.splice(indexToRemove, 1);
+                    rebuildRoute();
                 }
+        
+                removeLastField(containerId);
+            }
+        }
+
+        function rebuildRoute() {
+            if (routePoints.length >= 2) {
+                var travelMode = getCurrentTravelMode();
+                getRoute(routePoints, travelMode); // Перестроение маршрута
+            } else {
+                clearRouteOnMap(); // Очищаем маршрут на карте
+            }
+        }
+
+        function findLastFilledFieldIndex(container) {
+            var fields = container.getElementsByClassName('input-point');
+            for (var i = fields.length - 1; i >= 0; i--) {
+                if (fields[i].value !== '') {
+                    return i;
+                }
+            }
+            return -1; // Возвращаем -1, если все поля пустые
+        }
+        
+        function clearRouteOnMap() {
+            if (map.getSource('route')) {
+                map.getSource('route').setData({
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: []
+                    }
+                });
             }
         }
     
@@ -300,14 +331,9 @@
                 showToast('error', 'Контейнер не найден: ' + containerId);
                 return;
             }
-    
+        
             if (container.lastElementChild) {
                 container.removeChild(container.lastElementChild);
-            }
-    
-            if (markers.length > 0) {
-                markers[markers.length - 1].remove();
-                markers.pop();
             }
         }
     
