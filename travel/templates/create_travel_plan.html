@@ -52,7 +52,7 @@
                             <div class="modal-content-radio-icons">    
                                 <p>
                                     <label>
-                                    <input class="with-gap" name="group1" type="radio"  />
+                                    <input name="group1" type="radio"  />
                                     <img class="point-icons-radio" src="/static/travel/img/car.svg">         
                                     </label>
                                 </p>
@@ -84,39 +84,105 @@
         const map = new mapboxgl.Map({
             container: 'map_navigation',
             style: 'mapbox://styles/mapbox/streets-v12',
-            center: [-79.4512, 43.6568],
-            zoom: 2
+            center: [81.1772, 51.5528],
+            zoom: 2.3
         });
     
         var markers = []; // Массив для хранения маркеров
         var fieldContainer = document.getElementById('fieldsContainer1');
+        var routePoints = []; // Массив для хранения выбранных точек
+    
+        map.on('load', () => {
+            // Инициализация начальной точки маршрута и маркера, если это необходимо
+            // Здесь добавьте код для инициализации, если он вам нужен
+        });
     
         // Обработчик клика по карте
         map.on('click', function(e) {
             var coords = e.lngLat;
             var formattedCoords = coords.lat.toFixed(4) + ", " + coords.lng.toFixed(4);
+            addMarkerAndField(coords, formattedCoords);
+        });
     
+        function addMarkerAndField(coords, formattedCoords) {
+            if (routePoints.length > 10) {                     
+                return;
+            }           
+
+            // Добавляем координаты в поле ввода
             var availableField = findNextAvailableField();
             if (availableField) {
                 availableField.value = formattedCoords;
+                var el = createMarkerElement();
+                var marker = new mapboxgl.Marker(el)
+                .setLngLat(coords)
+                .addTo(map);
+                markers.push(marker);
+
+                // Теперь добавляем координаты этого маркера в routePoints
+                var newPoint = [coords.lng, coords.lat];
+                routePoints.push(newPoint);
+                var travelMode = getCurrentTravelMode();
+
+                getRoute(routePoints, travelMode);
+            }                    
+        }
     
-                if (markers.length < 10) {
-                    // Создание элемента для маркера
-                    var el = document.createElement('div');
-                    el.style.backgroundImage = 'url(/static/travel/img/location_point.svg)';
-                    el.style.width = '45px';
-                    el.style.height = '45px';
-                    el.style.backgroundSize = '100%';
+        function createMarkerElement() {
+            var el = document.createElement('div');
+            el.style.backgroundImage = 'url(/static/travel/img/location_point.svg)';
+            el.style.width = '45px';
+            el.style.height = '45px';
+            el.style.backgroundSize = '100%';
+            return el;
+        }
         
-                    // Добавление маркера на карту
-                    var marker = new mapboxgl.Marker(el)
-                        .setLngLat(coords)
-                        .addTo(map);
-        
-                    markers.push(marker);
-                }
+        async function getRoute(points, mode) {
+            if (points.length < 2) {
+                return; // Нужны как минимум две точки для построения маршрута
             }
-        });
+                      
+            var waypoints = points.map(point => point.join(',')).join(';');
+            const query = await fetch(
+                `https://api.mapbox.com/directions/v5/mapbox/${mode}/${waypoints}?steps=true&geometries=geojson&access_token=pk.eyJ1Ijoiam9uZW5naW5lZXIiLCJhIjoiY2xvcm1jeGZxMHc4eDJxcDVsZnZpZzI4ayJ9.Ou-RGij5NC3X3LpByDstZQ`,
+                { method: 'GET' }
+            );
+            const json = await query.json();
+            updateRouteOnMap(json.routes[0].geometry.coordinates);
+        }
+    
+        function updateRouteOnMap(route) {
+            const geojson = {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: route
+                }
+            };
+    
+            if (map.getSource('route')) {
+                map.getSource('route').setData(geojson);
+            } else {
+                map.addLayer({
+                    id: 'route',
+                    type: 'line',
+                    source: {
+                        type: 'geojson',
+                        data: geojson
+                    },
+                    layout: {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    paint: {
+                        'line-color': '#F44336',
+                        'line-width': 10,
+                        'line-opacity': 0.8
+                    }
+                });
+            }
+        }
     
         function findNextAvailableField() {
             var fields = fieldContainer.getElementsByTagName('input');
@@ -128,7 +194,6 @@
             return null;
         }
     
-        // Инициализация collapsible элементов
         var collapsibleElements = document.querySelectorAll('.collapsible');
         var collapsibleInstances = M.Collapsible.init(collapsibleElements, {
             onOpenStart: function(el) {
@@ -139,19 +204,58 @@
             }
         });
     
-        // Обработчики для кнопок добавления и удаления полей
         document.querySelectorAll('.add-expense-btn, .btn_delete_min').forEach(function(button) {
             button.addEventListener('click', function() {
                 var isAddButton = this.classList.contains('add-expense-btn');
                 manageFields(isAddButton, this.getAttribute('data-target'));
             });
         });
+
+        document.querySelectorAll('input[name="group1"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if(this.checked && routePoints.length >= 2) {
+                    var travelMode = getCurrentTravelMode();
+                    getRoute(routePoints, travelMode);
+                }
+            });
+        });
+
+        // Определение выбранного типа маршрута
+        function getCurrentTravelMode() {
+            var selectedRadio = document.querySelector('input[name="group1"]:checked');
+            if (selectedRadio) {
+                // Перестроение маршрута с учетом выбранного типа передвижения
+                return selectedRadio.nextElementSibling.getAttribute("src").includes("hiking_treking") ? "walking" :
+                       selectedRadio.nextElementSibling.getAttribute("src").includes("bicycle") ? "cycling" : "driving";
+
+            }
+            return "walking"; // Возвращаем режим по умолчанию, если ни один не выбран
+        }
     
         function manageFields(isAdd, containerId) {
             if (isAdd) {
                 addNewField(containerId);
             } else {
                 removeLastField(containerId);
+                if (routePoints.length > 0) {
+                    routePoints.pop(); // Удаление последней точки маршрута
+        
+                    if (routePoints.length >= 2) {
+                        getRoute(routePoints); // Перестроение маршрута
+                    } else {
+                        // Очищаем существующий маршрут на карте, если осталась 0 или 1 точка
+                        if (map.getSource('route')) {
+                            map.getSource('route').setData({
+                                type: 'Feature',
+                                properties: {},
+                                geometry: {
+                                    type: 'LineString',
+                                    coordinates: []
+                                }
+                            });
+                        }
+                    }
+                }
             }
         }
     
